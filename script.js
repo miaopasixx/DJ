@@ -445,12 +445,12 @@ function adjustPath(path) {
                 const chineseNumbers = ['一', '二', '三', '四', '五', '六', '七', '八', '九', '十'];
                 const index = subcategoryIndex + 1;
                 const chineseNumber = index <= 10 ? chineseNumbers[index - 1] : index;
-                return `${prefix}${categoryName}/第${chineseNumber}个标题：${data.subcategories[subcategoryIndex].items[itemIndex]}`;
+                return `${prefix}<span style="background-color: #d1e7dd; padding: 2px 4px; border-radius: 3px; color: #0f5132;">${categoryName}</span> <span style="color: #000; font-weight: bold;">/</span> <span style="background-color: #cfe2f3; padding: 2px 4px; border-radius: 3px; color: #084298;">标题${chineseNumber}</span> <span style="color: #000; font-weight: bold;">：</span> <span style="background-color: #f8d7da; padding: 2px 4px; border-radius: 3px; color: #842029;">${data.subcategories[subcategoryIndex].items[itemIndex]}</span>`;
             } else if (segments[3] === 'name') {
                 const chineseNumbers = ['一', '二', '三', '四', '五', '六', '七', '八', '九', '十'];
                 const index = subcategoryIndex + 1;
                 const chineseNumber = index <= 10 ? chineseNumbers[index - 1] : index;
-                return `${prefix}${categoryName}/第${chineseNumber}个标题：${subcategoryName}`;
+                return `${prefix}<span style="background-color: #d1e7dd; padding: 2px 4px; border-radius: 3px; color: #0f5132;">${categoryName}</span> <span style="color: #000; font-weight: bold;">/</span> <span style="background-color: #cfe2f3; padding: 2px 4px; border-radius: 3px; color: #084298;">标题${chineseNumber}</span> <span style="color: #000; font-weight: bold;">：</span> <span style="background-color: #f8d7da; padding: 2px 4px; border-radius: 3px; color: #842029;">${subcategoryName}</span>`;
             }
 
             return path;
