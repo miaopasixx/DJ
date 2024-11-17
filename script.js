@@ -142,7 +142,7 @@ function displaySearchFeature() {
 
     contentDiv.innerHTML = `
         <div style="padding: 20px;">
-            <h2>归档查询</h2>
+            <h2>查询功能</h2>
             <div style="
                 margin: 20px 0;
                 display: flex;
@@ -461,75 +461,241 @@ function adjustPath(path) {
         });
 }
 
-// // 本地文件查询
-// function displayLocalFileSearch() {
-//     const contentDiv = document.getElementById('content');
-//     contentDiv.innerHTML = `
-//         <div style="padding: 20px;">
-//             <h2>本地文件查询</h2>
-//             <div style="
-//                 margin: 20px 0;
-//                 justify-content: center;
-//                 align-items: center;
-//                 gap: 10px;
-//             ">
-//                 <input type="file" id="localFileSearchInput" webkitdirectory multiple style="
-//                     padding: 10px;
-//                     width: 200px;
-//                     border: 1px solid #2d5f8b;
-//                     border-radius: 5px;
-//                     font-size: 14px;
-//                     transition: all 0.3s ease;
-//                     outline: none;
-//                     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-//                 " placeholder="选择文件夹">
-//                 <input type="text" id="keywordInput" placeholder="输入关键词" style="
-//                     padding: 10px;
-//                     width: 150px;
-//                     border: 1px solid #2d5f8b;
-//                     border-radius: 5px;
-//                     font-size: 14px;
-//                     transition: all 0.3s ease;
-//                     outline: none;
-//                     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-//                 ">
-//                 <button onclick="performLocalFileSearch()" style="
-//                     padding: 10px 20px;
-//                     background: linear-gradient(145deg, #2d5f8b, #3774aa);
-//                     border: none;
-//                     border-radius: 5px;
-//                     color: white;
-//                     cursor: pointer;
-//                     transition: all 0.3s ease;
-//                     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-//                 ">搜索</button>
-//             </div>
-//             <div id="localFileSearchResults" style="margin-top: 20px;"></div>
-//         </div>
-//     `;
-// }
+// 本地文件查询
+function displayLocalFileSearch() {
+    const contentDiv = document.getElementById('content');
+    contentDiv.innerHTML = `
+        <div style="padding: 20px;">
+            <h2>本地文件查询</h2>
+            <div style="
+                margin: 20px 0;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            ">
+                <input type="text" id="localFileSearchInput" placeholder="请输入文件名" style="
+                    padding: 10px 15px;
+                    width: 300px;
+                    border: 2px solid #2d5f8b;
+                    border-radius: 25px;
+                    font-size: 14px;
+                    transition: all 0.3s ease;
+                    outline: none;
+                ">
+                <button onclick="performLocalFileSearch()" style="
+                    padding: 10px 20px;
+                    background: linear-gradient(145deg, #2d5f8b, #3774aa);
+                    border: none;
+                    border-radius: 25px;
+                    color: white;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+                ">搜索</button>
+            </div>
+            <div id="localFileSearchResults"></div>
+        </div>
+    `;
 
-// function performLocalFileSearch() {
-//     const fileInput = document.getElementById('localFileSearchInput');
-//     const searchResults = document.getElementById('localFileSearchResults');
-//     const keywordInput = document.getElementById('keywordInput');
-//     const keyword = keywordInput.value.trim().toLowerCase();
-  
-//     if (!keyword) {
-//         searchResults.innerHTML = '<p style="color: #842029;">请输入文件名</p>';
-//         return;
-//     }
+    const localFileSearchInput = document.getElementById('localFileSearchInput');
+    localFileSearchInput.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+            performLocalFileSearch();
+        }
+    });
+}
 
-//     const files = Array.from(fileInput.files);
-//     const matchedFiles = files.filter(file => file.name.toLowerCase().includes(keyword));
+function performLocalFileSearch() {
+    const searchInput = document.getElementById('localFileSearchInput');
+    const searchResults = document.getElementById('localFileSearchResults');
+    const keyword = searchInput.value.trim().toLowerCase();
 
-//     if (matchedFiles.length > 0) {
-//         searchResults.innerHTML = `
-//             <ul style="list-style-type: none; padding: 0;">
-//                 ${matchedFiles.map(file => `<li style="padding: 5px 0; color: #0f5132;">${file.name}</li>`).join('')}
-//             </ul>
-//         `;
-//     } else {
-//         searchResults.innerHTML = '<p style="color: #842029;">未找到匹配的文件</p>';
-//     }
-// }
+    if (!keyword) {
+        searchResults.innerHTML = '<p>请输入文件名</p>';
+        return;
+    }
+
+    // 通过用户选择文件夹进行检索
+    const folderInput = document.createElement('input');
+    folderInput.type = 'file';
+    folderInput.webkitdirectory = true; // 允许选择文件夹
+    folderInput.style.display = 'none';
+    document.body.appendChild(folderInput);
+
+    folderInput.addEventListener('change', (event) => {
+        const files = Array.from(event.target.files);
+        const matchedFiles = files
+            .map(file => file.webkitRelativePath)
+            .filter(fileName => fileName.toLowerCase().includes(keyword));
+
+        if (matchedFiles.length > 0) {
+            const imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+            const videoExtensions = ['mp4', 'webm', 'ogg'];
+            const imageFiles = matchedFiles.filter(file => imageExtensions.some(ext => file.toLowerCase().endsWith(ext)));
+            const videoFiles = matchedFiles.filter(file => videoExtensions.some(ext => file.toLowerCase().endsWith(ext)));
+            const otherFiles = matchedFiles.filter(file => !imageExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !videoExtensions.some(ext => file.toLowerCase().endsWith(ext)));
+
+            let imageGallery = '';
+            if (imageFiles.length > 0) {
+                imageGallery = `
+                    <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px;">
+                        ${imageFiles.map(file => {
+                            const fileObj = files.find(f => f.webkitRelativePath === file);
+                            const fileURL = URL.createObjectURL(fileObj);
+                            return `
+                                <div style="position: relative; margin-bottom: 20px; width: calc(20% - 10px);">
+                                    <img src="${fileURL}" style="width: 100%; height: auto; border-radius: 5px; cursor: pointer;" onclick="openImagePreview('${fileURL}', '${fileObj.name}', '${fileObj.size}', '${fileObj.lastModifiedDate}')">
+                                    <a href="${fileURL}" download="${fileObj.name}" style="position: absolute; top: 5px; right: 5px; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px;">下载</a>
+                                    <h4 style="position: absolute; bottom: -30px; left: 5px; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; transform: translateY(30px);">${fileObj.name}</h4>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                `;
+            }
+
+            let videoGallery = '';
+            if (videoFiles.length > 0) {
+                videoGallery = `
+                    <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px;">
+                        ${videoFiles.map(file => {
+                            const fileObj = files.find(f => f.webkitRelativePath === file);
+                            const fileURL = URL.createObjectURL(fileObj);
+                            return `
+                                <div style="position: relative; margin-bottom: 20px; width: calc(20% - 10px);">
+                                    <video src="${fileURL}" style="width: 100%; height: auto; border-radius: 5px; cursor: pointer;" controls></video>
+                                    <a href="${fileURL}" download="${fileObj.name}" style="position: absolute; top: 5px; right: 5px; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px;">下载</a>
+                                    <h4 style="position: absolute; bottom: -30px; left: 5px; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; transform: translateY(30px);">${fileObj.name}</h4>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                `;
+            }
+
+            let otherFilesList = '';
+            if (otherFiles.length > 0) {
+                otherFilesList = `
+                    <ul style="margin-top: 20px;">
+                        ${otherFiles.map(file => `<li>${file}</li>`).join('')}
+                    </ul>
+                `;
+            }
+
+            searchResults.innerHTML = imageGallery + videoGallery + otherFilesList;
+        } else {
+            searchResults.innerHTML = '<p>未找到匹配的文件</p>';
+        }
+    });
+
+    // 触发文件夹选择
+    folderInput.click();
+
+    window.openImagePreview = function(url, name, size, lastModified) {
+        const previewContainer = document.createElement('div');
+        previewContainer.style.position = 'fixed';
+        previewContainer.style.top = '0';
+        previewContainer.style.left = '0';
+        previewContainer.style.width = '100%';
+        previewContainer.style.height = '100%';
+        previewContainer.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+        previewContainer.style.display = 'flex';
+        previewContainer.style.justifyContent = 'center';
+        previewContainer.style.alignItems = 'center';
+        previewContainer.style.zIndex = '1000';
+
+        const imageElement = document.createElement('img');
+        imageElement.src = url;
+        imageElement.style.maxWidth = '90%';
+        imageElement.style.maxHeight = '90%';
+        imageElement.style.cursor = 'move';
+        imageElement.style.transition = 'transform 0.3s ease';
+
+        let scale = 1;
+        let rotate = 0;
+        let isDragging = false;
+        let startX, startY;
+
+        imageElement.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            scale += e.deltaY * -0.01;
+            scale = Math.min(Math.max(.125, scale), 4);
+            imageElement.style.transform = `scale(${scale}) rotate(${rotate}deg)`;
+        });
+
+        imageElement.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            startX = e.pageX - imageElement.offsetLeft;
+            startY = e.pageY - imageElement.offsetTop;
+            imageElement.style.cursor = 'grabbing';
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                imageElement.style.left = `${e.pageX - startX}px`;
+                imageElement.style.top = `${e.pageY - startY}px`;
+            }
+        });
+
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+            imageElement.style.cursor = 'move';
+        });
+
+        const rotateButton = document.createElement('button');
+        rotateButton.innerText = '旋转';
+        rotateButton.style.position = 'absolute';
+        rotateButton.style.bottom = '20px';
+        rotateButton.style.left = '20px';
+        rotateButton.style.padding = '10px';
+        rotateButton.style.backgroundColor = 'white';
+        rotateButton.style.border = 'none';
+        rotateButton.style.borderRadius = '5px';
+        rotateButton.style.cursor = 'pointer';
+        rotateButton.addEventListener('click', () => {
+            rotate = (rotate + 90) % 360;
+            imageElement.style.transform = `scale(${scale}) rotate(${rotate}deg)`;
+        });
+
+        const fullscreenButton = document.createElement('button');
+        fullscreenButton.innerText = '全屏';
+        fullscreenButton.style.position = 'absolute';
+        fullscreenButton.style.bottom = '20px';
+        fullscreenButton.style.right = '20px';
+        fullscreenButton.style.padding = '10px';
+        fullscreenButton.style.backgroundColor = 'white';
+        fullscreenButton.style.border = 'none';
+        fullscreenButton.style.borderRadius = '5px';
+        fullscreenButton.style.cursor = 'pointer';
+        fullscreenButton.addEventListener('click', () => {
+            if (!document.fullscreenElement) {
+                previewContainer.requestFullscreen();
+            } else {
+                document.exitFullscreen();
+            }
+        });
+
+        const infoText = document.createElement('div');
+        infoText.innerHTML = `文件名: ${name}<br>尺寸: ${size} bytes<br>修改时间: ${new Date(lastModified).toLocaleString()}`;
+        infoText.style.position = 'absolute';
+        infoText.style.top = '20px';
+        infoText.style.left = '20px';
+        infoText.style.color = 'white';
+        infoText.style.padding = '10px';
+        infoText.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+        infoText.style.borderRadius = '5px';
+
+        previewContainer.appendChild(imageElement);
+        previewContainer.appendChild(rotateButton);
+        previewContainer.appendChild(fullscreenButton);
+        previewContainer.appendChild(infoText);
+
+        previewContainer.addEventListener('click', (e) => {
+            if (e.target === previewContainer) {
+                document.body.removeChild(previewContainer);
+            }
+        });
+
+        document.body.appendChild(previewContainer);
+    }
+}    
