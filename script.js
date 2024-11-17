@@ -142,7 +142,7 @@ function displaySearchFeature() {
 
     contentDiv.innerHTML = `
         <div style="padding: 20px;">
-            <h2>查询功能</h2>
+            <h2>归档查询</h2>
             <div style="
                 margin: 20px 0;
                 display: flex;
@@ -460,3 +460,76 @@ function adjustPath(path) {
             return path;
         });
 }
+
+// // 本地文件查询
+// function displayLocalFileSearch() {
+//     const contentDiv = document.getElementById('content');
+//     contentDiv.innerHTML = `
+//         <div style="padding: 20px;">
+//             <h2>本地文件查询</h2>
+//             <div style="
+//                 margin: 20px 0;
+//                 justify-content: center;
+//                 align-items: center;
+//                 gap: 10px;
+//             ">
+//                 <input type="file" id="localFileSearchInput" webkitdirectory multiple style="
+//                     padding: 10px;
+//                     width: 200px;
+//                     border: 1px solid #2d5f8b;
+//                     border-radius: 5px;
+//                     font-size: 14px;
+//                     transition: all 0.3s ease;
+//                     outline: none;
+//                     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+//                 " placeholder="选择文件夹">
+//                 <input type="text" id="keywordInput" placeholder="输入关键词" style="
+//                     padding: 10px;
+//                     width: 150px;
+//                     border: 1px solid #2d5f8b;
+//                     border-radius: 5px;
+//                     font-size: 14px;
+//                     transition: all 0.3s ease;
+//                     outline: none;
+//                     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+//                 ">
+//                 <button onclick="performLocalFileSearch()" style="
+//                     padding: 10px 20px;
+//                     background: linear-gradient(145deg, #2d5f8b, #3774aa);
+//                     border: none;
+//                     border-radius: 5px;
+//                     color: white;
+//                     cursor: pointer;
+//                     transition: all 0.3s ease;
+//                     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+//                 ">搜索</button>
+//             </div>
+//             <div id="localFileSearchResults" style="margin-top: 20px;"></div>
+//         </div>
+//     `;
+// }
+
+// function performLocalFileSearch() {
+//     const fileInput = document.getElementById('localFileSearchInput');
+//     const searchResults = document.getElementById('localFileSearchResults');
+//     const keywordInput = document.getElementById('keywordInput');
+//     const keyword = keywordInput.value.trim().toLowerCase();
+  
+//     if (!keyword) {
+//         searchResults.innerHTML = '<p style="color: #842029;">请输入文件名</p>';
+//         return;
+//     }
+
+//     const files = Array.from(fileInput.files);
+//     const matchedFiles = files.filter(file => file.name.toLowerCase().includes(keyword));
+
+//     if (matchedFiles.length > 0) {
+//         searchResults.innerHTML = `
+//             <ul style="list-style-type: none; padding: 0;">
+//                 ${matchedFiles.map(file => `<li style="padding: 5px 0; color: #0f5132;">${file.name}</li>`).join('')}
+//             </ul>
+//         `;
+//     } else {
+//         searchResults.innerHTML = '<p style="color: #842029;">未找到匹配的文件</p>';
+//     }
+// }
