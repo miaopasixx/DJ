@@ -367,7 +367,7 @@ function generateResultsHtml(results, type, keyword) {
 
         return Promise.all(rows).then(rowsHtml => `
             <table border="1" style="
-                width: 100%;
+                width: 80%;
                 border-collapse: collapse;
                 overflow: hidden;
                 box-shadow: 0 2px 4px rgba(0,0,0,0.1);
@@ -375,8 +375,8 @@ function generateResultsHtml(results, type, keyword) {
             ">
                 <thead>
                     <tr style="background: linear-gradient(145deg, #2d5f8b, #3774aa); color: white;">
-                        <th style="padding: 12px; text-align: left; width: 60%;">路径</th>
-                        <th style="padding: 12px; text-align: left; width: 40%;">${type}</th>
+                        <th style="padding: 12px; text-align: left; width: 70%;">路径</th>
+                        <th style="padding: 12px; text-align: left; width: 30%;">${type}</th>
                     </tr>
                 </thead>
                 <tbody>
