@@ -465,6 +465,8 @@ function adjustPath(path) {
 
 
 // 本地文件查询
+let selectedFiles = [];
+
 function displayLocalFileSearch() {
     const contentDiv = document.getElementById('content');
     contentDiv.innerHTML = `
@@ -494,6 +496,17 @@ function displayLocalFileSearch() {
                     transition: all 0.3s ease;
                     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
                 ">搜索</button>
+                <button onclick="resetFolderSelection()" style="
+                    padding: 10px 20px;
+                    background: linear-gradient(145deg, #d9534f, #c9302c);
+                    border: none;
+                    border-radius: 25px;
+                    color: white;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+                    margin-left: 10px;
+                ">重置文件夹</button>
             </div>
             <div id="localFileSearchResults"></div>
         </div>
@@ -505,6 +518,30 @@ function displayLocalFileSearch() {
             performLocalFileSearch();
         }
     });
+
+    if (selectedFiles.length === 0) {
+        selectFolder();
+    }
+}
+
+function selectFolder() {
+    const folderInput = document.createElement('input');
+    folderInput.type = 'file';
+    folderInput.webkitdirectory = true; // 允许选择文件夹
+    folderInput.style.display = 'none';
+    document.body.appendChild(folderInput);
+
+    folderInput.addEventListener('change', (event) => {
+        selectedFiles = Array.from(event.target.files);
+    });
+
+    // 触发文件夹选择
+    folderInput.click();
+}
+
+function resetFolderSelection() {
+    selectedFiles = [];
+    displayLocalFileSearch();
 }
 
 function performLocalFileSearch() {
@@ -517,94 +554,75 @@ function performLocalFileSearch() {
         return;
     }
 
-    // 通过用户选择文件夹进行检索
-    let files = [];
+    const matchedFiles = selectedFiles
+        .map(file => file.webkitRelativePath)
+        .filter(fileName => fileName.toLowerCase().includes(keyword));
 
-    const folderInput = document.createElement('input');
-    folderInput.type = 'file';
-    folderInput.webkitdirectory = true; // 允许选择文件夹
-    folderInput.style.display = 'none';
-    document.body.appendChild(folderInput);
+    if (matchedFiles.length > 0) {
+        const imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+        const videoExtensions = ['mp4', 'webm', 'ogg'];
+        const imageFiles = matchedFiles.filter(file => imageExtensions.some(ext => file.toLowerCase().endsWith(ext)));
+        const videoFiles = matchedFiles.filter(file => videoExtensions.some(ext => file.toLowerCase().endsWith(ext)));
+        const otherFiles = matchedFiles.filter(file => !imageExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !videoExtensions.some(ext => file.toLowerCase().endsWith(ext)));
 
-    folderInput.addEventListener('change', (event) => {
-        files = Array.from(event.target.files);
-        performSearch();
-    });
-
-    function performSearch() {
-        const matchedFiles = files
-            .map(file => file.webkitRelativePath)
-            .filter(fileName => fileName.toLowerCase().includes(keyword));
-
-        if (matchedFiles.length > 0) {
-            const imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
-            const videoExtensions = ['mp4', 'webm', 'ogg'];
-            const imageFiles = matchedFiles.filter(file => imageExtensions.some(ext => file.toLowerCase().endsWith(ext)));
-            const videoFiles = matchedFiles.filter(file => videoExtensions.some(ext => file.toLowerCase().endsWith(ext)));
-            const otherFiles = matchedFiles.filter(file => !imageExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !videoExtensions.some(ext => file.toLowerCase().endsWith(ext)));
-
-            let imageGallery = '';
-            if (imageFiles.length > 0) {
-                imageGallery = `
-                    <div class="images" style="column-count: 6; column-gap: 10px; margin-top: 20px;">
-                        ${imageFiles.map(file => {
-                            const fileObj = files.find(f => f.webkitRelativePath === file);
-                            const fileURL = URL.createObjectURL(fileObj);
-                            return `
-                                <div style="break-inside: avoid; margin-bottom: 10px;">
-                                    <img src="${fileURL}" style="width: 100%; height: auto; border-radius: 5px;">
-                                    <a href="${fileURL}" download="${fileObj.name}" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px;">下载</a>
-                                    <h4 style="color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px;">${fileObj.name}</h4>
-                                </div>
-                            `;
-                        }).join('')}
-                    </div>
-                `;
-            }
-
-            let videoGallery = '';
-            if (videoFiles.length > 0) {
-                videoGallery = `
-                    <div style="display: flex; flex-wrap: wrap; row-gap: 40px;column-gap: 10px; margin-top: 20px;">
-                        ${videoFiles.map(file => {
-                            const fileObj = files.find(f => f.webkitRelativePath === file);
-                            const fileURL = URL.createObjectURL(fileObj);
-                            return `
-                                <div style="position: relative; margin-bottom: 30px; width: calc(16.66% - 10px);">
-                                    <video src="${fileURL}" style="width: 100%; height: auto; border-radius: 5px; cursor: pointer;" controls></video>
-                                    <a href="${fileURL}" download="${fileObj.name}" style="position: absolute; top: 5px; right: 5px; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px;">下载</a>
-                                    <h4 style="position: absolute; bottom: -70px; left: 0px; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px;">${fileObj.name}</h4>
-                                </div>
-                            `;
-                        }).join('')}
-                    </div>
-                `;
-            }
-
-            let otherFilesList = '';
-            if (otherFiles.length > 0) {
-                otherFilesList = `
-                    <ul style="margin-top: 20px;">
-                        ${otherFiles.map(file => `<li>${file}</li>`).join('')}
-                    </ul>
-                `;
-            }
-
-            searchResults.innerHTML = imageGallery + videoGallery + otherFilesList;
-
-            // 初始化 Viewer.js
-            if (imageFiles.length > 0) {
-                const gallery = document.querySelector('.images');
-                const viewer = new Viewer(gallery, {
-                    navbar: true,
-                    toolbar: true
-                });
-            }
-        } else {
-            searchResults.innerHTML = '<p>未找到匹配的文件</p>';
+        let imageGallery = '';
+        if (imageFiles.length > 0) {
+            imageGallery = `
+                <div class="images" style="column-count: 6; column-gap: 10px; margin-top: 20px;">
+                    ${imageFiles.map(file => {
+                        const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
+                        const fileURL = URL.createObjectURL(fileObj);
+                        return `
+                            <div style="break-inside: avoid; margin-bottom: 10px;">
+                                <img src="${fileURL}" style="width: 100%; height: auto; border-radius: 5px;">
+                                <a href="${fileURL}" download="${fileObj.name}" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px;">下载</a>
+                                <h4 style="color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px;">${fileObj.name}</h4>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
         }
-    }
 
-    // 触发文件夹选择
-    folderInput.click();
+        let videoGallery = '';
+        if (videoFiles.length > 0) {
+            videoGallery = `
+                <div style="display: flex; flex-wrap: wrap; row-gap: 40px;column-gap: 10px; margin-top: 20px;">
+                    ${videoFiles.map(file => {
+                        const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
+                        const fileURL = URL.createObjectURL(fileObj);
+                        return `
+                            <div style="position: relative; margin-bottom: 30px; width: calc(16.66% - 10px);">
+                                <video src="${fileURL}" style="width: 100%; height: auto; border-radius: 5px; cursor: pointer;" controls></video>
+                                <a href="${fileURL}" download="${fileObj.name}" style="position: absolute; top: 5px; right: 5px; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px;">下载</a>
+                                <h4 style="position: absolute; bottom: -70px; left: 0px; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px;">${fileObj.name}</h4>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+        }
+
+        let otherFilesList = '';
+        if (otherFiles.length > 0) {
+            otherFilesList = `
+                <ul style="margin-top: 20px;">
+                    ${otherFiles.map(file => `<li>${file}</li>`).join('')}
+                </ul>
+            `;
+        }
+
+        searchResults.innerHTML = imageGallery + videoGallery + otherFilesList;
+
+        // 初始化 Viewer.js
+        if (imageFiles.length > 0) {
+            const gallery = document.querySelector('.images');
+            const viewer = new Viewer(gallery, {
+                navbar: true,
+                toolbar: true
+            });
+        }
+    } else {
+        searchResults.innerHTML = '<p>未找到匹配的文件</p>';
+    }
 }
