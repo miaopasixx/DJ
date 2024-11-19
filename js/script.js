@@ -536,15 +536,15 @@ function performLocalFileSearch() {
             let imageGallery = '';
             if (imageFiles.length > 0) {
                 imageGallery = `
-                    <div class="images" style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px;">
+                    <div class="images" style="display: flex; flex-wrap: wrap; row-gap: 40px;column-gap: 10px; margin-top: 20px;">
                         ${imageFiles.map(file => {
                             const fileObj = files.find(f => f.webkitRelativePath === file);
                             const fileURL = URL.createObjectURL(fileObj);
                             return `
-                                <div class="image-item" style="position: relative; width: calc(16.66% - 10px);">
+                                <div style="position: relative; margin-bottom: 30px; width: calc(16.66% - 10px);">
                                     <img src="${fileURL}" style="width: 100%; height: auto; border-radius: 5px;">
                                     <a href="${fileURL}" download="${fileObj.name}" style="position: absolute; top: 5px; right: 5px; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px;">下载</a>
-                                    <h4 style="position: absolute; bottom: 5px; left: 5px; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px;">${fileObj.name}</h4>
+                                    <h4 style="position: absolute; bottom: -55px; left: 0px; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; transform: translateY(10px);">${fileObj.name}</h4>
                                 </div>
                             `;
                         }).join('')}
@@ -555,15 +555,15 @@ function performLocalFileSearch() {
             let videoGallery = '';
             if (videoFiles.length > 0) {
                 videoGallery = `
-                    <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px;">
+                    <div style="display: flex; flex-wrap: wrap; row-gap: 40px;column-gap: 10px; margin-top: 20px;">
                         ${videoFiles.map(file => {
                             const fileObj = files.find(f => f.webkitRelativePath === file);
                             const fileURL = URL.createObjectURL(fileObj);
                             return `
-                                <div style="position: relative; margin-bottom: 20px; width: calc(20% - 10px);">
+                                <div style="position: relative; margin-bottom: 30px; width: calc(16.66% - 10px);"> <!-- 增加了视频之间的间距 -->
                                     <video src="${fileURL}" style="width: 100%; height: auto; border-radius: 5px; cursor: pointer;" controls></video>
                                     <a href="${fileURL}" download="${fileObj.name}" style="position: absolute; top: 5px; right: 5px; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px;">下载</a>
-                                    <h4 style="position: absolute; bottom: -30px; left: 5px; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; transform: translateY(30px);">${fileObj.name}</h4>
+                                    <h4 style="position: absolute; bottom: -55px; left: 0px; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; transform: translateY(10px);">${fileObj.name}</h4>
                                 </div>
                             `;
                         }).join('')}
