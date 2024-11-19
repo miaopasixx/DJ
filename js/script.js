@@ -519,6 +519,17 @@ function displayLocalFileSearch() {
                     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
                     margin-left: 10px;
                 ">视频搜索</button>
+                <button onclick="performImageSearch()" style="
+                    padding: 10px 20px;
+                    background: linear-gradient(145deg, #5cb85c, #4cae4c);
+                    border: none;
+                    border-radius: 25px;
+                    color: white;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+                    margin-left: 10px;
+                ">图片搜索</button>
             </div>
             <div id="localFileSearchResults"></div>
         </div>
@@ -667,5 +678,43 @@ function performVideoSearch() {
         searchResults.innerHTML = videoGallery;
     } else {
         searchResults.innerHTML = '<p>未找到匹配的视频文件</p>';
+    }
+}
+
+function performImageSearch() {
+    const searchResults = document.getElementById('localFileSearchResults');
+    const imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+
+    const matchedFiles = selectedFiles
+        .map(file => file.webkitRelativePath)
+        .filter(fileName => imageExtensions.some(ext => fileName.toLowerCase().endsWith(ext)));
+
+    if (matchedFiles.length > 0) {
+        let imageGallery = `
+            <div class="images" style="column-count: 6; column-gap: 10px; margin-top: 20px;">
+                ${matchedFiles.map(file => {
+                    const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
+                    const fileURL = URL.createObjectURL(fileObj);
+                    return `
+                        <div style="break-inside: avoid; margin-bottom: 10px;">
+                            <img src="${fileURL}" style="width: 100%; height: auto; border-radius: 5px;">
+                            <a href="${fileURL}" download="${fileObj.name}" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px;">下载</a>
+                            <h4 style="color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px;">${fileObj.name}</h4>
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+        `;
+
+        searchResults.innerHTML = imageGallery;
+
+        // 初始化 Viewer.js
+        const gallery = document.querySelector('.images');
+        const viewer = new Viewer(gallery, {
+            navbar: true,
+            toolbar: true
+        });
+    } else {
+        searchResults.innerHTML = '<p>未找到匹配的图片文件</p>';
     }
 }
