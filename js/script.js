@@ -541,7 +541,7 @@ function performLocalFileSearch() {
                             const fileObj = files.find(f => f.webkitRelativePath === file);
                             const fileURL = URL.createObjectURL(fileObj);
                             return `
-                                <div style="position: relative; width: calc(16.66% - 10px);">
+                                <div class="image-item" style="position: relative;">
                                     <img src="${fileURL}" style="width: 100%; height: auto; border-radius: 5px;">
                                     <a href="${fileURL}" download="${fileObj.name}" style="position: absolute; top: 5px; right: 5px; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px;">下载</a>
                                     <h4 style="position: absolute; bottom: 5px; left: 5px; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px;">${fileObj.name}</h4>
@@ -590,6 +590,23 @@ function performLocalFileSearch() {
                     toolbar: true
                 });
             }
+
+            // 瀑布流布局
+            const imageItems = document.querySelectorAll('.image-item');
+            const columns = Math.floor(window.innerWidth / 300); // 根据屏幕宽度计算列数
+            const columnHeights = Array(columns).fill(0); // 初始化每列高度
+
+            imageItems.forEach(item => {
+                const minHeight = Math.min(...columnHeights); // 找到最短列
+                const columnIndex = columnHeights.indexOf(minHeight); // 获取最短列的索引
+                item.style.position = 'absolute';
+                item.style.top = `${minHeight}px`;
+                item.style.left = `${columnIndex * 300}px`; // 设置每列的宽度
+                columnHeights[columnIndex] += item.offsetHeight + 10; // 更新列高度
+            });
+
+            searchResults.style.position = 'relative';
+            searchResults.style.height = `${Math.max(...columnHeights)}px`; // 设置容器高度
         } else {
             searchResults.innerHTML = '<p>未找到匹配的文件</p>';
         }
