@@ -544,7 +544,7 @@ function performLocalFileSearch() {
                                 <div style="position: relative; margin-bottom: 30px; width: calc(16.66% - 10px);">
                                     <img src="${fileURL}" style="width: 100%; height: auto; border-radius: 5px;">
                                     <a href="${fileURL}" download="${fileObj.name}" style="position: absolute; top: 5px; right: 5px; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px;">下载</a>
-                                    <h4 style="position: absolute; bottom: -55px; left: 0px; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; transform: translateY(10px);">${fileObj.name}</h4>
+                                    <h4 style="position: absolute; bottom: -70px; left: 0px; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; transform: translateY(10px);">${fileObj.name}</h4>
                                 </div>
                             `;
                         }).join('')}
@@ -563,7 +563,7 @@ function performLocalFileSearch() {
                                 <div style="position: relative; margin-bottom: 30px; width: calc(16.66% - 10px);"> <!-- 增加了视频之间的间距 -->
                                     <video src="${fileURL}" style="width: 100%; height: auto; border-radius: 5px; cursor: pointer;" controls></video>
                                     <a href="${fileURL}" download="${fileObj.name}" style="position: absolute; top: 5px; right: 5px; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px;">下载</a>
-                                    <h4 style="position: absolute; bottom: -55px; left: 0px; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; transform: translateY(10px);">${fileObj.name}</h4>
+                                    <h4 style="position: absolute; bottom: -70px; left: 0px; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; transform: translateY(10px);">${fileObj.name}</h4>
                                 </div>
                             `;
                         }).join('')}
