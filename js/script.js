@@ -591,22 +591,17 @@ function performLocalFileSearch() {
                 });
             }
 
-            // 瀑布流布局
-            const imageItems = document.querySelectorAll('.image-item');
-            const columns = Math.floor(window.innerWidth / 300); // 根据屏幕宽度计算列数
-            const columnHeights = Array(columns).fill(0); // 初始化每列高度
-
-            imageItems.forEach(item => {
-                const minHeight = Math.min(...columnHeights); // 找到最短列
-                const columnIndex = columnHeights.indexOf(minHeight); // 获取最短列的索引
-                item.style.position = 'absolute';
-                item.style.top = `${minHeight}px`;
-                item.style.left = `${columnIndex * 300}px`; // 设置每列的宽度
-                columnHeights[columnIndex] += item.offsetHeight + 10; // 更新列高度
+            // 使用 Masonry.js 进行瀑布流布局
+            const msnry = new Masonry('.images', {
+                itemSelector: '.image-item',
+                columnWidth: '.image-item',
+                percentPosition: true,
+                gutter: 10
             });
 
-            searchResults.style.position = 'relative';
-            searchResults.style.height = `${Math.max(...columnHeights)}px`; // 设置容器高度
+            imagesLoaded('.images', function() {
+                msnry.layout();
+            });
         } else {
             searchResults.innerHTML = '<p>未找到匹配的文件</p>';
         }
