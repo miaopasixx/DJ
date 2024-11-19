@@ -74,6 +74,7 @@ function closeTab() {
     window.open('', '_top').close();
 }
 
+// 归档查询
 function displaySearchFeature() {
     const contentDiv = document.getElementById('content');
     const searchHistory = JSON.parse(localStorage.getItem('searchHistory') || '[]');
@@ -108,8 +109,7 @@ function displaySearchFeature() {
             </h3>
             <div style="
                 display: flex;
-                flex-wrap: wrap;
-                gap: 10px;
+                flex-wrap: wrap;         
             ">
                 ${searchHistory.map((term, index) => `
                     <div style="
@@ -147,7 +147,6 @@ function displaySearchFeature() {
                 margin: 20px 0;
                 display: flex;
                 align-items: center;
-                gap: 10px;
             ">
                 <input type="text" id="searchInput" placeholder="请输入关键词" style="
                     padding: 10px 15px;
@@ -263,7 +262,7 @@ function performSearch() {
         })
         .then(([titleResultsHtml, itemResultsHtml]) => {
             searchResults.innerHTML = `
-                <div class="tabs" style="display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #e0e0e0; padding-bottom: 10px;">
+                <div class="tabs" style="display: flex; margin-bottom: 20px; border-bottom: 2px solid #e0e0e0; padding-bottom: 10px;">
                     <button class="tab-button" onclick="showTab('allTabs')" style="
                         padding: 10px 20px;
                         border: none;
@@ -372,12 +371,12 @@ function generateResultsHtml(results, type, keyword) {
                 border-collapse: collapse;
                 overflow: hidden;
                 box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-                table-layout: fixed;
+                table-layout: auto;
             ">
                 <thead>
                     <tr style="background: linear-gradient(145deg, #2d5f8b, #3774aa); color: white;">
-                        <th style="padding: 12px; text-align: left; width: 30%;">路径</th>
-                        <th style="padding: 12px; text-align: left; width: 70%;">${type}</th>
+                        <th style="padding: 12px; text-align: left; width: 60%;">路径</th>
+                        <th style="padding: 12px; text-align: left; width: 40%;">${type}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -471,7 +470,6 @@ function displayLocalFileSearch() {
                 margin: 20px 0;
                 display: flex;
                 align-items: center;
-                gap: 10px;
             ">
                 <input type="text" id="localFileSearchInput" placeholder="请输入文件名" style="
                     padding: 10px 15px;
@@ -538,15 +536,15 @@ function performLocalFileSearch() {
             let imageGallery = '';
             if (imageFiles.length > 0) {
                 imageGallery = `
-                    <div class="images" style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px;">
+                    <div class="images" style="display: flex; flex-wrap: wrap; row-gap: 40px;column-gap: 10px; margin-top: 20px;">
                         ${imageFiles.map(file => {
                             const fileObj = files.find(f => f.webkitRelativePath === file);
                             const fileURL = URL.createObjectURL(fileObj);
                             return `
-                                <div style="position: relative; margin-bottom: 20px; width: calc(20% - 10px);">
+                                <div style="position: relative; margin-bottom: 30px; width: calc(16.66% - 10px);">
                                     <img src="${fileURL}" style="width: 100%; height: auto; border-radius: 5px;">
                                     <a href="${fileURL}" download="${fileObj.name}" style="position: absolute; top: 5px; right: 5px; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px;">下载</a>
-                                    <h4 style="position: absolute; bottom: -30px; left: 5px; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; transform: translateY(30px);">${fileObj.name}</h4>
+                                    <h4 style="position: absolute; bottom: -5px; left: 0px; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; transform: translateY(30px);">${fileObj.name}</h4>
                                 </div>
                             `;
                         }).join('')}
@@ -557,15 +555,15 @@ function performLocalFileSearch() {
             let videoGallery = '';
             if (videoFiles.length > 0) {
                 videoGallery = `
-                    <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px;">
+                    <div style="display: flex; flex-wrap: wrap; row-gap: 40px;column-gap: 10px; margin-top: 20px;">
                         ${videoFiles.map(file => {
                             const fileObj = files.find(f => f.webkitRelativePath === file);
                             const fileURL = URL.createObjectURL(fileObj);
                             return `
-                                <div style="position: relative; margin-bottom: 20px; width: calc(20% - 10px);">
+                                <div style="position: relative; margin-bottom: 30px; width: calc(16.66% - 10px);"> <!-- 增加了视频之间的间距 -->
                                     <video src="${fileURL}" style="width: 100%; height: auto; border-radius: 5px; cursor: pointer;" controls></video>
                                     <a href="${fileURL}" download="${fileObj.name}" style="position: absolute; top: 5px; right: 5px; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px;">下载</a>
-                                    <h4 style="position: absolute; bottom: -30px; left: 5px; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; transform: translateY(30px);">${fileObj.name}</h4>
+                                    <h4 style="position: absolute; bottom: -5px; left: 0px; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; transform: translateY(30px);">${fileObj.name}</h4>
                                 </div>
                             `;
                         }).join('')}
