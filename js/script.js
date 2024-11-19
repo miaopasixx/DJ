@@ -508,6 +508,17 @@ function displayLocalFileSearch() {
                     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
                     margin-left: 10px;
                 ">重置文件夹</button>
+                <button onclick="performVideoSearch()" style="
+                    padding: 10px 20px;
+                    background: linear-gradient(145deg, #5bc0de, #31b0d5);
+                    border: none;
+                    border-radius: 25px;
+                    color: white;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+                    margin-left: 10px;
+                ">视频搜索</button>
             </div>
             <div id="localFileSearchResults"></div>
         </div>
@@ -625,5 +636,36 @@ function performLocalFileSearch() {
         }
     } else {
         searchResults.innerHTML = '<p>未找到匹配的文件</p>';
+    }
+}
+
+function performVideoSearch() {
+    const searchResults = document.getElementById('localFileSearchResults');
+    const videoExtensions = ['mp4', 'webm', 'ogg'];
+
+    const matchedFiles = selectedFiles
+        .map(file => file.webkitRelativePath)
+        .filter(fileName => videoExtensions.some(ext => fileName.toLowerCase().endsWith(ext)));
+
+    if (matchedFiles.length > 0) {
+        let videoGallery = `
+            <div style="display: flex; flex-wrap: wrap; row-gap: 40px;column-gap: 10px; margin-top: 20px;">
+                ${matchedFiles.map(file => {
+                    const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
+                    const fileURL = URL.createObjectURL(fileObj);
+                    return `
+                        <div style="position: relative; margin-bottom: 30px; width: calc(16.66% - 10px);">
+                            <video src="${fileURL}" style="width: 100%; height: auto; border-radius: 5px; cursor: pointer;" controls></video>
+                            <a href="${fileURL}" download="${fileObj.name}" style="position: absolute; top: 5px; right: 5px; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px;">下载</a>
+                            <h4 style="position: absolute; bottom: -70px; left: 0px; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px;">${fileObj.name}</h4>
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+        `;
+
+        searchResults.innerHTML = videoGallery;
+    } else {
+        searchResults.innerHTML = '<p>未找到匹配的视频文件</p>';
     }
 }
