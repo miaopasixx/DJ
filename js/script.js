@@ -142,7 +142,7 @@ function displaySearchFeature() {
 
     contentDiv.innerHTML = `
         <div style="padding: 20px;">
-            <h2>查询功能</h2>
+            <h2>归类查询</h2>
             <div style="
                 margin: 20px 0;
                 display: flex;
@@ -495,7 +495,8 @@ function displayLocalFileSearch() {
                     cursor: pointer;
                     transition: all 0.3s ease;
                     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-                ">搜索</button>
+                    margin-left: 10px;
+                ">本地搜索</button>
                 <button onclick="resetFolderSelection()" style="
                     padding: 10px 20px;
                     background: linear-gradient(145deg, #d9534f, #c9302c);
