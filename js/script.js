@@ -538,13 +538,13 @@ function performLocalFileSearch() {
             let imageGallery = '';
             if (imageFiles.length > 0) {
                 imageGallery = `
-                    <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px;">
+                    <div class="images" style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px;">
                         ${imageFiles.map(file => {
                             const fileObj = files.find(f => f.webkitRelativePath === file);
                             const fileURL = URL.createObjectURL(fileObj);
                             return `
                                 <div style="position: relative; margin-bottom: 20px; width: calc(20% - 10px);">
-                                    <img src="${fileURL}" style="width: 100%; height: auto; border-radius: 5px; cursor: pointer;" onclick="openImagePreview('${fileURL}', '${fileObj.name}', '${fileObj.size}', '${fileObj.lastModifiedDate}')">
+                                    <img src="${fileURL}" style="width: 100%; height: auto; border-radius: 5px;">
                                     <a href="${fileURL}" download="${fileObj.name}" style="position: absolute; top: 5px; right: 5px; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px;">下载</a>
                                     <h4 style="position: absolute; bottom: -30px; left: 5px; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; transform: translateY(30px);">${fileObj.name}</h4>
                                 </div>
@@ -583,6 +583,15 @@ function performLocalFileSearch() {
             }
 
             searchResults.innerHTML = imageGallery + videoGallery + otherFilesList;
+
+            // 初始化 Viewer.js
+            if (imageFiles.length > 0) {
+                const gallery = document.querySelector('.images');
+                const viewer = new Viewer(gallery, {
+                    navbar: true,
+                    toolbar: true
+                });
+            }
         } else {
             searchResults.innerHTML = '<p>未找到匹配的文件</p>';
         }
@@ -590,112 +599,4 @@ function performLocalFileSearch() {
 
     // 触发文件夹选择
     folderInput.click();
-
-    window.openImagePreview = function(url, name, size, lastModified) {
-        const previewContainer = document.createElement('div');
-        previewContainer.style.position = 'fixed';
-        previewContainer.style.top = '0';
-        previewContainer.style.left = '0';
-        previewContainer.style.width = '100%';
-        previewContainer.style.height = '100%';
-        previewContainer.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
-        previewContainer.style.display = 'flex';
-        previewContainer.style.justifyContent = 'center';
-        previewContainer.style.alignItems = 'center';
-        previewContainer.style.zIndex = '1000';
-
-        const imageElement = document.createElement('img');
-        imageElement.src = url;
-        imageElement.style.maxWidth = '90%';
-        imageElement.style.maxHeight = '90%';
-        imageElement.style.cursor = 'move';
-        imageElement.style.transition = 'transform 0.3s ease';
-
-        let scale = 1;
-        let rotate = 0;
-        let isDragging = false;
-        let startX, startY;
-
-        imageElement.addEventListener('wheel', (e) => {
-            e.preventDefault();
-            scale += e.deltaY * -0.01;
-            scale = Math.min(Math.max(.125, scale), 4);
-            imageElement.style.transform = `scale(${scale}) rotate(${rotate}deg)`;
-        });
-
-        imageElement.addEventListener('mousedown', (e) => {
-            isDragging = true;
-            startX = e.pageX - imageElement.offsetLeft;
-            startY = e.pageY - imageElement.offsetTop;
-            imageElement.style.cursor = 'grabbing';
-        });
-
-        document.addEventListener('mousemove', (e) => {
-            if (isDragging) {
-                imageElement.style.left = `${e.pageX - startX}px`;
-                imageElement.style.top = `${e.pageY - startY}px`;
-            }
-        });
-
-        document.addEventListener('mouseup', () => {
-            isDragging = false;
-            imageElement.style.cursor = 'move';
-        });
-
-        const rotateButton = document.createElement('button');
-        rotateButton.innerText = '旋转';
-        rotateButton.style.position = 'absolute';
-        rotateButton.style.bottom = '20px';
-        rotateButton.style.left = '20px';
-        rotateButton.style.padding = '10px';
-        rotateButton.style.backgroundColor = 'white';
-        rotateButton.style.border = 'none';
-        rotateButton.style.borderRadius = '5px';
-        rotateButton.style.cursor = 'pointer';
-        rotateButton.addEventListener('click', () => {
-            rotate = (rotate + 90) % 360;
-            imageElement.style.transform = `scale(${scale}) rotate(${rotate}deg)`;
-        });
-
-        const fullscreenButton = document.createElement('button');
-        fullscreenButton.innerText = '全屏';
-        fullscreenButton.style.position = 'absolute';
-        fullscreenButton.style.bottom = '20px';
-        fullscreenButton.style.right = '20px';
-        fullscreenButton.style.padding = '10px';
-        fullscreenButton.style.backgroundColor = 'white';
-        fullscreenButton.style.border = 'none';
-        fullscreenButton.style.borderRadius = '5px';
-        fullscreenButton.style.cursor = 'pointer';
-        fullscreenButton.addEventListener('click', () => {
-            if (!document.fullscreenElement) {
-                previewContainer.requestFullscreen();
-            } else {
-                document.exitFullscreen();
-            }
-        });
-
-        const infoText = document.createElement('div');
-        infoText.innerHTML = `文件名: ${name}<br>尺寸: ${size} bytes<br>修改时间: ${new Date(lastModified).toLocaleString()}`;
-        infoText.style.position = 'absolute';
-        infoText.style.top = '20px';
-        infoText.style.left = '20px';
-        infoText.style.color = 'white';
-        infoText.style.padding = '10px';
-        infoText.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
-        infoText.style.borderRadius = '5px';
-
-        previewContainer.appendChild(imageElement);
-        previewContainer.appendChild(rotateButton);
-        previewContainer.appendChild(fullscreenButton);
-        previewContainer.appendChild(infoText);
-
-        previewContainer.addEventListener('click', (e) => {
-            if (e.target === previewContainer) {
-                document.body.removeChild(previewContainer);
-            }
-        });
-
-        document.body.appendChild(previewContainer);
-    }
-}    
+}
