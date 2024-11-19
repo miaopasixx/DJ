@@ -540,7 +540,7 @@ function performLocalFileSearch() {
             let imageGallery = '';
             if (imageFiles.length > 0) {
                 imageGallery = `
-                    <div class="images" style="column-count: 4; column-gap: 10px; margin-top: 20px;">
+                    <div class="images" style="column-count: 6; column-gap: 10px; margin-top: 20px;">
                         ${imageFiles.map(file => {
                             const fileObj = files.find(f => f.webkitRelativePath === file);
                             const fileURL = URL.createObjectURL(fileObj);
