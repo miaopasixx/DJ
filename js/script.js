@@ -560,10 +560,10 @@ function performLocalFileSearch() {
                             const fileObj = files.find(f => f.webkitRelativePath === file);
                             const fileURL = URL.createObjectURL(fileObj);
                             return `
-                                <div style="position: relative; width: calc(16.66% - 10px);">
+                                <div style="position: relative; margin-bottom: 20px; width: calc(20% - 10px);">
                                     <video src="${fileURL}" style="width: 100%; height: auto; border-radius: 5px; cursor: pointer;" controls></video>
                                     <a href="${fileURL}" download="${fileObj.name}" style="position: absolute; top: 5px; right: 5px; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px;">下载</a>
-                                    <h4 style="position: absolute; bottom: 5px; left: 5px; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px;">${fileObj.name}</h4>
+                                    <h4 style="position: absolute; bottom: -30px; left: 5px; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; transform: translateY(30px);">${fileObj.name}</h4>
                                 </div>
                             `;
                         }).join('')}
@@ -590,18 +590,6 @@ function performLocalFileSearch() {
                     toolbar: true
                 });
             }
-
-            // 使用 Masonry.js 进行瀑布流布局
-            const msnry = new Masonry('.images', {
-                itemSelector: '.image-item',
-                columnWidth: '.image-item',
-                percentPosition: true,
-                gutter: 10
-            });
-
-            imagesLoaded('.images', function() {
-                msnry.layout();
-            });
         } else {
             searchResults.innerHTML = '<p>未找到匹配的文件</p>';
         }
