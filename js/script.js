@@ -616,7 +616,7 @@ function performLocalFileSearch() {
                         const fileURL = URL.createObjectURL(fileObj);
                         return `
                             <div style="position: relative; margin-bottom: 30px; width: calc(16.66% - 10px);">
-                                <video src="${fileURL}" style="width: 100%; height: auto; border-radius: 5px; cursor: pointer;" controls></video>
+                                <video src="${fileURL}" preload="metadata" style="width: 100%; height: auto; border-radius: 5px; cursor: pointer;" controls></video>
                                 <a href="${fileURL}" download="${fileObj.name}" style="position: absolute; top: 5px; right: 5px; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px;">下载</a>
                                 <h4 style="position: absolute; bottom: -70px; left: 0px; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px;">${fileObj.name}</h4>
                             </div>
@@ -666,7 +666,7 @@ function performVideoSearch() {
                     const fileURL = URL.createObjectURL(fileObj);
                     return `
                         <div style="position: relative; margin-bottom: 30px; width: calc(16.66% - 10px);">
-                            <video src="${fileURL}" style="width: 100%; height: auto; border-radius: 5px; cursor: pointer;" controls></video>
+                            <video src="${fileURL}" preload="metadata" style="width: 100%; height: auto; border-radius: 5px; cursor: pointer;" controls></video>
                             <a href="${fileURL}" download="${fileObj.name}" style="position: absolute; top: 5px; right: 5px; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px;">下载</a>
                             <h4 style="position: absolute; bottom: -70px; left: 0px; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px;">${fileObj.name}</h4>
                         </div>
