@@ -518,6 +518,8 @@ function performLocalFileSearch() {
     }
 
     // 通过用户选择文件夹进行检索
+    let files = [];
+
     const folderInput = document.createElement('input');
     folderInput.type = 'file';
     folderInput.webkitdirectory = true; // 允许选择文件夹
@@ -525,7 +527,11 @@ function performLocalFileSearch() {
     document.body.appendChild(folderInput);
 
     folderInput.addEventListener('change', (event) => {
-        const files = Array.from(event.target.files);
+        files = Array.from(event.target.files);
+        performSearch();
+    });
+
+    function performSearch() {
         const matchedFiles = files
             .map(file => file.webkitRelativePath)
             .filter(fileName => fileName.toLowerCase().includes(keyword));
@@ -597,7 +603,7 @@ function performLocalFileSearch() {
         } else {
             searchResults.innerHTML = '<p>未找到匹配的文件</p>';
         }
-    });
+    }
 
     // 触发文件夹选择
     folderInput.click();
