@@ -774,6 +774,9 @@ function displayFilesWithPagination(files) {
 
 function displayPaginationControls(totalPages, totalItems) {
     const paginationControls = document.getElementById('paginationControls');
+    if (currentPage > totalPages) {
+        currentPage = totalPages;
+    }
     let paginationHTML = `
         <div style="margin-top: 20px; margin-bottom: 10px;">
             【共${totalItems}条记录 当前第${currentPage}/${totalPages}页 每页${itemsPerPage}条】
