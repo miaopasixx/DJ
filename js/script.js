@@ -650,6 +650,7 @@ function performLocalFileSearch() {
 function performVideoSearch() {
     const searchResults = document.getElementById('localFileSearchResults');
     const videoExtensions = ['mp4', 'webm', 'ogg'];
+    const imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
 
     const matchedFiles = selectedFiles
         .map(file => file.webkitRelativePath)
@@ -661,9 +662,20 @@ function performVideoSearch() {
                 ${matchedFiles.map(file => {
                     const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
                     const fileURL = URL.createObjectURL(fileObj);
+
+                    // 获取视频所在文件夹的路径
+                    const folderPath = file.substring(0, file.lastIndexOf('/'));
+                    // 找到“照片”文件夹中的第一个图片文件
+                    const photoFolderPath = `${folderPath}/照片`;
+                    const firstImageFile = selectedFiles.find(f => {
+                        const filePath = f.webkitRelativePath;
+                        return filePath.startsWith(photoFolderPath) && imageExtensions.some(ext => filePath.toLowerCase().endsWith(ext));
+                    });
+                    const posterURL = firstImageFile ? URL.createObjectURL(firstImageFile) : '';
+
                     return `
                         <div style="position: relative; margin-bottom: 30px; width: calc(16.66% - 10px);">
-                            <video data-src="${fileURL}" preload="none" style="width: 100%; height: auto; border-radius: 5px; cursor: pointer;" controls></video>
+                            <video data-src="${fileURL}" poster="${posterURL}" preload="none" style="width: 100%; height: auto; border-radius: 5px; cursor: pointer;" controls></video>
                             <a href="${fileURL}" download="${fileObj.name}" style="position: absolute; top: 5px; right: 5px; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px;">下载</a>
                             <h4 style="position: absolute; bottom: -70px; left: 0px; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px;">${fileObj.name}</h4>
                         </div>
