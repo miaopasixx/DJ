@@ -464,7 +464,7 @@ function adjustPath(path) {
 // 本地文件查询
 let selectedFiles = [];
 let currentPage = 1;
-const itemsPerPage = 10;
+let itemsPerPage = 10;
 
 function displayLocalFileSearch() {
     const contentDiv = document.getElementById('content');
@@ -758,22 +758,46 @@ function displayFilesWithPagination(files) {
         });
     }
 
-    displayPaginationControls(totalPages);
+    displayPaginationControls(totalPages, files.length);
 }
 
-function displayPaginationControls(totalPages) {
+function displayPaginationControls(totalPages, totalItems) {
     const paginationControls = document.getElementById('paginationControls');
-    let paginationHTML = '';
-
-    for (let i = 1; i <= totalPages; i++) {
-        paginationHTML += `<button onclick="goToPage(${i})" style="margin: 0 5px; padding: 5px 10px; ${i === currentPage ? 'background-color: #2d5f8b; color: white;' : ''}">${i}</button>`;
-    }
+    let paginationHTML = `
+        <div style="margin-bottom: 10px;">
+            【共${totalItems}条记录 当前第${currentPage}/${totalPages}页 每页${itemsPerPage}条】
+        </div>
+        <div>
+            <button onclick="goToPage(1)" style="margin: 0 5px; padding: 5px 10px;">首页</button>
+            <button onclick="goToPage(${currentPage - 1})" style="margin: 0 5px; padding: 5px 10px;" ${currentPage === 1 ? 'disabled' : ''}>上一页</button>
+            <button onclick="goToPage(${currentPage + 1})" style="margin: 0 5px; padding: 5px 10px;" ${currentPage === totalPages ? 'disabled' : ''}>下一页</button>
+            <button onclick="goToPage(${totalPages})" style="margin: 0 5px; padding: 5px 10px;">尾页</button>
+            <input type="number" id="jumpToPageInput" min="1" max="${totalPages}" value="${currentPage}" style="width: 50px; text-align: center; margin: 0 5px;">
+            <button onclick="jumpToPage()" style="margin: 0 5px; padding: 5px 10px;">跳转到指定页</button>
+            <input type="number" id="itemsPerPageInput" min="1" value="${itemsPerPage}" style="width: 50px; text-align: center; margin: 0 5px;">
+            <button onclick="setItemsPerPage()" style="margin: 0 5px; padding: 5px 10px;">设定每页记录数</button>
+        </div>
+    `;
 
     paginationControls.innerHTML = paginationHTML;
 }
 
 function goToPage(page) {
+    if (page < 1 || page > Math.ceil(selectedFiles.length / itemsPerPage)) return;
     currentPage = page;
+    performLocalFileSearch();
+}
+
+function jumpToPage() {
+    const pageInput = document.getElementById('jumpToPageInput');
+    const page = parseInt(pageInput.value);
+    goToPage(page);
+}
+
+function setItemsPerPage() {
+    const itemsPerPageInput = document.getElementById('itemsPerPageInput');
+    itemsPerPage = parseInt(itemsPerPageInput.value);
+    currentPage = 1;
     performLocalFileSearch();
 }
 
