@@ -601,8 +601,8 @@ function performLocalFileSearch() {
                         return `
                             <div style="break-inside: avoid; margin-bottom: 10px;">
                                 <img src="${fileURL}" loading="lazy" style="width: 100%; height: auto; border-radius: 5px;">
-                                <a href="${fileURL}" download="${fileObj.name}" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px;">下载</a>
-                                <h4 style="color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px;">${fileObj.name}</h4>
+                                <a href="${fileURL}" download="${fileObj.name}" style="display: none;"></a>
+                                <h4 onclick="downloadFile('${fileURL}', '${fileObj.name}')" style="color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px; cursor: pointer;">${fileObj.name}</h4>
                             </div>
                         `;
                     }).join('')}
@@ -797,8 +797,8 @@ function performImageSearch() {
                     return `
                         <div style="break-inside: avoid; margin-bottom: 10px;">
                             <img src="${fileURL}" loading="lazy" style="width: 100%; height: auto; border-radius: 5px;">
-                            <a href="${fileURL}" download="${fileObj.name}" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px;">下载</a>
-                            <h4 style="color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px;">${fileObj.name}</h4>
+                            <a href="${fileURL}" download="${fileObj.name}" style="display: none;"></a>
+                            <h4 onclick="downloadFile('${fileURL}', '${fileObj.name}')" style="color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px; cursor: pointer;">${fileObj.name}</h4>
                         </div>
                     `;
                 }).join('')}
@@ -816,4 +816,13 @@ function performImageSearch() {
     } else {
         searchResults.innerHTML = '<p>未找到匹配的图片文件</p>';
     }
+}
+
+function downloadFile(url, name) {
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
 }
