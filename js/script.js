@@ -462,54 +462,6 @@ function adjustPath(path) {
 }
 
 // 增加对json的修改、添加、增加、标记、持续化数据的功能
-function modifyJsonFile(fileName, modifications) {
-    fetch(`data/${fileName}`)
-        .then(response => response.json())
-        .then(data => {
-            // 应用修改
-            modifications.forEach(modification => {
-                const { action, path, value } = modification;
-                const keys = path.split('.');
-                let current = data;
-
-                for (let i = 0; i < keys.length - 1; i++) {
-                    if (!current[keys[i]]) {
-                        current[keys[i]] = {};
-                    }
-                    current = current[keys[i]];
-                }
-
-                const lastKey = keys[keys.length - 1];
-                if (action === 'add' || action === 'update') {
-                    current[lastKey] = value;
-                } else if (action === 'delete') {
-                    delete current[lastKey];
-                } else if (action === 'mark') {
-                    current[lastKey] = { ...current[lastKey], marked: true };
-                }
-            });
-
-            // 持续化数据
-            return fetch(`data/${fileName}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            });
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Failed to save modifications');
-            }
-            console.log('Modifications saved successfully');
-        })
-        .catch(error => {
-            console.error('Error modifying JSON file:', error);
-        });
-}
-
-
 
 
 
