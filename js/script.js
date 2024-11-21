@@ -463,6 +463,8 @@ function adjustPath(path) {
 
 // 本地文件查询
 let selectedFiles = [];
+let currentPage = 1;
+const itemsPerPage = 10;
 
 function displayLocalFileSearch() {
     const contentDiv = document.getElementById('content');
@@ -529,6 +531,7 @@ function displayLocalFileSearch() {
                 ">图片搜索</button>
             </div>
             <div id="localFileSearchResults"></div>
+            <div id="paginationControls" style="margin-top: 20px; text-align: center;"></div>
         </div>
     `;
 
@@ -579,188 +582,52 @@ function performLocalFileSearch() {
         .filter(fileName => fileName.toLowerCase().includes(keyword));
 
     if (matchedFiles.length > 0) {
-        const imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
-        const videoExtensions = ['mp4', 'webm', 'ogg'];
-        const docExtensions = ['docx', 'doc', 'pdf',];
-        const sheetExtensions = ['xlsx', 'xls'];
-        const pptExtensions = ['ppt', 'pptx'];
-        const imageFiles = matchedFiles.filter(file => imageExtensions.some(ext => file.toLowerCase().endsWith(ext)));
-        const videoFiles = matchedFiles.filter(file => videoExtensions.some(ext => file.toLowerCase().endsWith(ext)));
-        const docFiles = matchedFiles.filter(file => docExtensions.some(ext => file.toLowerCase().endsWith(ext)));
-        const sheetFiles = matchedFiles.filter(file => sheetExtensions.some(ext => file.toLowerCase().endsWith(ext)));
-        const pptFiles = matchedFiles.filter(file => pptExtensions.some(ext => file.toLowerCase().endsWith(ext)));
-        const otherFiles = matchedFiles.filter(file => !imageExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !videoExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !docExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !sheetExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !pptExtensions.some(ext => file.toLowerCase().endsWith(ext)));
-
-        let imageGallery = '';
-        if (imageFiles.length > 0) {
-            imageGallery = `
-                <div class="images" style="column-count: 6; column-gap: 10px; margin-top: 20px;">
-                    ${imageFiles.map(file => {
-                        const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
-                        const fileURL = URL.createObjectURL(fileObj);
-                        return `
-                            <div style="break-inside: avoid; margin-bottom: 10px;">
-                                <img src="${fileURL}" loading="lazy" style="width: 100%; height: auto; border-radius: 5px;">
-                                <a href="${fileURL}" download="${fileObj.name}" style="display: none;"></a>
-                                <h4 onclick="downloadFile('${fileURL}', '${fileObj.name}')" style="color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px; cursor: pointer;">${fileObj.name}</h4>
-                            </div>
-                        `;
-                    }).join('')}
-                </div>
-            `;
-        }
-
-        let videoGallery = '';
-        if (videoFiles.length > 0) {
-            videoGallery = `
-                <div style="display: flex; flex-wrap: wrap; row-gap: 40px;column-gap: 10px; margin-top: 20px;">
-                    ${videoFiles.map(file => {
-                        const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
-                        const fileURL = URL.createObjectURL(fileObj);
-
-                        // 获取视频所在文件夹的路径
-                        const folderPath = file.substring(0, file.lastIndexOf('/'));
-                        // 找到“照片丨”文件夹中的第一个图片文件
-                        const photoFolderPath = `${folderPath}/照片丨`;
-                        const firstImageFile = selectedFiles.find(f => {
-                            const filePath = f.webkitRelativePath;
-                            return filePath.startsWith(photoFolderPath) && imageExtensions.some(ext => filePath.toLowerCase().endsWith(ext));
-                        });
-                        const posterURL = firstImageFile ? URL.createObjectURL(firstImageFile) : '';
-
-                        return `
-                            <div style="position: relative; margin-bottom: 30px; width: calc(16.66% - 10px);">
-                                <video src="${fileURL}" poster="${posterURL}" preload="none" style="width: 100%; height: auto; border-radius: 5px; cursor: pointer;" controls></video>
-                                <a href="${fileURL}" download="${fileObj.name}" style="position: absolute; top: 5px; right: 5px; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px;">下载</a>
-                                <h4 style="position: absolute; bottom: -70px; left: 0px; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px;">${fileObj.name}</h4>
-                            </div>
-                        `;
-                    }).join('')}
-                </div>
-            `;
-        }
-
-        // 这段代码用于生成不同类型文件的展示画廊，包括文档、表格、演示文稿和其他文件。
-
-        // 文档画廊
-        let docGallery = '';
-        if (docFiles.length > 0) {
-            // 如果有文档文件，创建一个包含文档的div
-            docGallery = `
-                <div class="docs" style="column-count: 6; column-gap: 10px; margin-top: 20px;">
-                    ${docFiles.map(file => {
-                        // 查找与文件路径匹配的文件对象
-                        const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
-                        // 创建文件的URL
-                        const fileURL = URL.createObjectURL(fileObj);
-                        // 返回每个文档的HTML结构，包括下载链接和嵌入的iframe
-                        return `
-                            <div style="break-inside: avoid; margin-bottom: 10px;">
-                                <iframe src="${fileURL}" style="width: 100%; height: 200px; border: none; margin-top: 5px;"></iframe>
-                                <a href="${fileURL}" download="${fileObj.name}" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px;">${fileObj.name}</a>
-                            </div>
-                        `;
-                    }).join('')}
-                </div>
-            `;
-        }
-
-        // 表格画廊
-        let sheetGallery = '';
-        if (sheetFiles.length > 0) {
-            // 如果有表格文件，创建一个包含表格的div
-            sheetGallery = `
-                <div class="sheets" style="column-count: 6; column-gap: 10px; margin-top: 20px;">
-                    ${sheetFiles.map(file => {
-                        // 查找与文件路径匹配的文件对象
-                        const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
-                        // 创建文件的URL
-                        const fileURL = URL.createObjectURL(fileObj);
-                        // 使用SheetJS读取文件内容
-                        const reader = new FileReader();
-                        reader.onload = function(e) {
-                            const data = new Uint8Array(e.target.result);
-                            const workbook = XLSX.read(data, { type: 'array' });
-                            const sheetName = workbook.SheetNames[0];
-                            const worksheet = workbook.Sheets[sheetName];
-                            const html = XLSX.utils.sheet_to_html(worksheet);
-                            document.getElementById(`sheet-${fileObj.name}`).innerHTML = html;
-                        };
-                        reader.readAsArrayBuffer(fileObj);
-                        // 返回每个表格的HTML结构，包括下载链接和嵌入的div
-                        return `
-                            <div style="break-inside: avoid; margin-bottom: 10px;">
-                                <div id="sheet-${fileObj.name}" style="width: 100%; height: 200px; border: none; margin-top: 5px; overflow: hidden;"></div>
-                                <a href="${fileURL}" download="${fileObj.name}" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px;">${fileObj.name}</a>
-                            </div>
-                        `;
-                    }).join('')}
-                </div>
-            `;
-        }
-
-        // 演示文稿画廊
-        let pptGallery = '';
-        if (pptFiles.length > 0) {
-            // 如果有演示文稿文件，创建一个包含演示文稿的div
-            pptGallery = `
-                <div class="ppts" style="column-count: 6; column-gap: 10px; margin-top: 20px;">
-                    ${pptFiles.map(file => {
-                        // 查找与文件路径匹配的文件对象
-                        const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
-                        // 创建文件的URL
-                        const fileURL = URL.createObjectURL(fileObj);
-                        // 返回每个演示文稿的HTML结构，包括下载链接和嵌入的iframe
-                        return `
-                            <div style="break-inside: avoid; margin-bottom: 10px;">
-                                <iframe src="https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(fileURL)}" style="width: 100%; height: 200px; border: none; margin-top: 5px;"></iframe>
-                                <a href="${fileURL}" download="${fileObj.name}" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px;">${fileObj.name}</a>
-                            </div>
-                        `;
-                    }).join('')}
-                </div>
-            `;
-        }
-
-        // 其他文件列表
-        let otherFilesList = '';
-        if (otherFiles.length > 0) {
-            // 如果有其他类型的文件，创建一个列表展示
-            otherFilesList = `
-                <ul style="margin-top: 20px;">
-                    ${otherFiles.map(file => `<li>${file}</li>`).join('')}
-                </ul>
-            `;
-        }
-
-        searchResults.innerHTML = imageGallery + videoGallery + docGallery + sheetGallery + pptGallery + otherFilesList;
-
-        // 初始化 Viewer.js
-        if (imageFiles.length > 0) {
-            const gallery = document.querySelector('.images');
-            const viewer = new Viewer(gallery, {
-                navbar: true,
-                toolbar: true
-            });
-        }
+        displayFilesWithPagination(matchedFiles);
     } else {
         searchResults.innerHTML = '<p>未找到匹配的文件</p>';
     }
 }
 
-function performVideoSearch() {
-    const searchResults = document.getElementById('localFileSearchResults');
-    const videoExtensions = ['mp4', 'webm', 'ogg'];
+function displayFilesWithPagination(files) {
+    const totalPages = Math.ceil(files.length / itemsPerPage);
+    const paginatedFiles = files.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
     const imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+    const videoExtensions = ['mp4', 'webm', 'ogg'];
+    const docExtensions = ['docx', 'doc', 'pdf',];
+    const sheetExtensions = ['xlsx', 'xls'];
+    const pptExtensions = ['ppt', 'pptx'];
+    const imageFiles = paginatedFiles.filter(file => imageExtensions.some(ext => file.toLowerCase().endsWith(ext)));
+    const videoFiles = paginatedFiles.filter(file => videoExtensions.some(ext => file.toLowerCase().endsWith(ext)));
+    const docFiles = paginatedFiles.filter(file => docExtensions.some(ext => file.toLowerCase().endsWith(ext)));
+    const sheetFiles = paginatedFiles.filter(file => sheetExtensions.some(ext => file.toLowerCase().endsWith(ext)));
+    const pptFiles = paginatedFiles.filter(file => pptExtensions.some(ext => file.toLowerCase().endsWith(ext)));
+    const otherFiles = paginatedFiles.filter(file => !imageExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !videoExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !docExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !sheetExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !pptExtensions.some(ext => file.toLowerCase().endsWith(ext)));
 
-    const matchedFiles = selectedFiles
-        .map(file => file.webkitRelativePath)
-        .filter(fileName => videoExtensions.some(ext => fileName.toLowerCase().endsWith(ext)));
+    let imageGallery = '';
+    if (imageFiles.length > 0) {
+        imageGallery = `
+            <div class="images" style="column-count: 6; column-gap: 10px; margin-top: 20px;">
+                ${imageFiles.map(file => {
+                    const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
+                    const fileURL = URL.createObjectURL(fileObj);
+                    return `
+                        <div style="break-inside: avoid; margin-bottom: 10px;">
+                            <img src="${fileURL}" loading="lazy" style="width: 100%; height: auto; border-radius: 5px;">
+                            <a href="${fileURL}" download="${fileObj.name}" style="display: none;"></a>
+                            <h4 onclick="downloadFile('${fileURL}', '${fileObj.name}')" style="color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px; cursor: pointer;">${fileObj.name}</h4>
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+        `;
+    }
 
-    if (matchedFiles.length > 0) {
-        let videoGallery = `
+    let videoGallery = '';
+    if (videoFiles.length > 0) {
+        videoGallery = `
             <div style="display: flex; flex-wrap: wrap; row-gap: 40px;column-gap: 10px; margin-top: 20px;">
-                ${matchedFiles.map(file => {
+                ${videoFiles.map(file => {
                     const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
                     const fileURL = URL.createObjectURL(fileObj);
 
@@ -776,7 +643,7 @@ function performVideoSearch() {
 
                     return `
                         <div style="position: relative; margin-bottom: 30px; width: calc(16.66% - 10px);">
-                            <video src="${fileURL}" poster="${posterURL}" preload="metadata" style="width: 100%; height: auto; border-radius: 5px; cursor: pointer;" controls></video>
+                            <video src="${fileURL}" poster="${posterURL}" preload="none" style="width: 100%; height: auto; border-radius: 5px; cursor: pointer;" controls></video>
                             <a href="${fileURL}" download="${fileObj.name}" style="position: absolute; top: 5px; right: 5px; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px;">下载</a>
                             <h4 style="position: absolute; bottom: -70px; left: 0px; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px;">${fileObj.name}</h4>
                         </div>
@@ -784,8 +651,143 @@ function performVideoSearch() {
                 }).join('')}
             </div>
         `;
+    }
 
-        searchResults.innerHTML = videoGallery;
+    // 这段代码用于生成不同类型文件的展示画廊，包括文档、表格、演示文稿和其他文件。
+
+    // 文档画廊
+    let docGallery = '';
+    if (docFiles.length > 0) {
+        // 如果有文档文件，创建一个包含文档的div
+        docGallery = `
+            <div class="docs" style="column-count: 6; column-gap: 10px; margin-top: 20px;">
+                ${docFiles.map(file => {
+                    // 查找与文件路径匹配的文件对象
+                    const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
+                    // 创建文件的URL
+                    const fileURL = URL.createObjectURL(fileObj);
+                    // 返回每个文档的HTML结构，包括下载链接和嵌入的iframe
+                    return `
+                        <div style="break-inside: avoid; margin-bottom: 10px;">
+                            <iframe src="${fileURL}" style="width: 100%; height: 200px; border: none; margin-top: 5px;"></iframe>
+                            <a href="${fileURL}" download="${fileObj.name}" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px;">${fileObj.name}</a>
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+        `;
+    }
+
+    // 表格画廊
+    let sheetGallery = '';
+    if (sheetFiles.length > 0) {
+        // 如果有表格文件，创建一个包含表格的div
+        sheetGallery = `
+            <div class="sheets" style="column-count: 6; column-gap: 10px; margin-top: 20px;">
+                ${sheetFiles.map(file => {
+                    // 查找与文件路径匹配的文件对象
+                    const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
+                    // 创建文件的URL
+                    const fileURL = URL.createObjectURL(fileObj);
+                    // 使用SheetJS读取文件内容
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const data = new Uint8Array(e.target.result);
+                        const workbook = XLSX.read(data, { type: 'array' });
+                        const sheetName = workbook.SheetNames[0];
+                        const worksheet = workbook.Sheets[sheetName];
+                        const html = XLSX.utils.sheet_to_html(worksheet);
+                        document.getElementById(`sheet-${fileObj.name}`).innerHTML = html;
+                    };
+                    reader.readAsArrayBuffer(fileObj);
+                    // 返回每个表格的HTML结构，包括下载链接和嵌入的div
+                    return `
+                        <div style="break-inside: avoid; margin-bottom: 10px;">
+                            <div id="sheet-${fileObj.name}" style="width: 100%; height: 200px; border: none; margin-top: 5px; overflow: hidden;"></div>
+                            <a href="${fileURL}" download="${fileObj.name}" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px;">${fileObj.name}</a>
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+        `;
+    }
+
+    // 演示文稿画廊
+    let pptGallery = '';
+    if (pptFiles.length > 0) {
+        // 如果有演示文稿文件，创建一个包含演示文稿的div
+        pptGallery = `
+            <div class="ppts" style="column-count: 6; column-gap: 10px; margin-top: 20px;">
+                ${pptFiles.map(file => {
+                    // 查找与文件路径匹配的文件对象
+                    const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
+                    // 创建文件的URL
+                    const fileURL = URL.createObjectURL(fileObj);
+                    // 返回每个演示文稿的HTML结构，包括下载链接和嵌入的iframe
+                    return `
+                        <div style="break-inside: avoid; margin-bottom: 10px;">
+                            <iframe src="https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(fileURL)}" style="width: 100%; height: 200px; border: none; margin-top: 5px;"></iframe>
+                            <a href="${fileURL}" download="${fileObj.name}" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px;">${fileObj.name}</a>
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+        `;
+    }
+
+    // 其他文件列表
+    let otherFilesList = '';
+    if (otherFiles.length > 0) {
+        // 如果有其他类型的文件，创建一个列表展示
+        otherFilesList = `
+            <ul style="margin-top: 20px;">
+                ${otherFiles.map(file => `<li>${file}</li>`).join('')}
+            </ul>
+        `;
+    }
+
+    const searchResults = document.getElementById('localFileSearchResults');
+    searchResults.innerHTML = imageGallery + videoGallery + docGallery + sheetGallery + pptGallery + otherFilesList;
+
+    // 初始化 Viewer.js
+    if (imageFiles.length > 0) {
+        const gallery = document.querySelector('.images');
+        const viewer = new Viewer(gallery, {
+            navbar: true,
+            toolbar: true
+        });
+    }
+
+    displayPaginationControls(totalPages);
+}
+
+function displayPaginationControls(totalPages) {
+    const paginationControls = document.getElementById('paginationControls');
+    let paginationHTML = '';
+
+    for (let i = 1; i <= totalPages; i++) {
+        paginationHTML += `<button onclick="goToPage(${i})" style="margin: 0 5px; padding: 5px 10px; ${i === currentPage ? 'background-color: #2d5f8b; color: white;' : ''}">${i}</button>`;
+    }
+
+    paginationControls.innerHTML = paginationHTML;
+}
+
+function goToPage(page) {
+    currentPage = page;
+    performLocalFileSearch();
+}
+
+function performVideoSearch() {
+    const searchResults = document.getElementById('localFileSearchResults');
+    const videoExtensions = ['mp4', 'webm', 'ogg'];
+    const imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+
+    const matchedFiles = selectedFiles
+        .map(file => file.webkitRelativePath)
+        .filter(fileName => videoExtensions.some(ext => fileName.toLowerCase().endsWith(ext)));
+
+    if (matchedFiles.length > 0) {
+        displayFilesWithPagination(matchedFiles);
     } else {
         searchResults.innerHTML = '<p>未找到匹配的视频文件</p>';
     }
@@ -800,30 +802,7 @@ function performImageSearch() {
         .filter(fileName => imageExtensions.some(ext => fileName.toLowerCase().endsWith(ext)));
 
     if (matchedFiles.length > 0) {
-        let imageGallery = `
-            <div class="images" style="column-count: 6; column-gap: 10px; margin-top: 20px;">
-                ${matchedFiles.map(file => {
-                    const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
-                    const fileURL = URL.createObjectURL(fileObj);
-                    return `
-                        <div style="break-inside: avoid; margin-bottom: 10px;">
-                            <img src="${fileURL}" loading="lazy" style="width: 100%; height: auto; border-radius: 5px;">
-                            <a href="${fileURL}" download="${fileObj.name}" style="display: none;"></a>
-                            <h4 onclick="downloadFile('${fileURL}', '${fileObj.name}')" style="color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px; cursor: pointer;">${fileObj.name}</h4>
-                        </div>
-                    `;
-                }).join('')}
-            </div>
-        `;
-
-        searchResults.innerHTML = imageGallery;
-
-        // 初始化 Viewer.js
-        const gallery = document.querySelector('.images');
-        const viewer = new Viewer(gallery, {
-            navbar: true,
-            toolbar: true
-        });
+        displayFilesWithPagination(matchedFiles);
     } else {
         searchResults.innerHTML = '<p>未找到匹配的图片文件</p>';
     }
