@@ -581,9 +581,9 @@ function performLocalFileSearch() {
     if (matchedFiles.length > 0) {
         const imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
         const videoExtensions = ['mp4', 'webm', 'ogg'];
-        const docExtensions = ['docx', 'doc', 'pdf'];
+        const docExtensions = ['docx', 'doc', 'pdf',];
         const sheetExtensions = ['xlsx', 'xls'];
-        const pptExtensions = ['ppt'];
+        const pptExtensions = ['ppt', 'pptx'];
         const imageFiles = matchedFiles.filter(file => imageExtensions.some(ext => file.toLowerCase().endsWith(ext)));
         const videoFiles = matchedFiles.filter(file => videoExtensions.some(ext => file.toLowerCase().endsWith(ext)));
         const docFiles = matchedFiles.filter(file => docExtensions.some(ext => file.toLowerCase().endsWith(ext)));
@@ -650,6 +650,7 @@ function performLocalFileSearch() {
                         return `
                             <div style="break-inside: avoid; margin-bottom: 10px;">
                                 <a href="${fileURL}" download="${fileObj.name}" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px;">${fileObj.name}</a>
+                                <iframe src="${fileURL}" style="width: 100%; height: 200px; border: none; margin-top: 5px;"></iframe>
                             </div>
                         `;
                     }).join('')}
@@ -667,6 +668,7 @@ function performLocalFileSearch() {
                         return `
                             <div style="break-inside: avoid; margin-bottom: 10px;">
                                 <a href="${fileURL}" download="${fileObj.name}" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px;">${fileObj.name}</a>
+                                <iframe src="https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(fileURL)}" style="width: 100%; height: 200px; border: none; margin-top: 5px;"></iframe>
                             </div>
                         `;
                     }).join('')}
@@ -684,6 +686,7 @@ function performLocalFileSearch() {
                         return `
                             <div style="break-inside: avoid; margin-bottom: 10px;">
                                 <a href="${fileURL}" download="${fileObj.name}" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px;">${fileObj.name}</a>
+                                <iframe src="https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(fileURL)}" style="width: 100%; height: 200px; border: none; margin-top: 5px;"></iframe>
                             </div>
                         `;
                     }).join('')}
