@@ -581,9 +581,15 @@ function performLocalFileSearch() {
     if (matchedFiles.length > 0) {
         const imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
         const videoExtensions = ['mp4', 'webm', 'ogg'];
+        const docExtensions = ['docx', 'doc', 'pdf'];
+        const sheetExtensions = ['xlsx', 'xls'];
+        const pptExtensions = ['ppt'];
         const imageFiles = matchedFiles.filter(file => imageExtensions.some(ext => file.toLowerCase().endsWith(ext)));
         const videoFiles = matchedFiles.filter(file => videoExtensions.some(ext => file.toLowerCase().endsWith(ext)));
-        const otherFiles = matchedFiles.filter(file => !imageExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !videoExtensions.some(ext => file.toLowerCase().endsWith(ext)));
+        const docFiles = matchedFiles.filter(file => docExtensions.some(ext => file.toLowerCase().endsWith(ext)));
+        const sheetFiles = matchedFiles.filter(file => sheetExtensions.some(ext => file.toLowerCase().endsWith(ext)));
+        const pptFiles = matchedFiles.filter(file => pptExtensions.some(ext => file.toLowerCase().endsWith(ext)));
+        const otherFiles = matchedFiles.filter(file => !imageExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !videoExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !docExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !sheetExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !pptExtensions.some(ext => file.toLowerCase().endsWith(ext)));
 
         let imageGallery = '';
         if (imageFiles.length > 0) {
@@ -634,6 +640,57 @@ function performLocalFileSearch() {
             `;
         }
 
+        let docGallery = '';
+        if (docFiles.length > 0) {
+            docGallery = `
+                <div class="docs" style="column-count: 6; column-gap: 10px; margin-top: 20px;">
+                    ${docFiles.map(file => {
+                        const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
+                        const fileURL = URL.createObjectURL(fileObj);
+                        return `
+                            <div style="break-inside: avoid; margin-bottom: 10px;">
+                                <a href="${fileURL}" download="${fileObj.name}" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px;">${fileObj.name}</a>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+        }
+
+        let sheetGallery = '';
+        if (sheetFiles.length > 0) {
+            sheetGallery = `
+                <div class="sheets" style="column-count: 6; column-gap: 10px; margin-top: 20px;">
+                    ${sheetFiles.map(file => {
+                        const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
+                        const fileURL = URL.createObjectURL(fileObj);
+                        return `
+                            <div style="break-inside: avoid; margin-bottom: 10px;">
+                                <a href="${fileURL}" download="${fileObj.name}" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px;">${fileObj.name}</a>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+        }
+
+        let pptGallery = '';
+        if (pptFiles.length > 0) {
+            pptGallery = `
+                <div class="ppts" style="column-count: 6; column-gap: 10px; margin-top: 20px;">
+                    ${pptFiles.map(file => {
+                        const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
+                        const fileURL = URL.createObjectURL(fileObj);
+                        return `
+                            <div style="break-inside: avoid; margin-bottom: 10px;">
+                                <a href="${fileURL}" download="${fileObj.name}" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px;">${fileObj.name}</a>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+        }
+
         let otherFilesList = '';
         if (otherFiles.length > 0) {
             otherFilesList = `
@@ -643,7 +700,7 @@ function performLocalFileSearch() {
             `;
         }
 
-        searchResults.innerHTML = imageGallery + videoGallery + otherFilesList;
+        searchResults.innerHTML = imageGallery + videoGallery + docGallery + sheetGallery + pptGallery + otherFilesList;
 
         // 初始化 Viewer.js
         if (imageFiles.length > 0) {
