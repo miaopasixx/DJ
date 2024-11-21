@@ -640,13 +640,20 @@ function performLocalFileSearch() {
             `;
         }
 
+        // 这段代码用于生成不同类型文件的展示画廊，包括文档、表格、演示文稿和其他文件。
+
+        // 文档画廊
         let docGallery = '';
         if (docFiles.length > 0) {
+            // 如果有文档文件，创建一个包含文档的div
             docGallery = `
                 <div class="docs" style="column-count: 6; column-gap: 10px; margin-top: 20px;">
                     ${docFiles.map(file => {
+                        // 查找与文件路径匹配的文件对象
                         const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
+                        // 创建文件的URL
                         const fileURL = URL.createObjectURL(fileObj);
+                        // 返回每个文档的HTML结构，包括下载链接和嵌入的iframe
                         return `
                             <div style="break-inside: avoid; margin-bottom: 10px;">
                                 <a href="${fileURL}" download="${fileObj.name}" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px;">${fileObj.name}</a>
@@ -658,13 +665,18 @@ function performLocalFileSearch() {
             `;
         }
 
+        // 表格画廊
         let sheetGallery = '';
         if (sheetFiles.length > 0) {
+            // 如果有表格文件，创建一个包含表格的div
             sheetGallery = `
                 <div class="sheets" style="column-count: 6; column-gap: 10px; margin-top: 20px;">
                     ${sheetFiles.map(file => {
+                        // 查找与文件路径匹配的文件对象
                         const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
+                        // 创建文件的URL
                         const fileURL = URL.createObjectURL(fileObj);
+                        // 返回每个表格的HTML结构，包括下载链接和嵌入的iframe
                         return `
                             <div style="break-inside: avoid; margin-bottom: 10px;">
                                 <a href="${fileURL}" download="${fileObj.name}" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px;">${fileObj.name}</a>
@@ -676,13 +688,18 @@ function performLocalFileSearch() {
             `;
         }
 
+        // 演示文稿画廊
         let pptGallery = '';
         if (pptFiles.length > 0) {
+            // 如果有演示文稿文件，创建一个包含演示文稿的div
             pptGallery = `
                 <div class="ppts" style="column-count: 6; column-gap: 10px; margin-top: 20px;">
                     ${pptFiles.map(file => {
+                        // 查找与文件路径匹配的文件对象
                         const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
+                        // 创建文件的URL
                         const fileURL = URL.createObjectURL(fileObj);
+                        // 返回每个演示文稿的HTML结构，包括下载链接和嵌入的iframe
                         return `
                             <div style="break-inside: avoid; margin-bottom: 10px;">
                                 <a href="${fileURL}" download="${fileObj.name}" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px;">${fileObj.name}</a>
@@ -694,8 +711,10 @@ function performLocalFileSearch() {
             `;
         }
 
+        // 其他文件列表
         let otherFilesList = '';
         if (otherFiles.length > 0) {
+            // 如果有其他类型的文件，创建一个列表展示
             otherFilesList = `
                 <ul style="margin-top: 20px;">
                     ${otherFiles.map(file => `<li>${file}</li>`).join('')}
