@@ -599,14 +599,7 @@ function displayFilesWithPagination(files) {
     const pptExtensions = ['ppt', 'pptx'];
     const imageFiles = paginatedFiles.filter(file => imageExtensions.some(ext => file.toLowerCase().endsWith(ext)));
     const videoFiles = paginatedFiles.filter(file => videoExtensions.some(ext => file.toLowerCase().endsWith(ext)));
-    const docFiles = paginatedFiles.filter(file => {
-        const lowerCaseFile = file.toLowerCase();
-        const isDocFile = docExtensions.some(ext => lowerCaseFile.endsWith(ext));
-        const isJpgFile = lowerCaseFile.endsWith('.jpg');
-    
-        // 如果是文档文件且不是jpg文件，或者是文档文件且没有同名jpg文件
-        return isDocFile && (!isJpgFile || !paginatedFiles.some(f => f.toLowerCase() === lowerCaseFile.replace(/\.pdf$/, '.jpg')));
-    });
+    const docFiles = paginatedFiles.filter(file => docExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !file.toLowerCase().endsWith('.jpg'));
     const sheetFiles = paginatedFiles.filter(file => sheetExtensions.some(ext => file.toLowerCase().endsWith(ext)));
     const pptFiles = paginatedFiles.filter(file => pptExtensions.some(ext => file.toLowerCase().endsWith(ext)));
     const otherFiles = paginatedFiles.filter(file => !imageExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !videoExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !docExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !sheetExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !pptExtensions.some(ext => file.toLowerCase().endsWith(ext)));
