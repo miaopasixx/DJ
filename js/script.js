@@ -690,7 +690,7 @@ function performLocalFileSearch() {
                         // 返回每个表格的HTML结构，包括下载链接和嵌入的div
                         return `
                             <div style="break-inside: avoid; margin-bottom: 10px;">
-                                <div id="sheet-${fileObj.name}" style="width: 100%; height: 200px; border: none; margin-top: 5px;"></div>
+                                <div id="sheet-${fileObj.name}" style="width: 100%; height: 200px; border: none; margin-top: 5px; overflow: hidden;"></div>
                                 <a href="${fileURL}" download="${fileObj.name}" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px;">${fileObj.name}</a>
                             </div>
                         `;
