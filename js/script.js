@@ -778,14 +778,14 @@ function displayPaginationControls(totalPages, totalItems) {
         currentPage = totalPages;
     }
     let paginationHTML = `
-        <div style="margin-top: 20px; margin-bottom: 10px;">
+        <div style="margin: 50px;">
             【共${totalItems}条记录 当前第${currentPage}/${totalPages}页 每页${itemsPerPage}条】
-            【<a href="javascript:void(0);" style="cursor: ${totalPages === 1 ? 'default' : 'pointer'}; margin: 0 5px; ${currentPage === 1 ? 'color: gray;' : ''}" ${currentPage === 1 ? 'onclick="return false;"' : 'onclick="goToPage(1)"'}>首页</a> | 
-            <a href="javascript:void(0);" onclick="goToPage(${currentPage - 1})" style="cursor: pointer; margin: 0 5px; ${currentPage === 1 || totalPages === 1 ? 'color: gray;' : ''}" ${currentPage === 1 || totalPages === 1 ? 'onclick="return false;"' : ''}>上一页</a> | 
-            <a href="javascript:void(0);" style="cursor: pointer; margin: 0 5px; ${currentPage === totalPages ? 'color: gray;' : ''}" ${currentPage === totalPages ? 'onclick="return false;"' : 'onclick="goToPage(' + (currentPage + 1) + ')"'}>下一页</a> | 
-            <a href="javascript:void(0);" style="cursor: pointer; margin: 0 5px; ${currentPage === totalPages ? 'color: gray;' : ''}" ${currentPage === totalPages ? 'onclick="return false;"' : 'onclick="goToPage(' + totalPages + ')"'}>尾页</a> | 
-            <a href="javascript:void(0);" onclick="jumpToPage()" style="cursor: pointer; margin: 0 5px;">跳转到指定页</a> <input type="number" id="jumpToPageInput" min="1" max="${totalPages}" value="${currentPage}" style="width: 50px; text-align: center; margin: 0 5px; display: inline-block;" oninput="if(this.value > ${totalPages}) this.value = ${totalPages};"> | 
-            <a href="javascript:void(0);" onclick="setItemsPerPage()" style="cursor: pointer; margin: 0 5px;">设定每页记录数</a> <input type="number" id="itemsPerPageInput" min="1" value="${itemsPerPage}" style="width: 50px; text-align: center; margin: 0 5px; display: inline-block;">】 
+            【<a href="javascript:void(0);" style="cursor: ${totalPages === 1 ? 'default' : 'pointer'}; margin: 0 5px; ${currentPage === 1 ? 'color: gray; text-decoration: none;' : 'text-decoration: none;'}" ${currentPage === 1 ? 'onclick="return false;"' : 'onclick="goToPage(1)"'}>首页</a> | 
+            <a href="javascript:void(0);" onclick="goToPage(${currentPage - 1})" style="cursor: pointer; margin: 0 5px; ${currentPage === 1 || totalPages === 1 ? 'color: gray; text-decoration: none;' : 'text-decoration: none;'}" ${currentPage === 1 || totalPages === 1 ? 'onclick="return false;"' : ''}>上一页</a> | 
+            <a href="javascript:void(0);" style="cursor: pointer; margin: 0 5px; ${currentPage === totalPages ? 'color: gray; text-decoration: none;' : 'text-decoration: none;'}" ${currentPage === totalPages ? 'onclick="return false;"' : 'onclick="goToPage(' + (currentPage + 1) + ')"'}>下一页</a> | 
+            <a href="javascript:void(0);" style="cursor: pointer; margin: 0 5px; ${currentPage === totalPages ? 'color: gray; text-decoration: none;' : 'text-decoration: none;'}" ${currentPage === totalPages ? 'onclick="return false;"' : 'onclick="goToPage(' + totalPages + ')"'}>尾页</a> | 
+            <a href="javascript:void(0);" onclick="jumpToPage()" style="cursor: pointer; margin: 0 5px; text-decoration: none;">跳转到指定页</a> <input type="number" id="jumpToPageInput" min="1" max="${totalPages}" value="${currentPage}" style="width: 50px; text-align: center; margin: 0 5px; display: inline-block;" oninput="if(this.value > ${totalPages}) this.value = ${totalPages};"> | 
+            <a href="javascript:void(0);" onclick="setItemsPerPage()" style="cursor: pointer; margin: 0 5px; text-decoration: none;">设定每页记录数</a> <input type="number" id="itemsPerPageInput" min="1" value="${itemsPerPage}" style="width: 50px; text-align: center; margin: 0 5px; display: inline-block;">】 
         </div>
     `;
 
