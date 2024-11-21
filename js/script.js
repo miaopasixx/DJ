@@ -463,7 +463,69 @@ function adjustPath(path) {
 
 // 增加对json的修改、添加、增加、标记、持续化数据的功能
 
+function modifyJsonFile(fileName, modifications) {
+    fetch(`data/${fileName}`)
+        .then(response => response.json())
+        .then(data => {
+            // 应用修改
+            Object.keys(modifications).forEach(key => {
+                data[key] = modifications[key];
+            });
 
+            // 保存修改后的数据
+            saveJsonFile(fileName, data);
+        })
+        .catch(error => {
+            console.error('Error modifying JSON file:', error);
+        });
+}
+
+function addToJsonFile(fileName, newData) {
+    fetch(`data/${fileName}`)
+        .then(response => response.json())
+        .then(data => {
+            // 添加新数据
+            data.push(newData);
+
+            // 保存修改后的数据
+            saveJsonFile(fileName, data);
+        })
+        .catch(error => {
+            console.error('Error adding to JSON file:', error);
+        });
+}
+
+function markJsonFile(fileName, markKey, markValue) {
+    fetch(`data/${fileName}`)
+        .then(response => response.json())
+        .then(data => {
+            // 标记数据
+            data[markKey] = markValue;
+
+            // 保存修改后的数据
+            saveJsonFile(fileName, data);
+        })
+        .catch(error => {
+            console.error('Error marking JSON file:', error);
+        });
+}
+
+function saveJsonFile(fileName, data) {
+    // 将数据转换为JSON字符串
+    const jsonData = JSON.stringify(data, null, 2);
+
+    // 创建一个Blob对象
+    const blob = new Blob([jsonData], { type: 'application/json' });
+
+    // 创建一个下载链接
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+}
 
 // 本地文件查询
 let selectedFiles = [];
