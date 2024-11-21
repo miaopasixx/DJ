@@ -604,10 +604,8 @@ function displayFilesWithPagination(files) {
         const isDocFile = docExtensions.some(ext => lowerCaseFile.endsWith(ext));
         const isJpgFile = lowerCaseFile.endsWith('.jpg');
     
-        // 调试输出，查看文件名和判断结果
-        console.log(`Checking file: ${file}, isDocFile: ${isDocFile}, isJpgFile: ${isJpgFile}`);
-    
-        return isDocFile && !isJpgFile; // 确保排除 '.jpg' 文件
+        // 如果是文档文件且不是jpg文件，或者是文档文件且没有同名jpg文件
+        return isDocFile && (!isJpgFile || !paginatedFiles.some(f => f.toLowerCase() === lowerCaseFile.replace(/\.pdf$/, '.jpg')));
     });
     const sheetFiles = paginatedFiles.filter(file => sheetExtensions.some(ext => file.toLowerCase().endsWith(ext)));
     const pptFiles = paginatedFiles.filter(file => pptExtensions.some(ext => file.toLowerCase().endsWith(ext)));
