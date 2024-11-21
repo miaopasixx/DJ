@@ -464,7 +464,7 @@ function adjustPath(path) {
 // 本地文件查询
 let selectedFiles = [];
 let currentPage = 1;
-let itemsPerPage = 10;
+let itemsPerPage = 6;
 
 function displayLocalFileSearch() {
     const contentDiv = document.getElementById('content');
@@ -493,7 +493,6 @@ function displayLocalFileSearch() {
                     color: white;
                     cursor: pointer;
                     transition: all 0.3s ease;
-                    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
                     margin-left: 10px;
                 ">本地搜索</button>
                 <button onclick="resetFolderSelection()" style="
@@ -504,7 +503,6 @@ function displayLocalFileSearch() {
                     color: white;
                     cursor: pointer;
                     transition: all 0.3s ease;
-                    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
                     margin-left: 10px;
                 ">重置文件夹</button>
                 <button onclick="performVideoSearch()" style="
@@ -515,7 +513,6 @@ function displayLocalFileSearch() {
                     color: white;
                     cursor: pointer;
                     transition: all 0.3s ease;
-                    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
                     margin-left: 10px;
                 ">视频搜索</button>
                 <button onclick="performImageSearch()" style="
@@ -526,7 +523,6 @@ function displayLocalFileSearch() {
                     color: white;
                     cursor: pointer;
                     transition: all 0.3s ease;
-                    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
                     margin-left: 10px;
                 ">图片搜索</button>
             </div>
@@ -680,8 +676,8 @@ function displayFilesWithPagination(files) {
                     return `
                         <div style="break-inside: avoid; margin-bottom: 10px;">
                             <iframe src="${fileURL}" style="width: 100%; height: 297px; border: none; margin-top: 5px;"></iframe>
-                            <button onclick="enlargePreview('${fileURL}')" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px; text-decoration: none;">放大预览</button>
-                            <a href="${fileURL}" download="${fileObj.name}" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px; text-decoration: none;">${fileObj.name}</a>
+                            <button onclick="enlargePreview('${fileURL}')" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px; text-decoration: none; width: 100%;">放大预览</button>
+                            <a href="${fileURL}" download="${fileObj.name}" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px; text-decoration: none; width: 100%;">${fileObj.name}</a>
                         </div>
                     `;
                 }).join('')}
@@ -715,8 +711,8 @@ function displayFilesWithPagination(files) {
                     return `
                         <div style="break-inside: avoid; margin-bottom: 10px;">
                             <div id="sheet-${fileObj.name}" style="width: 100%; height: 297px; border: none; margin-top: 5px; overflow: hidden;"></div>
-                            <button onclick="enlargePreview('${fileURL}')" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px; text-decoration: none;">放大预览</button>
-                            <a href="${fileURL}" download="${fileObj.name}" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px; text-decoration: none;">${fileObj.name}</a>
+                            <button onclick="enlargePreview('${fileURL}')" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px; text-decoration: none; width: 100%;">放大预览</button>
+                            <a href="${fileURL}" download="${fileObj.name}" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px; text-decoration: none; width: 100%;">${fileObj.name}</a>
                         </div>
                     `;
                 }).join('')}
@@ -739,8 +735,8 @@ function displayFilesWithPagination(files) {
                     return `
                         <div style="break-inside: avoid; margin-bottom: 10px;">
                             <iframe src="https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(fileURL)}" style="width: 100%; height: 297px; border: none; margin-top: 5px;"></iframe>
-                            <button onclick="enlargePreview('${fileURL}')" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px; text-decoration: none;">放大预览</button>
-                            <a href="${fileURL}" download="${fileObj.name}" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px; text-decoration: none;">${fileObj.name}</a>
+                            <button onclick="enlargePreview('${fileURL}')" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px; text-decoration: none; width: 100%;">放大预览</button>
+                            <a href="${fileURL}" download="${fileObj.name}" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px; text-decoration: none; width: 100%;">${fileObj.name}</a>
                         </div>
                     `;
                 }).join('')}
