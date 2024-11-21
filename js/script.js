@@ -790,7 +790,8 @@ function displayPaginationControls(totalPages, totalItems) {
 }
 
 function goToPage(page) {
-    if (page < 1 || page > Math.ceil(selectedFiles.length / itemsPerPage)) return;
+    const totalPages = Math.ceil(selectedFiles.length / itemsPerPage);
+    if (page < 1 || page > totalPages) return;
     currentPage = page;
     if (currentSearchType === 'local') {
         performLocalFileSearch();
