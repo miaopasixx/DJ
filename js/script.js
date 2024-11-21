@@ -680,6 +680,7 @@ function displayFilesWithPagination(files) {
                     return `
                         <div style="break-inside: avoid; margin-bottom: 10px;">
                             <iframe src="${fileURL}" style="width: 100%; height: 297px; border: none; margin-top: 5px;"></iframe>
+                            <button onclick="enlargePreview('${fileURL}')" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px; text-decoration: none;">放大预览</button>
                             <a href="${fileURL}" download="${fileObj.name}" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px; text-decoration: none;">${fileObj.name}</a>
                         </div>
                     `;
@@ -714,6 +715,7 @@ function displayFilesWithPagination(files) {
                     return `
                         <div style="break-inside: avoid; margin-bottom: 10px;">
                             <div id="sheet-${fileObj.name}" style="width: 100%; height: 297px; border: none; margin-top: 5px; overflow: hidden;"></div>
+                            <button onclick="enlargePreview('${fileURL}')" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px; text-decoration: none;">放大预览</button>
                             <a href="${fileURL}" download="${fileObj.name}" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px; text-decoration: none;">${fileObj.name}</a>
                         </div>
                     `;
@@ -737,6 +739,7 @@ function displayFilesWithPagination(files) {
                     return `
                         <div style="break-inside: avoid; margin-bottom: 10px;">
                             <iframe src="https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(fileURL)}" style="width: 100%; height: 297px; border: none; margin-top: 5px;"></iframe>
+                            <button onclick="enlargePreview('${fileURL}')" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px; text-decoration: none;">放大预览</button>
                             <a href="${fileURL}" download="${fileObj.name}" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px; text-decoration: none;">${fileObj.name}</a>
                         </div>
                     `;
@@ -845,4 +848,9 @@ function downloadFile(url, name) {
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
+}
+
+function enlargePreview(fileURL) {
+    const previewWindow = window.open(fileURL, '_blank');
+    previewWindow.focus();
 }
