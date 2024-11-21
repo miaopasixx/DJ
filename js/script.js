@@ -577,9 +577,19 @@ function performLocalFileSearch() {
         return;
     }
 
+    // 修改匹配逻辑：使用正则表达式来匹配文件名
     const matchedFiles = selectedFiles
         .map(file => file.webkitRelativePath)
-        .filter(fileName => fileName.toLowerCase().includes(keyword));
+        .filter(fileName => {
+            // 如果关键词是文件扩展名（如pdf、jpg等），则精确匹配扩展名
+            if (keyword.startsWith('.') || /^[a-z0-9]+$/.test(keyword)) {
+                const extension = fileName.split('.').pop().toLowerCase();
+                return extension === keyword.replace('.', '');
+            }
+            // 否则在文件名中搜索关键词（不包括扩展名）
+            const nameWithoutExtension = fileName.split('/').pop().split('.')[0].toLowerCase();
+            return nameWithoutExtension.includes(keyword);
+        });
 
     if (matchedFiles.length > 0) {
         displayFilesWithPagination(matchedFiles);
