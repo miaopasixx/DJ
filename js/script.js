@@ -623,7 +623,7 @@ function displayFilesWithPagination(files) {
                     const fileURL = URL.createObjectURL(fileObj);
                     return `
                         <div style="break-inside: avoid; margin-bottom: 10px;">
-                            <img src="${fileURL}" loading="lazy" style="width: 100%; height: auto; border-radius: 5px; cursor: pointer;" onclick="openPreview('${fileURL}')">
+                            <img src="${fileURL}" loading="lazy" style="width: 100%; height: auto; border-radius: 5px;">
                             <a href="${fileURL}" download="${fileObj.name}" style="display: none;"></a>
                             <h4 onclick="downloadFile('${fileURL}', '${fileObj.name}')" style="color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px; cursor: pointer;">${fileObj.name}</h4>
                         </div>
@@ -653,7 +653,7 @@ function displayFilesWithPagination(files) {
 
                     return `
                         <div style="position: relative; margin-bottom: 30px; width: calc(16.66% - 10px);">
-                            <video src="${fileURL}" poster="${posterURL}" preload="none" style="width: 100%; height: auto; border-radius: 5px; cursor: pointer;" controls onclick="openPreview('${fileURL}')"></video>
+                            <video src="${fileURL}" poster="${posterURL}" preload="none" style="width: 100%; height: auto; border-radius: 5px; cursor: pointer;" controls></video>
                             <a href="${fileURL}" download="${fileObj.name}" style="position: absolute; top: 5px; right: 5px; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px;">下载</a>
                             <h4 style="position: absolute; bottom: -70px; left: 0px; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px;">${fileObj.name}</h4>
                         </div>
@@ -679,7 +679,7 @@ function displayFilesWithPagination(files) {
                     // 返回每个文档的HTML结构，包括下载链接和嵌入的iframe
                     return `
                         <div style="break-inside: avoid; margin-bottom: 10px;">
-                            <iframe src="${fileURL}" style="width: 100%; height: 297px; border: none; margin-top: 5px;" onclick="openPreview('${fileURL}')"></iframe>
+                            <iframe src="${fileURL}" style="width: 100%; height: 297px; border: none; margin-top: 5px;"></iframe>
                             <a href="${fileURL}" download="${fileObj.name}" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px;">${fileObj.name}</a>
                         </div>
                     `;
@@ -713,7 +713,7 @@ function displayFilesWithPagination(files) {
                     // 返回每个表格的HTML结构，包括下载链接和嵌入的div
                     return `
                         <div style="break-inside: avoid; margin-bottom: 10px;">
-                            <div id="sheet-${fileObj.name}" style="width: 100%; height: 297px; border: none; margin-top: 5px; overflow: hidden;" onclick="openPreview('${fileURL}')"></div>
+                            <div id="sheet-${fileObj.name}" style="width: 100%; height: 297px; border: none; margin-top: 5px; overflow: hidden;"></div>
                             <a href="${fileURL}" download="${fileObj.name}" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px;">${fileObj.name}</a>
                         </div>
                     `;
@@ -736,7 +736,7 @@ function displayFilesWithPagination(files) {
                     // 返回每个演示文稿的HTML结构，包括下载链接和嵌入的iframe
                     return `
                         <div style="break-inside: avoid; margin-bottom: 10px;">
-                            <iframe src="https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(fileURL)}" style="width: 100%; height: 297px; border: none; margin-top: 5px;" onclick="openPreview('${fileURL}')"></iframe>
+                            <iframe src="https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(fileURL)}" style="width: 100%; height: 297px; border: none; margin-top: 5px;"></iframe>
                             <a href="${fileURL}" download="${fileObj.name}" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px;">${fileObj.name}</a>
                         </div>
                     `;
@@ -751,7 +751,7 @@ function displayFilesWithPagination(files) {
         // 如果有其他类型的文件，创建一个列表展示
         otherFilesList = `
             <ul style="margin-top: 20px;">
-                ${otherFiles.map(file => `<li onclick="openPreview('${URL.createObjectURL(selectedFiles.find(f => f.webkitRelativePath === file))}')">${file}</li>`).join('')}
+                ${otherFiles.map(file => `<li>${file}</li>`).join('')}
             </ul>
         `;
     }
@@ -845,34 +845,4 @@ function downloadFile(url, name) {
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
-}
-
-function openPreview(fileURL) {
-    const previewWindow = window.open('', '_blank');
-    previewWindow.document.write(`
-        <html>
-            <head>
-                <title>文件预览</title>
-                <style>
-                    body {
-                        margin: 0;
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
-                        height: 100vh;
-                        background-color: #000;
-                    }
-                    img, video, iframe {
-                        max-width: 100%;
-                        max-height: 100%;
-                    }
-                </style>
-            </head>
-            <body>
-                ${fileURL.endsWith('.mp4') || fileURL.endsWith('.webm') || fileURL.endsWith('.ogg') ? `<video src="${fileURL}" controls autoplay></video>` : ''}
-                ${fileURL.endsWith('.jpg') || fileURL.endsWith('.jpeg') || fileURL.endsWith('.png') || fileURL.endsWith('.gif') ? `<img src="${fileURL}">` : ''}
-                ${fileURL.endsWith('.pdf') || fileURL.endsWith('.docx') || fileURL.endsWith('.doc') || fileURL.endsWith('.xlsx') || fileURL.endsWith('.xls') || fileURL.endsWith('.ppt') || fileURL.endsWith('.pptx') ? `<iframe src="${fileURL}"></iframe>` : ''}
-            </body>
-        </html>
-    `);
 }
