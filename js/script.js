@@ -650,10 +650,10 @@ function displayFilesWithPagination(files) {
                     const posterURL = firstImageFile ? URL.createObjectURL(firstImageFile) : '';
 
                     return `
-                        <div style="position: relative; margin-bottom: 30px; width: calc(16.66% - 10px);">
-                            <h4 style="position: absolute; top: -30px; left: 0px; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-decoration: none; width: 100%; text-align: center;">${fileObj.name}</h4>
-                            <a href="${fileURL}" download="${fileObj.name}" style="position: absolute; top: 5px; right: 5px; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px;">下载</a>    
+                        <div style="position: relative; margin-bottom: 30px; width: calc(16.66% - 10px);">    
                             <video src="${fileURL}" poster="${posterURL}" preload="none" style="width: 100%; height: auto; border-radius: 5px; cursor: pointer;" controls></video>    
+                            <h4 style="position: absolute; top: -30px; left: 0px; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-decoration: none; width: 100%; text-align: center;">${fileObj.name}</h4>
+                            <a href="${fileURL}" download="${fileObj.name}" style="position: absolute; top: 5px; right: 5px; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px;">下载</a>
                         </div>
                     `;
                 }).join('')}
