@@ -780,7 +780,7 @@ function displayPaginationControls(totalPages, totalItems) {
     let paginationHTML = `
         <div style="margin-top: 20px; margin-bottom: 10px;">
             【共${totalItems}条记录 当前第${currentPage}/${totalPages}页 每页${itemsPerPage}条】
-            【<a href="javascript:void(0);" style="cursor: ${totalPages === 1 ? 'default' : 'pointer'}; margin: 0 5px; ${totalPages === 1 ? 'color: gray;' : ''}" ${totalPages === 1 ? 'onclick="return false;"' : 'onclick="goToPage(1)"'}>首页</a> | 
+            【<a href="javascript:void(0);" style="cursor: ${totalPages === 1 ? 'default' : 'pointer'}; margin: 0 5px; ${currentPage === 1 ? 'color: gray;' : ''}" ${currentPage === 1 ? 'onclick="return false;"' : 'onclick="goToPage(1)"'}>首页</a> | 
             <a href="javascript:void(0);" onclick="goToPage(${currentPage - 1})" style="cursor: pointer; margin: 0 5px; ${currentPage === 1 || totalPages === 1 ? 'color: gray;' : ''}" ${currentPage === 1 || totalPages === 1 ? 'onclick="return false;"' : ''}>上一页</a> | 
             <a href="javascript:void(0);" style="cursor: pointer; margin: 0 5px; ${currentPage === totalPages ? 'color: gray;' : ''}" ${currentPage === totalPages ? 'onclick="return false;"' : 'onclick="goToPage(' + (currentPage + 1) + ')"'}>下一页</a> | 
             <a href="javascript:void(0);" style="cursor: pointer; margin: 0 5px; ${currentPage === totalPages ? 'color: gray;' : ''}" ${currentPage === totalPages ? 'onclick="return false;"' : 'onclick="goToPage(' + totalPages + ')"'}>尾页</a> | 
