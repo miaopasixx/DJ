@@ -652,8 +652,8 @@ function displayFilesWithPagination(files) {
                     return `
                         <div style="position: relative; margin-bottom: 30px; width: calc(16.66% - 10px);">
                         <a href="${fileURL}" download="${fileObj.name}" style="position: absolute; top: 5px; right: 5px; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px;">下载</a>    
-                        <video src="${fileURL}" poster="${posterURL}" preload="none" style="width: 100%; height: auto; border-radius: 5px; cursor: pointer;" controls></video>  
-                            <h4 style="position: absolute; bottom: -80px; left: 0px; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-decoration: none;">${fileObj.name}</h4>
+                        <h4 style="position: absolute; bottom: -80px; left: 0px; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-decoration: none;">${fileObj.name}</h4>
+                        <video src="${fileURL}" poster="${posterURL}" preload="none" style="width: 100%; height: auto; border-radius: 5px; cursor: pointer;" controls></video>    
                         </div>
                     `;
                 }).join('')}
