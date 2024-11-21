@@ -605,12 +605,14 @@ function displayFilesWithPagination(files) {
     const docExtensions = ['docx', 'doc', 'pdf','dotx','txt'];
     const sheetExtensions = ['xlsx', 'xls'];
     const pptExtensions = ['ppt', 'pptx'];
+    const lnkExtensions = ['lnk'];
     const imageFiles = paginatedFiles.filter(file => imageExtensions.some(ext => file.toLowerCase().endsWith(ext)));
-    const videoFiles = paginatedFiles.filter(file => videoExtensions.some(ext => file.toLowerCase().endsWith(ext)));
-    const docFiles = paginatedFiles.filter(file => docExtensions.some(ext => file.toLowerCase().endsWith(ext)));
-    const sheetFiles = paginatedFiles.filter(file => sheetExtensions.some(ext => file.toLowerCase().endsWith(ext)));
-    const pptFiles = paginatedFiles.filter(file => pptExtensions.some(ext => file.toLowerCase().endsWith(ext)));
-    const otherFiles = paginatedFiles.filter(file => !imageExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !videoExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !docExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !sheetExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !pptExtensions.some(ext => file.toLowerCase().endsWith(ext)));
+    const videoFiles = paginatedFiles.filter(file => videoExtensions.some(ext => file.toLowerCase().endswith(ext)));
+    const docFiles = paginatedFiles.filter(file => docExtensions.some(ext => file.toLowerCase().endswith(ext)));
+    const sheetFiles = paginatedFiles.filter(file => sheetExtensions.some(ext => file.toLowerCase().endswith(ext)));
+    const pptFiles = paginatedFiles.filter(file => pptExtensions.some(ext => file.toLowerCase().endswith(ext)));
+    const lnkFiles = paginatedFiles.filter(file => lnkExtensions.some(ext => file.toLowerCase().endswith(ext)));
+    const otherFiles = paginatedFiles.filter(file => !imageExtensions.some(ext => file.toLowerCase().endswith(ext)) && !videoExtensions.some(ext => file.toLowerCase().endswith(ext)) && !docExtensions.some(ext => file.toLowerCase().endswith(ext)) && !sheetExtensions.some(ext => file.toLowerCase().endswith(ext)) && !pptExtensions.some(ext => file.toLowerCase().endswith(ext)) && !lnkExtensions.some(ext => file.toLowerCase().endswith(ext)));
 
     let imageGallery = '';
     if (imageFiles.length > 0) {
@@ -746,6 +748,32 @@ function displayFilesWithPagination(files) {
         `;
     }
 
+    // .lnk文件画廊
+    let lnkGallery = '';
+    if (lnkFiles.length > 0) {
+        // 如果有.lnk文件，创建一个包含.lnk文件的div
+        lnkGallery = `
+            <div class="lnks" style="column-count: 6; column-gap: 10px; margin-top: 20px;">
+                ${lnkFiles.map(file => {
+                    // 查找与文件路径匹配的文件对象
+                    const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
+                    // 返回每个.lnk文件的HTML结构，包括文件名和路径
+                    return `
+                        <div style="break-inside: avoid; margin-bottom: 10px; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+                            <div style="display: flex; align-items: center;">
+                                <div style="width: 24px; height: 24px; background-color: #f0f0f0; border: 1px solid #ccc; border-radius: 3px; margin-right: 10px;"></div>
+                                <div>
+                                    <h4 style="margin: 0 0 5px 0;">${fileObj.name}</h4>
+                                    <p style="margin: 0; word-break: break-all;">${fileObj.webkitRelativePath}</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+        `;
+    }
+
     // 其他文件列表
     let otherFilesList = '';
     if (otherFiles.length > 0) {
@@ -758,7 +786,7 @@ function displayFilesWithPagination(files) {
     }
 
     const searchResults = document.getElementById('localFileSearchResults');
-    searchResults.innerHTML = imageGallery + videoGallery + docGallery + sheetGallery + pptGallery + otherFilesList;
+    searchResults.innerHTML = imageGallery + videoGallery + docGallery + sheetGallery + pptGallery + lnkGallery + otherFilesList;
 
     // 初始化 Viewer.js
     if (imageFiles.length > 0) {
