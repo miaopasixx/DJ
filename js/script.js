@@ -552,7 +552,7 @@ function selectFolder() {
     document.body.appendChild(folderInput);
 
     folderInput.addEventListener('change', (event) => {
-        selectedFiles = Array.from(event.target.files);
+        selectedFiles = Array.from(event.target.files).filter(file => !file.name.startsWith('~$'));
     });
 
     // 触发文件夹选择
