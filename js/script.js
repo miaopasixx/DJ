@@ -850,3 +850,67 @@ function enlargePreview(fileURL) {
     const previewWindow = window.open(fileURL, '_blank');
     previewWindow.focus();
 }
+
+function goToPage(page) {
+    if (page < 1 || page > Math.ceil(selectedFiles.length / itemsPerPage)) return;
+    currentPage = page;
+    performLocalFileSearch();
+}
+
+function jumpToPage() {
+    const pageInput = document.getElementById('jumpToPageInput');
+    const page = parseInt(pageInput.value);
+    goToPage(page);
+}
+
+function setItemsPerPage() {
+    const itemsPerPageInput = document.getElementById('itemsPerPageInput');
+    itemsPerPage = parseInt(itemsPerPageInput.value);
+    currentPage = 1;
+    performLocalFileSearch();
+}
+
+function performVideoSearch() {
+    const searchResults = document.getElementById('localFileSearchResults');
+    const videoExtensions = ['mp4', 'webm', 'ogg'];
+    const imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+
+    const matchedFiles = selectedFiles
+        .map(file => file.webkitRelativePath)
+        .filter(fileName => videoExtensions.some(ext => fileName.toLowerCase().endsWith(ext)));
+
+    if (matchedFiles.length > 0) {
+        displayFilesWithPagination(matchedFiles);
+    } else {
+        searchResults.innerHTML = '<p>未找到匹配的视频文件</p>';
+    }
+}
+
+function performImageSearch() {
+    const searchResults = document.getElementById('localFileSearchResults');
+    const imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+
+    const matchedFiles = selectedFiles
+        .map(file => file.webkitRelativePath)
+        .filter(fileName => imageExtensions.some(ext => fileName.toLowerCase().endsWith(ext)));
+
+    if (matchedFiles.length > 0) {
+        displayFilesWithPagination(matchedFiles);
+    } else {
+        searchResults.innerHTML = '<p>未找到匹配的图片文件</p>';
+    }
+}
+
+function downloadFile(url, name) {
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+}
+
+function enlargePreview(fileURL) {
+    const previewWindow = window.open(fileURL, '_blank');
+    previewWindow.focus();
+}
