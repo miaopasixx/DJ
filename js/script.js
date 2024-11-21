@@ -766,16 +766,14 @@ function displayPaginationControls(totalPages, totalItems) {
     let paginationHTML = `
         <div style="margin-bottom: 10px;">
             【共${totalItems}条记录 当前第${currentPage}/${totalPages}页 每页${itemsPerPage}条】
-        </div>
-        <div>
-            <button onclick="goToPage(1)" style="margin: 0 5px; padding: 5px 10px;">首页</button>
-            <button onclick="goToPage(${currentPage - 1})" style="margin: 0 5px; padding: 5px 10px;" ${currentPage === 1 ? 'disabled' : ''}>上一页</button>
-            <button onclick="goToPage(${currentPage + 1})" style="margin: 0 5px; padding: 5px 10px;" ${currentPage === totalPages ? 'disabled' : ''}>下一页</button>
-            <button onclick="goToPage(${totalPages})" style="margin: 0 5px; padding: 5px 10px;">尾页</button>
+            【<span onclick="goToPage(1)" style="cursor: pointer; margin: 0 5px;">首页</span> | 
+            <span onclick="goToPage(${currentPage - 1})" style="cursor: pointer; margin: 0 5px;" ${currentPage === 1 ? 'style="color: gray;"' : ''}>上一页</span> | 
+            <span onclick="goToPage(${currentPage + 1})" style="cursor: pointer; margin: 0 5px;" ${currentPage === totalPages ? 'style="color: gray;"' : ''}>下一页</span> | 
+            <span onclick="goToPage(${totalPages})" style="cursor: pointer; margin: 0 5px;">尾页</span> | 
+            <span onclick="jumpToPage()" style="cursor: pointer; margin: 0 5px;">跳转到指定页</span> | 
+            <span onclick="setItemsPerPage()" style="cursor: pointer; margin: 0 5px;">设定每页记录数</span>】
             <input type="number" id="jumpToPageInput" min="1" max="${totalPages}" value="${currentPage}" style="width: 50px; text-align: center; margin: 0 5px;">
-            <button onclick="jumpToPage()" style="margin: 0 5px; padding: 5px 10px;">跳转到指定页</button>
             <input type="number" id="itemsPerPageInput" min="1" value="${itemsPerPage}" style="width: 50px; text-align: center; margin: 0 5px;">
-            <button onclick="setItemsPerPage()" style="margin: 0 5px; padding: 5px 10px;">设定每页记录数</button>
         </div>
     `;
 
