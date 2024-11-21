@@ -676,10 +676,21 @@ function performLocalFileSearch() {
                         const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
                         // 创建文件的URL
                         const fileURL = URL.createObjectURL(fileObj);
-                        // 返回每个表格的HTML结构，包括下载链接和嵌入的iframe
+                        // 使用SheetJS读取文件内容
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const data = new Uint8Array(e.target.result);
+                            const workbook = XLSX.read(data, { type: 'array' });
+                            const sheetName = workbook.SheetNames[0];
+                            const worksheet = workbook.Sheets[sheetName];
+                            const html = XLSX.utils.sheet_to_html(worksheet);
+                            document.getElementById(`sheet-${fileObj.name}`).innerHTML = html;
+                        };
+                        reader.readAsArrayBuffer(fileObj);
+                        // 返回每个表格的HTML结构，包括下载链接和嵌入的div
                         return `
                             <div style="break-inside: avoid; margin-bottom: 10px;">
-                                <iframe src="https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(fileURL)}" style="width: 100%; height: 200px; border: none; margin-top: 5px;"></iframe>
+                                <div id="sheet-${fileObj.name}" style="width: 100%; height: 200px; border: none; margin-top: 5px;"></div>
                                 <a href="${fileURL}" download="${fileObj.name}" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px;">${fileObj.name}</a>
                             </div>
                         `;
