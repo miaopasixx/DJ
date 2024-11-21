@@ -594,7 +594,7 @@ function performLocalFileSearch() {
                         const fileURL = URL.createObjectURL(fileObj);
                         return `
                             <div style="break-inside: avoid; margin-bottom: 10px;">
-                                <img src="${fileURL}" style="width: 100%; height: auto; border-radius: 5px;">
+                                <img src="${fileURL}" loading="lazy" style="width: 100%; height: auto; border-radius: 5px;">
                                 <a href="${fileURL}" download="${fileObj.name}" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px;">下载</a>
                                 <h4 style="color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px;">${fileObj.name}</h4>
                             </div>
@@ -663,7 +663,7 @@ function performVideoSearch() {
                     const fileURL = URL.createObjectURL(fileObj);
                     return `
                         <div style="position: relative; margin-bottom: 30px; width: calc(16.66% - 10px);">
-                            <video src="${fileURL}" preload="metadata" style="width: 100%; height: auto; border-radius: 5px; cursor: pointer;" controls></video>
+                            <video data-src="${fileURL}" preload="none" style="width: 100%; height: auto; border-radius: 5px; cursor: pointer;" controls></video>
                             <a href="${fileURL}" download="${fileObj.name}" style="position: absolute; top: 5px; right: 5px; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px;">下载</a>
                             <h4 style="position: absolute; bottom: -70px; left: 0px; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px;">${fileObj.name}</h4>
                         </div>
@@ -673,6 +673,20 @@ function performVideoSearch() {
         `;
 
         searchResults.innerHTML = videoGallery;
+
+        const videos = document.querySelectorAll('video[data-src]');
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const video = entry.target;
+                    video.src = video.getAttribute('data-src');
+                    video.removeAttribute('data-src');
+                    observer.unobserve(video);
+                }
+            });
+        });
+
+        videos.forEach(video => observer.observe(video));
     } else {
         searchResults.innerHTML = '<p>未找到匹配的视频文件</p>';
     }
@@ -694,7 +708,7 @@ function performImageSearch() {
                     const fileURL = URL.createObjectURL(fileObj);
                     return `
                         <div style="break-inside: avoid; margin-bottom: 10px;">
-                            <img src="${fileURL}" style="width: 100%; height: auto; border-radius: 5px;">
+                            <img src="${fileURL}" loading="lazy" style="width: 100%; height: auto; border-radius: 5px;">
                             <a href="${fileURL}" download="${fileObj.name}" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px;">下载</a>
                             <h4 style="color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px;">${fileObj.name}</h4>
                         </div>
