@@ -782,7 +782,7 @@ function displayPaginationControls(totalPages, totalItems) {
             【共${totalItems}条记录 当前第${currentPage}/${totalPages}页 每页${itemsPerPage}条】
             【<a href="javascript:void(0);" onclick="goToPage(1)" style="cursor: pointer; margin: 0 5px;">首页</a> | 
             <a href="javascript:void(0);" onclick="goToPage(${currentPage - 1})" style="cursor: pointer; margin: 0 5px;" ${currentPage === 1 ? 'style="color: gray;"' : ''}>上一页</a> | 
-            <a href="javascript:void(0);" onclick="goToPage(${currentPage + 1})" style="cursor: pointer; margin: 0 5px;" ${currentPage === totalPages ? 'style="color: gray;"' : ''}>下一页</a> | 
+            <a href="javascript:void(0);" onclick="goToPage(${currentPage + 1})" style="cursor: pointer; margin: 0 5px; ${currentPage === totalPages ? 'color: gray;' : ''}" ${currentPage === totalPages ? 'onclick="return false;"' : ''}>下一页</a> | 
             <a href="javascript:void(0);" onclick="goToPage(${totalPages})" style="cursor: pointer; margin: 0 5px;">尾页</a> | 
             <a href="javascript:void(0);" onclick="jumpToPage()" style="cursor: pointer; margin: 0 5px;">跳转到指定页</a> <input type="number" id="jumpToPageInput" min="1" max="${totalPages}" value="${currentPage}" style="width: 50px; text-align: center; margin: 0 5px; display: inline-block;" oninput="if(this.value > ${totalPages}) this.value = ${totalPages};"> | 
             <a href="javascript:void(0);" onclick="setItemsPerPage()" style="cursor: pointer; margin: 0 5px;">设定每页记录数</a> <input type="number" id="itemsPerPageInput" min="1" value="${itemsPerPage}" style="width: 50px; text-align: center; margin: 0 5px; display: inline-block;">】 
