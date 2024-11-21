@@ -702,8 +702,19 @@ function performVideoSearch() {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     const video = entry.target;
-                    video.src = video.getAttribute('data-src');
-                    video.removeAttribute('data-src');
+                    const videoURL = video.getAttribute('data-src');
+                    fetch(videoURL)
+                        .then(response => {
+                            if (response.ok) {
+                                video.src = videoURL;
+                                video.removeAttribute('data-src');
+                            } else {
+                                console.error('视频地址无效:', videoURL);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('无法获取视频地址:', videoURL, error);
+                        });
                     observer.unobserve(video);
                 }
             });
