@@ -594,7 +594,7 @@ function displayFilesWithPagination(files) {
 
     const imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
     const videoExtensions = ['mp4', 'webm', 'ogg'];
-    const docExtensions = ['docx', 'doc', 'pdf',];
+    const docExtensions = ['docx', 'doc', 'pdf'];
     const sheetExtensions = ['xlsx', 'xls'];
     const pptExtensions = ['ppt', 'pptx'];
     const imageFiles = paginatedFiles.filter(file => imageExtensions.some(ext => file.toLowerCase().endsWith(ext)));
