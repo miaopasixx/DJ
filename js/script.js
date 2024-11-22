@@ -920,16 +920,28 @@ function copyToClipboard(text) {
     // 将textarea元素从文档中移除
     document.body.removeChild(textarea);
 
+    // 检查是否已经存在相同文本的提示框
+    let notification = document.querySelector(`.notification[data-text="${text}"]`);
+    if (notification) {
+        // 如果存在，更新计数
+        const countBadge = notification.querySelector('.count-badge');
+        let count = parseInt(countBadge.innerText) + 1;
+        countBadge.innerText = count;
+        return;
+    }
+
     // 更新计数器
     notificationCount++;
 
     // 创建提示元素
-    const notification = document.createElement('div');
+    notification = document.createElement('div');
+    notification.className = 'notification';
+    notification.setAttribute('data-text', text);
     notification.innerText = `复制路径成功`;
     notification.style.position = 'fixed';
     notification.style.top = `${60 + (notificationCount - 1) * 60}px`; // 在sub-header下方并且每个提示框有间距
     notification.style.right = '20px';
-    notification.style.backgroundColor = '#4CAF50';
+    notification.style.backgroundColor = getRandomColor();
     notification.style.color = 'white';
     notification.style.padding = '15px 20px';
     notification.style.borderRadius = '8px';
@@ -941,7 +953,8 @@ function copyToClipboard(text) {
 
     // 创建计数显示元素
     const countBadge = document.createElement('span');
-    countBadge.innerText = ` ${notificationCount}`;
+    countBadge.className = 'count-badge';
+    countBadge.innerText = ` 1`;
     countBadge.style.backgroundColor = 'red';
     countBadge.style.color = 'white';
     countBadge.style.borderRadius = '50%';
@@ -971,4 +984,14 @@ function copyToClipboard(text) {
             notificationCount--; // 移除后减少计数
         }
     });
+}
+
+// 生成随机颜色的函数
+function getRandomColor() {
+    const letters = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
 }
