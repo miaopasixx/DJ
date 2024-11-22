@@ -958,13 +958,14 @@ function copyToClipboard(text) {
     countBadge.style.backgroundColor = 'red';
     countBadge.style.color = 'white';
     countBadge.style.borderRadius = '50%';
-    countBadge.style.padding = '4px 8px'; // 确保圆形
+    countBadge.style.width = '20px'; // 确保圆形
+    countBadge.style.height = '20px'; // 确保圆形
     countBadge.style.marginLeft = '10px';
     countBadge.style.fontSize = '12px';
     countBadge.style.fontWeight = 'bold';
     countBadge.style.display = 'inline-block';
     countBadge.style.textAlign = 'center';
-    countBadge.style.minWidth = '20px'; // 确保圆形
+    countBadge.style.lineHeight = '20px'; // 确保文本垂直居中
 
     // 将计数显示元素添加到提示元素中
     notification.appendChild(countBadge);
