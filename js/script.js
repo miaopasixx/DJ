@@ -614,11 +614,14 @@ function displayFilesWithPagination(files) {
     const lnkFiles = paginatedFiles.filter(file => lnkExtensions.some(ext => file.toLowerCase().endsWith(ext)));
     const otherFiles = paginatedFiles.filter(file => !imageExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !videoExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !docExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !sheetExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !pptExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !lnkExtensions.some(ext => file.toLowerCase().endsWith(ext)));
 
+    const fileTypes = [imageFiles, videoFiles, docFiles, sheetFiles, pptFiles, lnkFiles, otherFiles].filter(type => type.length > 0);
+    const itemsPerType = fileTypes.length > 1 ? Math.ceil(itemsPerPage / 2) : itemsPerPage;
+
     let imageGallery = '';
     if (imageFiles.length > 0) {
         imageGallery = `
             <div class="images" style="column-count: 6; column-gap: 10px; margin-top: 20px;">
-                ${imageFiles.map(file => {
+                ${imageFiles.slice(0, itemsPerType).map(file => {
                     const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
                     const fileURL = URL.createObjectURL(fileObj);
                     return `
@@ -637,7 +640,7 @@ function displayFilesWithPagination(files) {
     if (videoFiles.length > 0) {
         videoGallery = `
             <div style="display: flex; flex-wrap: wrap; row-gap: 40px;column-gap: 10px; margin-top: 20px;">
-                ${videoFiles.map(file => {
+                ${videoFiles.slice(0, itemsPerType).map(file => {
                     const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
                     const fileURL = URL.createObjectURL(fileObj);
 
@@ -671,7 +674,7 @@ function displayFilesWithPagination(files) {
         // 如果有文档文件，创建一个包含文档的div
         docGallery = `
             <div style="display: flex; flex-wrap: wrap; row-gap: 40px; column-gap: 10px; margin-top: 20px;">
-                ${docFiles.map(file => {
+                ${docFiles.slice(0, itemsPerType).map(file => {
                     // 查找与文件路径匹配的文件对象
                     const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
                     // 创建文件的URL
@@ -695,7 +698,7 @@ function displayFilesWithPagination(files) {
         // 如果有表格文件，创建一个包含表格的div
         sheetGallery = `
             <div style="display: flex; flex-wrap: wrap; row-gap: 40px; column-gap: 10px; margin-top: 20px;">
-                ${sheetFiles.map(file => {
+                ${sheetFiles.slice(0, itemsPerType).map(file => {
                     // 查找与文件路径匹配的文件对象
                     const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
                     // 创建文件的URL
@@ -730,7 +733,7 @@ function displayFilesWithPagination(files) {
         // 如果有演示文稿文件，创建一个包含演示文稿的div
         pptGallery = `
             <div style="display: flex; flex-wrap: wrap; row-gap: 40px; column-gap: 10px; margin-top: 20px;">
-                ${pptFiles.map(file => {
+                ${pptFiles.slice(0, itemsPerType).map(file => {
                     // 查找与文件路径匹配的文件对象
                     const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
                     // 创建文件的URL
@@ -753,7 +756,7 @@ function displayFilesWithPagination(files) {
     if (lnkFiles.length > 0) {
         lnkGallery = `
             <div style="display: flex; flex-wrap: wrap; row-gap: 40px; column-gap: 10px; margin-top: 20px;">
-                ${lnkFiles.map(file => {
+                ${lnkFiles.slice(0, itemsPerType).map(file => {
                     const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
                     const filePath = fileObj.webkitRelativePath;
                     return `
@@ -774,7 +777,7 @@ function displayFilesWithPagination(files) {
         // 如果有其他类型的文件，创建一个列表展示
         otherFilesList = `
             <ul style="margin-top: 20px;">
-                ${otherFiles.map(file => `<li>${file}</li>`).join('')}
+                ${otherFiles.slice(0, itemsPerType).map(file => `<li>${file}</li>`).join('')}
             </ul>
         `;
     }
