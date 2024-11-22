@@ -922,14 +922,17 @@ function copyToClipboard(text) {
     const notification = document.createElement('div');
     notification.innerText = '复制路径成功';
     notification.style.position = 'fixed';
-    notification.style.top = '10px';
-    notification.style.right = '10px';
+    notification.style.top = '20px';
+    notification.style.right = '20px';
     notification.style.backgroundColor = '#4CAF50';
     notification.style.color = 'white';
-    notification.style.padding = '10px';
-    notification.style.borderRadius = '5px';
+    notification.style.padding = '15px 20px';
+    notification.style.borderRadius = '8px';
+    notification.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.1)';
     notification.style.zIndex = '1000';
     notification.style.cursor = 'pointer';
+    notification.style.fontSize = '14px';
+    notification.style.fontWeight = 'bold';
 
     // 将提示元素添加到文档中
     document.body.appendChild(notification);
