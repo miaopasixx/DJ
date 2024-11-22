@@ -758,7 +758,7 @@ function displayFilesWithPagination(files) {
                     const filePath = fileObj.webkitRelativePath;
                     return `
                         <div style="break-inside: avoid; margin-bottom: 10px; position: relative;">
-                            <img src="img/folder-icon.png" style="width: 100%; height: auto; border-radius: 5px;">
+                            <img src="img/folder-icon.svg" style="width: 100%; height: auto; border-radius: 5px;">
                             <h4 style="color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px; cursor: pointer; text-decoration: none;" onclick="copyToClipboard('${filePath}')">${fileObj.name}</h4>
                             <div style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0, 0, 0, 0.7); color: white; padding: 5px; border-radius: 3px; text-align: center; display: none;" class="file-path">${filePath}</div>
                         </div>
