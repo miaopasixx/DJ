@@ -904,6 +904,8 @@ function enlargePreview(fileURL) {
 }
 
 // 复制文本到剪贴板的函数
+let notificationCount = 0; // 计数器初始化
+
 function copyToClipboard(text) {
     // 创建一个临时的textarea元素
     const textarea = document.createElement('textarea');
@@ -918,11 +920,14 @@ function copyToClipboard(text) {
     // 将textarea元素从文档中移除
     document.body.removeChild(textarea);
 
+    // 更新计数器
+    notificationCount++;
+
     // 创建提示元素
     const notification = document.createElement('div');
-    notification.innerText = '复制路径成功';
+    notification.innerText = `复制路径成功`;
     notification.style.position = 'fixed';
-    notification.style.top = '20px';
+    notification.style.top = `${60 + (notificationCount - 1) * 60}px`; // 在sub-header下方并且每个提示框有间距
     notification.style.right = '20px';
     notification.style.backgroundColor = '#4CAF50';
     notification.style.color = 'white';
@@ -934,6 +939,20 @@ function copyToClipboard(text) {
     notification.style.fontSize = '14px';
     notification.style.fontWeight = 'bold';
 
+    // 创建计数显示元素
+    const countBadge = document.createElement('span');
+    countBadge.innerText = ` ${notificationCount}`;
+    countBadge.style.backgroundColor = 'red';
+    countBadge.style.color = 'white';
+    countBadge.style.borderRadius = '50%';
+    countBadge.style.padding = '2px 6px';
+    countBadge.style.marginLeft = '10px';
+    countBadge.style.fontSize = '12px';
+    countBadge.style.fontWeight = 'bold';
+
+    // 将计数显示元素添加到提示元素中
+    notification.appendChild(countBadge);
+
     // 将提示元素添加到文档中
     document.body.appendChild(notification);
 
@@ -941,6 +960,7 @@ function copyToClipboard(text) {
     setTimeout(() => {
         if (notification.parentNode) {
             notification.parentNode.removeChild(notification);
+            notificationCount--; // 移除后减少计数
         }
     }, 5000);
 
@@ -948,6 +968,7 @@ function copyToClipboard(text) {
     notification.addEventListener('click', () => {
         if (notification.parentNode) {
             notification.parentNode.removeChild(notification);
+            notificationCount--; // 移除后减少计数
         }
     });
 }
