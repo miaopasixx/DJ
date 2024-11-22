@@ -916,4 +916,34 @@ function copyToClipboard(text) {
     document.execCommand('copy');
     // 将textarea元素从文档中移除
     document.body.removeChild(textarea);
+
+    // 创建提示元素
+    const notification = document.createElement('div');
+    notification.innerText = '复制路径成功';
+    notification.style.position = 'fixed';
+    notification.style.top = '10px';
+    notification.style.right = '10px';
+    notification.style.backgroundColor = '#4CAF50';
+    notification.style.color = 'white';
+    notification.style.padding = '10px';
+    notification.style.borderRadius = '5px';
+    notification.style.zIndex = '1000';
+    notification.style.cursor = 'pointer';
+
+    // 将提示元素添加到文档中
+    document.body.appendChild(notification);
+
+    // 5秒后自动移除提示元素
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.parentNode.removeChild(notification);
+        }
+    }, 5000);
+
+    // 点击提示元素时移除
+    notification.addEventListener('click', () => {
+        if (notification.parentNode) {
+            notification.parentNode.removeChild(notification);
+        }
+    });
 }
