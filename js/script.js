@@ -760,7 +760,6 @@ function displayFilesWithPagination(files) {
                         <div style="break-inside: avoid; margin-bottom: 10px; position: relative;">
                             <img src="img/folder-icon.svg" style="width: 100%; height: auto; border-radius: 5px;">
                             <h4 style="color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px; cursor: pointer; text-decoration: none;" onclick="copyToClipboard('${filePath}')">${fileObj.name}</h4>
-                            <div style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0, 0, 0, 0.7); color: white; padding: 5px; border-radius: 3px; text-align: center; display: none;" class="file-path">${filePath}</div>
                         </div>
                     `;
                 }).join('')}
@@ -792,19 +791,6 @@ function displayFilesWithPagination(files) {
     }
 
     displayPaginationControls(totalPages, files.length);
-
-    // 添加鼠标悬停事件
-    const lnkItems = document.querySelectorAll('.lnks div');
-    lnkItems.forEach(item => {
-        item.addEventListener('mouseover', () => {
-            const filePathDiv = item.querySelector('.file-path');
-            filePathDiv.style.display = 'block';
-        });
-        item.addEventListener('mouseout', () => {
-            const filePathDiv = item.querySelector('.file-path');
-            filePathDiv.style.display = 'none';
-        });
-    });
 }
 
 function displayPaginationControls(totalPages, totalItems) {
@@ -892,25 +878,42 @@ function performImageSearch() {
     }
 }
 
+// 下载文件的函数
 function downloadFile(url, name) {
+    // 创建一个<a>元素
     const a = document.createElement('a');
+    // 设置<a>元素的href属性为文件的URL
     a.href = url;
+    // 设置<a>元素的download属性为文件的名称
     a.download = name;
+    // 将<a>元素添加到文档中
     document.body.appendChild(a);
+    // 模拟点击<a>元素以触发下载
     a.click();
+    // 下载完成后将<a>元素从文档中移除
     document.body.removeChild(a);
 }
 
+// 放大预览文件的函数
 function enlargePreview(fileURL) {
+    // 打开一个新的窗口显示文件的URL
     const previewWindow = window.open(fileURL, '_blank');
+    // 将新窗口置于前台
     previewWindow.focus();
 }
 
+// 复制文本到剪贴板的函数
 function copyToClipboard(text) {
+    // 创建一个临时的textarea元素
     const textarea = document.createElement('textarea');
+    // 将需要复制的文本赋值给textarea的值
     textarea.value = text;
+    // 将textarea元素添加到文档中
     document.body.appendChild(textarea);
+    // 选中textarea中的文本
     textarea.select();
+    // 执行复制命令
     document.execCommand('copy');
+    // 将textarea元素从文档中移除
     document.body.removeChild(textarea);
 }
