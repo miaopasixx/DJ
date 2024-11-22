@@ -992,6 +992,6 @@ function copyToClipboard(text) {
 
 // 生成淡雅清新颜色的函数
 function getElegantColor() {
-    const colors = ['#A8D5BA', '#F5E1A4', '#F8B195', '#C06C84', '#6C5B7B', '#355C7D'];
+    const colors = ['#A9CCE3', '#AED6F1', '#D6EAF8', '#EBF5FB', '#F4F6F7', '#D5DBDB'];
     return colors[Math.floor(Math.random() * colors.length)];
 }
