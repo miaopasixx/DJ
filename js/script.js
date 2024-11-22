@@ -605,12 +605,14 @@ function displayFilesWithPagination(files) {
     const docExtensions = ['docx', 'doc', 'pdf','dotx','txt'];
     const sheetExtensions = ['xlsx', 'xls'];
     const pptExtensions = ['ppt', 'pptx'];
+    const lnkExtensions = ['lnk'];
     const imageFiles = paginatedFiles.filter(file => imageExtensions.some(ext => file.toLowerCase().endsWith(ext)));
     const videoFiles = paginatedFiles.filter(file => videoExtensions.some(ext => file.toLowerCase().endsWith(ext)));
     const docFiles = paginatedFiles.filter(file => docExtensions.some(ext => file.toLowerCase().endsWith(ext)));
     const sheetFiles = paginatedFiles.filter(file => sheetExtensions.some(ext => file.toLowerCase().endsWith(ext)));
     const pptFiles = paginatedFiles.filter(file => pptExtensions.some(ext => file.toLowerCase().endsWith(ext)));
-    const otherFiles = paginatedFiles.filter(file => !imageExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !videoExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !docExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !sheetExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !pptExtensions.some(ext => file.toLowerCase().endsWith(ext)));
+    const lnkFiles = paginatedFiles.filter(file => lnkExtensions.some(ext => file.toLowerCase().endsWith(ext)));
+    const otherFiles = paginatedFiles.filter(file => !imageExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !videoExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !docExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !sheetExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !pptExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !lnkExtensions.some(ext => file.toLowerCase().endsWith(ext)));
 
     let imageGallery = '';
     if (imageFiles.length > 0) {
@@ -746,6 +748,26 @@ function displayFilesWithPagination(files) {
         `;
     }
 
+    // 快捷方式文件画廊
+    let lnkGallery = '';
+    if (lnkFiles.length > 0) {
+        lnkGallery = `
+            <div class="lnks" style="column-count: 6; column-gap: 10px; margin-top: 20px;">
+                ${lnkFiles.map(file => {
+                    const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
+                    const filePath = fileObj.webkitRelativePath;
+                    return `
+                        <div style="break-inside: avoid; margin-bottom: 10px; position: relative;">
+                            <img src="img/folder-icon.png" style="width: 100%; height: auto; border-radius: 5px;">
+                            <h4 style="color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px; cursor: pointer; text-decoration: none;" onclick="copyToClipboard('${filePath}')">${fileObj.name}</h4>
+                            <div style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0, 0, 0, 0.7); color: white; padding: 5px; border-radius: 3px; text-align: center; display: none;" class="file-path">${filePath}</div>
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+        `;
+    }
+
     // 其他文件列表
     let otherFilesList = '';
     if (otherFiles.length > 0) {
@@ -758,7 +780,7 @@ function displayFilesWithPagination(files) {
     }
 
     const searchResults = document.getElementById('localFileSearchResults');
-    searchResults.innerHTML = imageGallery + videoGallery + docGallery + sheetGallery + pptGallery + otherFilesList;
+    searchResults.innerHTML = imageGallery + videoGallery + docGallery + sheetGallery + pptGallery + lnkGallery + otherFilesList;
 
     // 初始化 Viewer.js
     if (imageFiles.length > 0) {
@@ -770,6 +792,19 @@ function displayFilesWithPagination(files) {
     }
 
     displayPaginationControls(totalPages, files.length);
+
+    // 添加鼠标悬停事件
+    const lnkItems = document.querySelectorAll('.lnks div');
+    lnkItems.forEach(item => {
+        item.addEventListener('mouseover', () => {
+            const filePathDiv = item.querySelector('.file-path');
+            filePathDiv.style.display = 'block';
+        });
+        item.addEventListener('mouseout', () => {
+            const filePathDiv = item.querySelector('.file-path');
+            filePathDiv.style.display = 'none';
+        });
+    });
 }
 
 function displayPaginationControls(totalPages, totalItems) {
@@ -869,4 +904,13 @@ function downloadFile(url, name) {
 function enlargePreview(fileURL) {
     const previewWindow = window.open(fileURL, '_blank');
     previewWindow.focus();
+}
+
+function copyToClipboard(text) {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
 }
