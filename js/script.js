@@ -941,7 +941,7 @@ function copyToClipboard(text) {
     notification.style.position = 'fixed';
     notification.style.top = `${60 + (notificationCount - 1) * 60}px`; // 在sub-header下方并且每个提示框有间距
     notification.style.right = '20px';
-    notification.style.backgroundColor = getRandomColor();
+    notification.style.backgroundColor = getElegantColor();
     notification.style.color = 'white';
     notification.style.padding = '15px 20px';
     notification.style.borderRadius = '8px';
@@ -958,7 +958,7 @@ function copyToClipboard(text) {
     countBadge.style.backgroundColor = 'red';
     countBadge.style.color = 'white';
     countBadge.style.borderRadius = '50%';
-    countBadge.style.padding = '2px 6px';
+    countBadge.style.padding = '4px'; // 确保圆形
     countBadge.style.marginLeft = '10px';
     countBadge.style.fontSize = '12px';
     countBadge.style.fontWeight = 'bold';
@@ -986,12 +986,8 @@ function copyToClipboard(text) {
     });
 }
 
-// 生成随机颜色的函数
-function getRandomColor() {
-    const letters = '0123456789ABCDEF';
-    let color = '#';
-    for (let i = 0; i < 6; i++) {
-        color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
+// 生成淡雅清新颜色的函数
+function getElegantColor() {
+    const colors = ['#A8D5BA', '#F5E1A4', '#F8B195', '#C06C84', '#6C5B7B', '#355C7D'];
+    return colors[Math.floor(Math.random() * colors.length)];
 }
