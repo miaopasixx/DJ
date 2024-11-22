@@ -670,7 +670,7 @@ function displayFilesWithPagination(files) {
     if (docFiles.length > 0) {
         // 如果有文档文件，创建一个包含文档的div
         docGallery = `
-            <div class="docs" style="column-count: 6; column-gap: 10px; margin-top: 20px;">
+            <div style="display: flex; flex-wrap: wrap; row-gap: 40px; column-gap: 10px; margin-top: 20px;">
                 ${docFiles.map(file => {
                     // 查找与文件路径匹配的文件对象
                     const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
@@ -678,7 +678,7 @@ function displayFilesWithPagination(files) {
                     const fileURL = URL.createObjectURL(fileObj);
                     // 返回每个文档的HTML结构，包括下载链接和嵌入的iframe
                     return `
-                        <div style="break-inside: avoid; margin-bottom: 10px;">
+                        <div style="position: relative; margin-bottom: 30px; width: calc(16.66% - 10px);">
                             <iframe src="${fileURL}" style="width: 100%; height: 297px; border: none; margin-top: 5px;"></iframe>
                             <button onclick="enlargePreview('${fileURL}')" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px; text-decoration: none; width: 100%;">放大预览</button>
                             <a href="${fileURL}" download="${fileObj.name}" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px; text-decoration: none; width: 100%;">${fileObj.name}</a>
@@ -694,7 +694,7 @@ function displayFilesWithPagination(files) {
     if (sheetFiles.length > 0) {
         // 如果有表格文件，创建一个包含表格的div
         sheetGallery = `
-            <div class="sheets" style="column-count: 6; column-gap: 10px; margin-top: 20px;">
+            <div style="display: flex; flex-wrap: wrap; row-gap: 40px; column-gap: 10px; margin-top: 20px;">
                 ${sheetFiles.map(file => {
                     // 查找与文件路径匹配的文件对象
                     const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
@@ -713,7 +713,7 @@ function displayFilesWithPagination(files) {
                     reader.readAsArrayBuffer(fileObj);
                     // 返回每个表格的HTML结构，包括下载链接和嵌入的div
                     return `
-                        <div style="break-inside: avoid; margin-bottom: 10px;">
+                        <div style="position: relative; margin-bottom: 30px; width: calc(16.66% - 10px);">
                             <div id="sheet-${fileObj.name}" style="width: 100%; height: 297px; border: none; margin-top: 5px; overflow: hidden;"></div>
                             <button onclick="enlargePreview('${fileURL}')" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px; text-decoration: none; width: 100%;">放大预览</button>
                             <a href="${fileURL}" download="${fileObj.name}" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px; text-decoration: none; width: 100%;">${fileObj.name}</a>
@@ -729,7 +729,7 @@ function displayFilesWithPagination(files) {
     if (pptFiles.length > 0) {
         // 如果有演示文稿文件，创建一个包含演示文稿的div
         pptGallery = `
-            <div class="ppts" style="column-count: 6; column-gap: 10px; margin-top: 20px;">
+            <div style="display: flex; flex-wrap: wrap; row-gap: 40px; column-gap: 10px; margin-top: 20px;">
                 ${pptFiles.map(file => {
                     // 查找与文件路径匹配的文件对象
                     const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
@@ -737,7 +737,7 @@ function displayFilesWithPagination(files) {
                     const fileURL = URL.createObjectURL(fileObj);
                     // 返回每个演示文稿的HTML结构，包括下载链接和嵌入的iframe
                     return `
-                        <div style="break-inside: avoid; margin-bottom: 10px;">
+                        <div style="position: relative; margin-bottom: 30px; width: calc(16.66% - 10px);">
                             <iframe src="${fileURL}" style="width: 100%; height: 297px; border: none; margin-top: 5px;"></iframe>
                             <button onclick="enlargePreview('${fileURL}')" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px; text-decoration: none; width: 100%;">放大预览</button>
                             <a href="${fileURL}" download="${fileObj.name}" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px; text-decoration: none; width: 100%;">${fileObj.name}</a>
@@ -752,13 +752,13 @@ function displayFilesWithPagination(files) {
     let lnkGallery = '';
     if (lnkFiles.length > 0) {
         lnkGallery = `
-            <div class="lnks" style="column-count: 6; column-gap: 10px; margin-top: 20px;">
+            <div style="display: flex; flex-wrap: wrap; row-gap: 40px; column-gap: 10px; margin-top: 20px;">
                 ${lnkFiles.map(file => {
                     const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
                     const filePath = fileObj.webkitRelativePath;
                     return `
-                        <div style="break-inside: avoid; margin-bottom: 10px; position: relative;">
-                            <img src="img/folder-icon.svg" style="width: 80%; height: auto; border-radius: 5px;">
+                        <div style="position: relative; margin-bottom: 30px; width: calc(16.66% - 10px); text-align: center;">
+                            <img src="img/folder-icon.svg" style="width: 80%; height: auto; border-radius: 5px; display: block; margin: 0 auto;">
                             <h4 style="color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px; cursor: pointer; text-decoration: none;" onclick="copyToClipboard('${filePath}')">${fileObj.name}</h4>
                             <div style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0, 0, 0, 0.7); color: white; padding: 5px; border-radius: 3px; text-align: center; display: none;" class="file-path">${filePath}</div>
                         </div>
