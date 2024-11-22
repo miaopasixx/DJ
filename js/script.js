@@ -464,7 +464,7 @@ function adjustPath(path) {
 // 本地文件查询
 let selectedFiles = [];
 let currentPage = 1;
-let itemsPerPage = 12;
+let itemsPerPage = 12; // 默认展示12个
 let currentSearchType = 'local'; // 新增变量来记录当前的搜索类型
 
 function displayLocalFileSearch() {
