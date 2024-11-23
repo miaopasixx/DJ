@@ -614,18 +614,69 @@ function displayFilesWithPagination(files) {
     const lnkFiles = paginatedFiles.filter(file => lnkExtensions.some(ext => file.toLowerCase().endsWith(ext)));
     const otherFiles = paginatedFiles.filter(file => !imageExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !videoExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !docExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !sheetExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !pptExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !lnkExtensions.some(ext => file.toLowerCase().endsWith(ext)));
 
-    let imageGallery = '';
-    if (imageFiles.length > 0) {
-        imageGallery = `
-            <div class="images" style="column-count: 6; column-gap: 10px; margin-top: 20px;">
-                ${imageFiles.map(file => {
+    // 文档画廊
+    let docGallery = '';
+    if (docFiles.length > 0) {
+        docGallery = `
+            <div style="display: flex; flex-wrap: wrap; row-gap: 40px; column-gap: 10px; margin-top: 20px;">
+                ${docFiles.map(file => {
                     const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
                     const fileURL = URL.createObjectURL(fileObj);
                     return `
-                        <div style="break-inside: avoid; margin-bottom: 10px;">
-                            <img src="${fileURL}" loading="lazy" style="width: 100%; height: auto; border-radius: 5px;">
-                            <a href="${fileURL}" download="${fileObj.name}" style="display: none;"></a>
-                            <h4 onclick="downloadFile('${fileURL}', '${fileObj.name}')" style="color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px; cursor: pointer; text-decoration: none;">${fileObj.name}</h4>
+                        <div style="position: relative; margin-bottom: 30px; width: calc(16.66% - 10px);">
+                            <iframe src="${fileURL}" style="width: 100%; height: 297px; border: none; margin-top: 5px;"></iframe>
+                            <button onclick="enlargePreview('${fileURL}')" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px; text-decoration: none; width: 100%;">放大预览</button>
+                            <a href="${fileURL}" download="${fileObj.name}" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px; text-decoration: none; width: 100%;">${fileObj.name}</a>
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+        `;
+    }
+
+    // 表格画廊
+    let sheetGallery = '';
+    if (sheetFiles.length > 0) {
+        sheetGallery = `
+            <div style="display: flex; flex-wrap: wrap; row-gap: 40px; column-gap: 10px; margin-top: 20px;">
+                ${sheetFiles.map(file => {
+                    const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
+                    const fileURL = URL.createObjectURL(fileObj);
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const data = new Uint8Array(e.target.result);
+                        const workbook = XLSX.read(data, { type: 'array' });
+                        const sheetName = workbook.SheetNames[0];
+                        const worksheet = workbook.Sheets[sheetName];
+                        const html = XLSX.utils.sheet_to_html(worksheet);
+                        document.getElementById(`sheet-${fileObj.name}`).innerHTML = html;
+                    };
+                    reader.readAsArrayBuffer(fileObj);
+                    return `
+                        <div style="position: relative; margin-bottom: 30px; width: calc(16.66% - 10px);">
+                            <div id="sheet-${fileObj.name}" style="width: 100%; height: 297px; border: none; margin-top: 5px; overflow: hidden;"></div>
+                            <button onclick="enlargePreview('${fileURL}')" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px; text-decoration: none; width: 100%;">放大预览</button>
+                            <a href="${fileURL}" download="${fileObj.name}" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px; text-decoration: none; width: 100%;">${fileObj.name}</a>
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+        `;
+    }
+
+    // 演示文稿画廊
+    let pptGallery = '';
+    if (pptFiles.length > 0) {
+        pptGallery = `
+            <div style="display: flex; flex-wrap: wrap; row-gap: 40px; column-gap: 10px; margin-top: 20px;">
+                ${pptFiles.map(file => {
+                    const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
+                    const fileURL = URL.createObjectURL(fileObj);
+                    return `
+                        <div style="position: relative; margin-bottom: 30px; width: calc(16.66% - 10px);">
+                            <iframe src="${fileURL}" style="width: 100%; height: 297px; border: none; margin-top: 5px;"></iframe>
+                            <button onclick="enlargePreview('${fileURL}')" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px; text-decoration: none; width: 100%;">放大预览</button>
+                            <a href="${fileURL}" download="${fileObj.name}" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px; text-decoration: none; width: 100%;">${fileObj.name}</a>
                         </div>
                     `;
                 }).join('')}
@@ -641,9 +692,7 @@ function displayFilesWithPagination(files) {
                     const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
                     const fileURL = URL.createObjectURL(fileObj);
 
-                    // 获取视频所在文件夹的路径
                     const folderPath = file.substring(0, file.lastIndexOf('/'));
-                    // 找到“照片丨”文件夹中的第一个图片文件
                     const photoFolderPath = `${folderPath}/照片丨`;
                     const firstImageFile = selectedFiles.find(f => {
                         const filePath = f.webkitRelativePath;
@@ -663,25 +712,18 @@ function displayFilesWithPagination(files) {
         `;
     }
 
-    // 这段代码用于生成不同类型文件的展示画廊，包括文档、表格、演示文稿和其他文件。
-
-    // 文档画廊
-    let docGallery = '';
-    if (docFiles.length > 0) {
-        // 如果有文档文件，创建一个包含文档的div
-        docGallery = `
-            <div style="display: flex; flex-wrap: wrap; row-gap: 40px; column-gap: 10px; margin-top: 20px;">
-                ${docFiles.map(file => {
-                    // 查找与文件路径匹配的文件对象
+    let imageGallery = '';
+    if (imageFiles.length > 0) {
+        imageGallery = `
+            <div class="images" style="column-count: 6; column-gap: 10px; margin-top: 20px;">
+                ${imageFiles.map(file => {
                     const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
-                    // 创建文件的URL
                     const fileURL = URL.createObjectURL(fileObj);
-                    // 返回每个文档的HTML结构，包括下载链接和嵌入的iframe
                     return `
-                        <div style="position: relative; margin-bottom: 30px; width: calc(16.66% - 10px);">
-                            <iframe src="${fileURL}" style="width: 100%; height: 297px; border: none; margin-top: 5px;"></iframe>
-                            <button onclick="enlargePreview('${fileURL}')" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px; text-decoration: none; width: 100%;">放大预览</button>
-                            <a href="${fileURL}" download="${fileObj.name}" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px; text-decoration: none; width: 100%;">${fileObj.name}</a>
+                        <div style="break-inside: avoid; margin-bottom: 10px;">
+                            <img src="${fileURL}" loading="lazy" style="width: 100%; height: auto; border-radius: 5px;">
+                            <a href="${fileURL}" download="${fileObj.name}" style="display: none;"></a>
+                            <h4 onclick="downloadFile('${fileURL}', '${fileObj.name}')" style="color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px; cursor: pointer; text-decoration: none;">${fileObj.name}</h4>
                         </div>
                     `;
                 }).join('')}
@@ -689,66 +731,6 @@ function displayFilesWithPagination(files) {
         `;
     }
 
-    // 表格画廊
-    let sheetGallery = '';
-    if (sheetFiles.length > 0) {
-        // 如果有表格文件，创建一个包含表格的div
-        sheetGallery = `
-            <div style="display: flex; flex-wrap: wrap; row-gap: 40px; column-gap: 10px; margin-top: 20px;">
-                ${sheetFiles.map(file => {
-                    // 查找与文件路径匹配的文件对象
-                    const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
-                    // 创建文件的URL
-                    const fileURL = URL.createObjectURL(fileObj);
-                    // 使用SheetJS读取文件内容
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        const data = new Uint8Array(e.target.result);
-                        const workbook = XLSX.read(data, { type: 'array' });
-                        const sheetName = workbook.SheetNames[0];
-                        const worksheet = workbook.Sheets[sheetName];
-                        const html = XLSX.utils.sheet_to_html(worksheet);
-                        document.getElementById(`sheet-${fileObj.name}`).innerHTML = html;
-                    };
-                    reader.readAsArrayBuffer(fileObj);
-                    // 返回每个表格的HTML结构，包括下载链接和嵌入的div
-                    return `
-                        <div style="position: relative; margin-bottom: 30px; width: calc(16.66% - 10px);">
-                            <div id="sheet-${fileObj.name}" style="width: 100%; height: 297px; border: none; margin-top: 5px; overflow: hidden;"></div>
-                            <button onclick="enlargePreview('${fileURL}')" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px; text-decoration: none; width: 100%;">放大预览</button>
-                            <a href="${fileURL}" download="${fileObj.name}" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px; text-decoration: none; width: 100%;">${fileObj.name}</a>
-                        </div>
-                    `;
-                }).join('')}
-            </div>
-        `;
-    }
-
-    // 演示文稿画廊
-    let pptGallery = '';
-    if (pptFiles.length > 0) {
-        // 如果有演示文稿文件，创建一个包含演示文稿的div
-        pptGallery = `
-            <div style="display: flex; flex-wrap: wrap; row-gap: 40px; column-gap: 10px; margin-top: 20px;">
-                ${pptFiles.map(file => {
-                    // 查找与文件路径匹配的文件对象
-                    const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
-                    // 创建文件的URL
-                    const fileURL = URL.createObjectURL(fileObj);
-                    // 返回每个演示文稿的HTML结构，包括下载链接和嵌入的iframe
-                    return `
-                        <div style="position: relative; margin-bottom: 30px; width: calc(16.66% - 10px);">
-                            <iframe src="${fileURL}" style="width: 100%; height: 297px; border: none; margin-top: 5px;"></iframe>
-                            <button onclick="enlargePreview('${fileURL}')" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px; text-decoration: none; width: 100%;">放大预览</button>
-                            <a href="${fileURL}" download="${fileObj.name}" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px; text-decoration: none; width: 100%;">${fileObj.name}</a>
-                        </div>
-                    `;
-                }).join('')}
-            </div>
-        `;
-    }
-
-    // 快捷方式文件画廊
     let lnkGallery = '';
     if (lnkFiles.length > 0) {
         lnkGallery = `
@@ -768,10 +750,8 @@ function displayFilesWithPagination(files) {
         `;
     }
 
-    // 其他文件列表
     let otherFilesList = '';
     if (otherFiles.length > 0) {
-        // 如果有其他类型的文件，创建一个列表展示
         otherFilesList = `
             <ul style="margin-top: 20px;">
                 ${otherFiles.map(file => `<li>${file}</li>`).join('')}
@@ -780,9 +760,8 @@ function displayFilesWithPagination(files) {
     }
 
     const searchResults = document.getElementById('localFileSearchResults');
-    searchResults.innerHTML = imageGallery + videoGallery + docGallery + sheetGallery + pptGallery + lnkGallery + otherFilesList;
+    searchResults.innerHTML = docGallery + sheetGallery + pptGallery + videoGallery + imageGallery + lnkGallery + otherFilesList;
 
-    // 初始化 Viewer.js
     if (imageFiles.length > 0) {
         const gallery = document.querySelector('.images');
         const viewer = new Viewer(gallery, {
@@ -881,25 +860,17 @@ function performImageSearch() {
 
 // 下载文件的函数
 function downloadFile(url, name) {
-    // 创建一个<a>元素
     const a = document.createElement('a');
-    // 设置<a>元素的href属性为文件的URL
     a.href = url;
-    // 设置<a>元素的download属性为文件的名称
     a.download = name;
-    // 将<a>元素添加到文档中
     document.body.appendChild(a);
-    // 模拟点击<a>元素以触发下载
     a.click();
-    // 下载完成后将<a>元素从文档中移除
     document.body.removeChild(a);
 }
 
 // 放大预览文件的函数
 function enlargePreview(fileURL) {
-    // 打开一个新的窗口显示文件的URL
     const previewWindow = window.open(fileURL, '_blank');
-    // 将新窗口置于前台
     previewWindow.focus();
 }
 
@@ -907,39 +878,29 @@ function enlargePreview(fileURL) {
 let notificationCount = 0; // 计数器初始化
 
 function copyToClipboard(text) {
-    // 创建一个临时的textarea元素
     const textarea = document.createElement('textarea');
-    // 将需要复制的文本赋值给textarea的值
     textarea.value = text;
-    // 将textarea元素添加到文档中
     document.body.appendChild(textarea);
-    // 选中textarea中的文本
     textarea.select();
-    // 执行复制命令
     document.execCommand('copy');
-    // 将textarea元素从文档中移除
     document.body.removeChild(textarea);
 
-    // 检查是否已经存在相同文本的提示框
     let notification = document.querySelector(`.notification[data-text="${text}"]`);
     if (notification) {
-        // 如果存在，更新计数
         const countBadge = notification.querySelector('.count-badge');
         let count = parseInt(countBadge.innerText) + 1;
         countBadge.innerText = count;
         return;
     }
 
-    // 更新计数器
     notificationCount++;
 
-    // 创建提示元素
     notification = document.createElement('div');
     notification.className = 'notification';
     notification.setAttribute('data-text', text);
     notification.innerText = `复制路径成功`;
     notification.style.position = 'fixed';
-    notification.style.top = `${60 + (notificationCount - 1) * 60}px`; // 在sub-header下方并且每个提示框有间距
+    notification.style.top = `${60 + (notificationCount - 1) * 60}px`;
     notification.style.right = '20px';
     notification.style.backgroundColor = getElegantColor();
     notification.style.color = 'white';
@@ -951,46 +912,40 @@ function copyToClipboard(text) {
     notification.style.fontSize = '14px';
     notification.style.fontWeight = 'bold';
 
-    // 创建计数显示元素
     const countBadge = document.createElement('span');
     countBadge.className = 'count-badge';
     countBadge.innerText = `1`;
     countBadge.style.backgroundColor = 'red';
     countBadge.style.color = 'white';
     countBadge.style.borderRadius = '50%';
-    countBadge.style.width = '20px'; // 确保圆形
-    countBadge.style.height = '20px'; // 确保圆形
+    countBadge.style.width = '20px';
+    countBadge.style.height = '20px';
     countBadge.style.marginLeft = '10px';
     countBadge.style.fontSize = '12px';
     countBadge.style.fontWeight = 'bold';
     countBadge.style.display = 'inline-block';
     countBadge.style.textAlign = 'center';
-    countBadge.style.lineHeight = '20px'; // 确保文本垂直居中
+    countBadge.style.lineHeight = '20px';
 
-    // 将计数显示元素添加到提示元素中
     notification.appendChild(countBadge);
 
-    // 将提示元素添加到文档中
     document.body.appendChild(notification);
 
-    // 5秒后自动移除提示元素
     setTimeout(() => {
         if (notification.parentNode) {
             notification.parentNode.removeChild(notification);
-            notificationCount--; // 移除后减少计数
+            notificationCount--;
         }
     }, 5000);
 
-    // 点击提示元素时移除
     notification.addEventListener('click', () => {
         if (notification.parentNode) {
             notification.parentNode.removeChild(notification);
-            notificationCount--; // 移除后减少计数
+            notificationCount--;
         }
     });
 }
 
-// 生成淡雅清新颜色的函数
 function getElegantColor() {
     const colors = ['#A9CCE3', '#AED6F1', '#D6EAF8', '#EBF5FB', '#F4F6F7', '#D5DBDB'];
     return colors[Math.floor(Math.random() * colors.length)];
