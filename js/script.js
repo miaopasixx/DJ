@@ -614,19 +614,10 @@ function displayFilesWithPagination(files) {
     const lnkFiles = paginatedFiles.filter(file => lnkExtensions.some(ext => file.toLowerCase().endsWith(ext)));
     const otherFiles = paginatedFiles.filter(file => !imageExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !videoExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !docExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !sheetExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !pptExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !lnkExtensions.some(ext => file.toLowerCase().endsWith(ext)));
 
-    // 分别展示不同类型的文件
-    let galleries = {
-        doc: '',
-        sheet: '',
-        ppt: '',
-        video: '',
-        image: '',
-        lnk: '',
-        other: ''
-    };
-
+    // 文档画廊
+    let docGallery = '';
     if (docFiles.length > 0) {
-        galleries.doc = `
+        docGallery = `
             <div style="display: flex; flex-wrap: wrap; row-gap: 40px; column-gap: 10px; margin-top: 20px;">
                 ${docFiles.map(file => {
                     const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
@@ -643,8 +634,10 @@ function displayFilesWithPagination(files) {
         `;
     }
 
+    // 表格画廊
+    let sheetGallery = '';
     if (sheetFiles.length > 0) {
-        galleries.sheet = `
+        sheetGallery = `
             <div style="display: flex; flex-wrap: wrap; row-gap: 40px; column-gap: 10px; margin-top: 20px;">
                 ${sheetFiles.map(file => {
                     const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
@@ -671,8 +664,10 @@ function displayFilesWithPagination(files) {
         `;
     }
 
+    // 演示文稿画廊
+    let pptGallery = '';
     if (pptFiles.length > 0) {
-        galleries.ppt = `
+        pptGallery = `
             <div style="display: flex; flex-wrap: wrap; row-gap: 40px; column-gap: 10px; margin-top: 20px;">
                 ${pptFiles.map(file => {
                     const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
@@ -689,8 +684,9 @@ function displayFilesWithPagination(files) {
         `;
     }
 
+    let videoGallery = '';
     if (videoFiles.length > 0) {
-        galleries.video = `
+        videoGallery = `
             <div style="display: flex; flex-wrap: wrap; row-gap: 40px;column-gap: 10px; margin-top: 20px;">
                 ${videoFiles.map(file => {
                     const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
@@ -716,8 +712,9 @@ function displayFilesWithPagination(files) {
         `;
     }
 
+    let imageGallery = '';
     if (imageFiles.length > 0) {
-        galleries.image = `
+        imageGallery = `
             <div class="images" style="column-count: 6; column-gap: 10px; margin-top: 20px;">
                 ${imageFiles.map(file => {
                     const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
@@ -734,8 +731,9 @@ function displayFilesWithPagination(files) {
         `;
     }
 
+    let lnkGallery = '';
     if (lnkFiles.length > 0) {
-        galleries.lnk = `
+        lnkGallery = `
             <div style="display: flex; flex-wrap: wrap; row-gap: 40px; column-gap: 10px; margin-top: 20px;">
                 ${lnkFiles.map(file => {
                     const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
@@ -752,8 +750,9 @@ function displayFilesWithPagination(files) {
         `;
     }
 
+    let otherFilesList = '';
     if (otherFiles.length > 0) {
-        galleries.other = `
+        otherFilesList = `
             <ul style="margin-top: 20px;">
                 ${otherFiles.map(file => `<li>${file}</li>`).join('')}
             </ul>
@@ -761,7 +760,7 @@ function displayFilesWithPagination(files) {
     }
 
     const searchResults = document.getElementById('localFileSearchResults');
-    searchResults.innerHTML = galleries.doc + galleries.sheet + galleries.ppt + galleries.video + galleries.image + galleries.lnk + galleries.other;
+    searchResults.innerHTML = docGallery + sheetGallery + pptGallery + videoGallery + imageGallery + lnkGallery + otherFilesList;
 
     if (imageFiles.length > 0) {
         const gallery = document.querySelector('.images');
