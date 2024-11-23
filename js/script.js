@@ -477,7 +477,7 @@ function displayLocalFileSearch() {
                 display: flex;
                 align-items: center;
             ">
-                <input type="text" id="localFileSearchInput" placeholder="请输入文件名" style="
+                <input type="text" id="localFileSearchInput" placeholder="请输入检索条件" style="
                     padding: 10px 15px;
                     width: 300px;
                     border: 2px solid #2d5f8b;
@@ -526,6 +526,56 @@ function displayLocalFileSearch() {
                     transition: all 0.3s ease;
                     margin-left: 10px;
                 ">图片搜索</button>
+                <button onclick="performDocSearch()" style="
+                    padding: 10px 20px;
+                    background: linear-gradient(145deg, #f0ad4e, #ec971f);
+                    border: none;
+                    border-radius: 25px;
+                    color: white;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    margin-left: 10px;
+                ">文档搜索</button>
+                <button onclick="performSheetSearch()" style="
+                    padding: 10px 20px;
+                    background: linear-gradient(145deg, #d9534f, #c9302c);
+                    border: none;
+                    border-radius: 25px;
+                    color: white;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    margin-left: 10px;
+                ">表格搜索</button>
+                <button onclick="performPptSearch()" style="
+                    padding: 10px 20px;
+                    background: linear-gradient(145deg, #5bc0de, #31b0d5);
+                    border: none;
+                    border-radius: 25px;
+                    color: white;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    margin-left: 10px;
+                ">演示文稿搜索</button>
+                <button onclick="performLnkSearch()" style="
+                    padding: 10px 20px;
+                    background: linear-gradient(145deg, #5cb85c, #4cae4c);
+                    border: none;
+                    border-radius: 25px;
+                    color: white;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    margin-left: 10px;
+                ">快捷方式搜索</button>
+                <button onclick="performOtherFileSearch()" style="
+                    padding: 10px 20px;
+                    background: linear-gradient(145deg, #f0ad4e, #ec971f);
+                    border: none;
+                    border-radius: 25px;
+                    color: white;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    margin-left: 10px;
+                ">其他文件搜索</button>
             </div>
             <div id="localFileSearchResults"></div>
             <div id="paginationControls" style="margin-top: 20px; text-align: center;"></div>
@@ -803,6 +853,16 @@ function goToPage(page) {
         performVideoSearch();
     } else if (currentSearchType === 'image') {
         performImageSearch();
+    } else if (currentSearchType === 'doc') {
+        performDocSearch();
+    } else if (currentSearchType === 'sheet') {
+        performSheetSearch();
+    } else if (currentSearchType === 'ppt') {
+        performPptSearch();
+    } else if (currentSearchType === 'lnk') {
+        performLnkSearch();
+    } else if (currentSearchType === 'other') {
+        performOtherFileSearch();
     }
 }
 
@@ -822,6 +882,16 @@ function setItemsPerPage() {
         performVideoSearch();
     } else if (currentSearchType === 'image') {
         performImageSearch();
+    } else if (currentSearchType === 'doc') {
+        performDocSearch();
+    } else if (currentSearchType === 'sheet') {
+        performSheetSearch();
+    } else if (currentSearchType === 'ppt') {
+        performPptSearch();
+    } else if (currentSearchType === 'lnk') {
+        performLnkSearch();
+    } else if (currentSearchType === 'other') {
+        performOtherFileSearch();
     }
 }
 
@@ -829,7 +899,6 @@ function performVideoSearch() {
     currentSearchType = 'video'; // 设置当前搜索类型
     const searchResults = document.getElementById('localFileSearchResults');
     const videoExtensions = ['mp4', 'webm', 'ogg'];
-    const imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
 
     const matchedFiles = selectedFiles
         .map(file => file.webkitRelativePath)
@@ -855,6 +924,91 @@ function performImageSearch() {
         displayFilesWithPagination(matchedFiles);
     } else {
         searchResults.innerHTML = '<p>未找到匹配的图片文件</p>';
+    }
+}
+
+function performDocSearch() {
+    currentSearchType = 'doc'; // 设置当前搜索类型
+    const searchResults = document.getElementById('localFileSearchResults');
+    const docExtensions = ['docx', 'doc', 'pdf', 'dotx', 'txt'];
+
+    const matchedFiles = selectedFiles
+        .map(file => file.webkitRelativePath)
+        .filter(fileName => docExtensions.some(ext => fileName.toLowerCase().endsWith(ext)));
+
+    if (matchedFiles.length > 0) {
+        displayFilesWithPagination(matchedFiles);
+    } else {
+        searchResults.innerHTML = '<p>未找到匹配的文档文件</p>';
+    }
+}
+
+function performSheetSearch() {
+    currentSearchType = 'sheet'; // 设置当前搜索类型
+    const searchResults = document.getElementById('localFileSearchResults');
+    const sheetExtensions = ['xlsx', 'xls'];
+
+    const matchedFiles = selectedFiles
+        .map(file => file.webkitRelativePath)
+        .filter(fileName => sheetExtensions.some(ext => fileName.toLowerCase().endsWith(ext)));
+
+    if (matchedFiles.length > 0) {
+        displayFilesWithPagination(matchedFiles);
+    } else {
+        searchResults.innerHTML = '<p>未找到匹配的表格文件</p>';
+    }
+}
+
+function performPptSearch() {
+    currentSearchType = 'ppt'; // 设置当前搜索类型
+    const searchResults = document.getElementById('localFileSearchResults');
+    const pptExtensions = ['ppt', 'pptx'];
+
+    const matchedFiles = selectedFiles
+        .map(file => file.webkitRelativePath)
+        .filter(fileName => pptExtensions.some(ext => fileName.toLowerCase().endsWith(ext)));
+
+    if (matchedFiles.length > 0) {
+        displayFilesWithPagination(matchedFiles);
+    } else {
+        searchResults.innerHTML = '<p>未找到匹配的演示文稿文件</p>';
+    }
+}
+
+function performLnkSearch() {
+    currentSearchType = 'lnk'; // 设置当前搜索类型
+    const searchResults = document.getElementById('localFileSearchResults');
+    const lnkExtensions = ['lnk'];
+
+    const matchedFiles = selectedFiles
+        .map(file => file.webkitRelativePath)
+        .filter(fileName => lnkExtensions.some(ext => fileName.toLowerCase().endsWith(ext)));
+
+    if (matchedFiles.length > 0) {
+        displayFilesWithPagination(matchedFiles);
+    } else {
+        searchResults.innerHTML = '<p>未找到匹配的快捷方式文件</p>';
+    }
+}
+
+function performOtherFileSearch() {
+    currentSearchType = 'other'; // 设置当前搜索类型
+    const searchResults = document.getElementById('localFileSearchResults');
+    const imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+    const videoExtensions = ['mp4', 'webm', 'ogg'];
+    const docExtensions = ['docx', 'doc', 'pdf', 'dotx', 'txt'];
+    const sheetExtensions = ['xlsx', 'xls'];
+    const pptExtensions = ['ppt', 'pptx'];
+    const lnkExtensions = ['lnk'];
+
+    const matchedFiles = selectedFiles
+        .map(file => file.webkitRelativePath)
+        .filter(fileName => !imageExtensions.some(ext => fileName.toLowerCase().endsWith(ext)) && !videoExtensions.some(ext => fileName.toLowerCase().endsWith(ext)) && !docExtensions.some(ext => fileName.toLowerCase().endsWith(ext)) && !sheetExtensions.some(ext => fileName.toLowerCase().endsWith(ext)) && !pptExtensions.some(ext => fileName.toLowerCase().endsWith(ext)) && !lnkExtensions.some(ext => fileName.toLowerCase().endsWith(ext)));
+
+    if (matchedFiles.length > 0) {
+        displayFilesWithPagination(matchedFiles);
+    } else {
+        searchResults.innerHTML = '<p>未找到匹配的其他文件</p>';
     }
 }
 
