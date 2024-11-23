@@ -469,118 +469,50 @@ let currentSearchType = 'local'; // 新增变量来记录当前的搜索类型
 
 function displayLocalFileSearch() {
     const contentDiv = document.getElementById('content');
-    contentDiv.innerHTML = `
-        <div style="padding: 20px;">
-            <h2>本地文件查询</h2>
-            <div style="
-                margin: 20px 0;
-                display: flex;
-                align-items: center;
-            ">
-                <input type="text" id="localFileSearchInput" placeholder="请输入检索条件" style="
-                    padding: 10px 15px;
-                    width: 300px;
-                    border: 2px solid #2d5f8b;
-                    border-radius: 25px;
-                    font-size: 14px;
-                    transition: all 0.3s ease;
-                    outline: none;
-                ">
-                <button onclick="performLocalFileSearch()" style="
-                    padding: 10px 20px;
-                    background: linear-gradient(145deg, #2d5f8b, #3774aa);
-                    border: none;
-                    border-radius: 25px;
-                    color: white;
-                    cursor: pointer;
-                    transition: all 0.3s ease;
-                    margin-left: 10px;
-                ">本地搜索</button>
-                <button onclick="resetFolderSelection()" style="
-                    padding: 10px 20px;
-                    background: linear-gradient(145deg, #d9534f, #c9302c);
-                    border: none;
-                    border-radius: 25px;
-                    color: white;
-                    cursor: pointer;
-                    transition: all 0.3s ease;
-                    margin-left: 10px;
-                ">重置文件夹</button>
-                <button onclick="performVideoSearch()" style="
-                    padding: 10px 20px;
-                    background: linear-gradient(145deg, #5bc0de, #31b0d5);
-                    border: none;
-                    border-radius: 25px;
-                    color: white;
-                    cursor: pointer;
-                    transition: all 0.3s ease;
-                    margin-left: 10px;
-                ">视频搜索</button>
-                <button onclick="performImageSearch()" style="
-                    padding: 10px 20px;
-                    background: linear-gradient(145deg, #5cb85c, #4cae4c);
-                    border: none;
-                    border-radius: 25px;
-                    color: white;
-                    cursor: pointer;
-                    transition: all 0.3s ease;
-                    margin-left: 10px;
-                ">图片搜索</button>
-                <button onclick="performDocSearch()" style="
-                    padding: 10px 20px;
-                    background: linear-gradient(145deg, #f0ad4e, #ec971f);
-                    border: none;
-                    border-radius: 25px;
-                    color: white;
-                    cursor: pointer;
-                    transition: all 0.3s ease;
-                    margin-left: 10px;
-                ">文档搜索</button>
-                <button onclick="performSheetSearch()" style="
-                    padding: 10px 20px;
-                    background: linear-gradient(145deg, #d9534f, #c9302c);
-                    border: none;
-                    border-radius: 25px;
-                    color: white;
-                    cursor: pointer;
-                    transition: all 0.3s ease;
-                    margin-left: 10px;
-                ">表格搜索</button>
-                <button onclick="performPptSearch()" style="
-                    padding: 10px 20px;
-                    background: linear-gradient(145deg, #5bc0de, #31b0d5);
-                    border: none;
-                    border-radius: 25px;
-                    color: white;
-                    cursor: pointer;
-                    transition: all 0.3s ease;
-                    margin-left: 10px;
-                ">演示文稿搜索</button>
-                <button onclick="performLnkSearch()" style="
-                    padding: 10px 20px;
-                    background: linear-gradient(145deg, #5cb85c, #4cae4c);
-                    border: none;
-                    border-radius: 25px;
-                    color: white;
-                    cursor: pointer;
-                    transition: all 0.3s ease;
-                    margin-left: 10px;
-                ">快捷方式搜索</button>
-                <button onclick="performOtherFileSearch()" style="
-                    padding: 10px 20px;
-                    background: linear-gradient(145deg, #f0ad4e, #ec971f);
-                    border: none;
-                    border-radius: 25px;
-                    color: white;
-                    cursor: pointer;
-                    transition: all 0.3s ease;
-                    margin-left: 10px;
-                ">其他文件搜索</button>
-            </div>
-            <div id="localFileSearchResults"></div>
-            <div id="paginationControls" style="margin-top: 20px; text-align: center;"></div>
-        </div>
+    const buttonStyle = `
+        padding: 10px 20px;
+        border: none;
+        border-radius: 25px;
+        color: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-left: 10px;
     `;
+const searchButtons = [
+    { text: '本地搜索', action: 'performLocalFileSearch', color: '#2d5f8b', gradient: '#3774aa' },
+    { text: '重置文件夹', action: 'resetFolderSelection', color: '#d9534f', gradient: '#c9302c' },
+    { text: '搜索视频', action: 'performVideoSearch', color: '#5bc0de', gradient: '#31b0d5' },
+    { text: '搜索图片', action: 'performImageSearch', color: '#5cb85c', gradient: '#4cae4c' },
+    { text: '搜索文档', action: 'performDocSearch', color: '#f0ad4e', gradient: '#ec971f' },
+    { text: '搜索表格', action: 'performSheetSearch', color: '#d9534f', gradient: '#c9302c' },
+    { text: '搜索演示文稿', action: 'performPptSearch', color: '#5bc0de', gradient: '#31b0d5' },
+    { text: '搜索压缩文件', action: 'performArchiveSearch', color: '#6f42c1', gradient: '#563d7c' },
+    { text: '搜索快捷方式', action: 'performLnkSearch', color: '#5cb85c', gradient: '#4cae4c' },
+    { text: '搜索音频文件', action: 'performAudioSearch', color: '#5bc0de', gradient: '#31b0d5' }, 
+    { text: '搜索其他类型文件', action: 'performOtherFileSearch', color: '#f0ad4e', gradient: '#ec971f' }
+];
+
+contentDiv.innerHTML = `
+    <div style="padding: 20px;">
+        <h2>本地文件查询</h2>
+        <div style="margin: 20px 0; display: flex; align-items: center;">
+            <input type="text" id="localFileSearchInput" placeholder="请输入检索条件" style="
+                padding: 10px 15px;
+                width: 300px;
+                border: 2px solid #2d5f8b;
+                border-radius: 25px;
+                font-size: 14px;
+                transition: all 0.3s ease;
+                outline: none;
+            ">
+            ${searchButtons.map(button => `
+                <button onclick="${button.action}()" style="${buttonStyle} background: linear-gradient(145deg, ${button.color}, ${button.gradient});">${button.text}</button>
+            `).join('')}
+        </div>
+        <div id="localFileSearchResults"></div>
+        <div id="paginationControls" style="margin-top: 20px; text-align: center;"></div>
+    </div>
+`;
 
     const localFileSearchInput = document.getElementById('localFileSearchInput');
     localFileSearchInput.addEventListener('keydown', (event) => {
@@ -602,7 +534,7 @@ function selectFolder() {
     document.body.appendChild(folderInput);
 
     folderInput.addEventListener('change', (event) => {
-        selectedFiles = Array.from(event.target.files).filter(file => !file.name.startsWith('~$'));
+        selectedFiles = Array.from(event.target.files).filter(file => !file.name.startsWith('~$') && !file.name.toLowerCase().endsWith('.ini'));
     });
 
     // 触发文件夹选择
@@ -650,19 +582,23 @@ function displayFilesWithPagination(files) {
     const totalPages = Math.ceil(files.length / itemsPerPage);
     const paginatedFiles = files.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
-    const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'tiff', 'ico'];
+    const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'tiff'];
     const videoExtensions = ['mp4', 'webm', 'ogg'];
     const docExtensions = ['docx', 'doc', 'pdf','dotx','txt','wps'];
     const sheetExtensions = ['xlsx', 'xls'];
     const pptExtensions = ['ppt', 'pptx'];
     const lnkExtensions = ['lnk'];
+    const archiveExtensions = ['zip', 'rar', '7z', 'tar', 'gz', 'bz2', 'xz']; 
+    const audioExtensions = ['mp3', 'wav', 'ogg', 'flac', 'aac']; // 新增音频文件扩展名
     const imageFiles = paginatedFiles.filter(file => imageExtensions.some(ext => file.toLowerCase().endsWith(ext)));
     const videoFiles = paginatedFiles.filter(file => videoExtensions.some(ext => file.toLowerCase().endsWith(ext)));
     const docFiles = paginatedFiles.filter(file => docExtensions.some(ext => file.toLowerCase().endsWith(ext)));
     const sheetFiles = paginatedFiles.filter(file => sheetExtensions.some(ext => file.toLowerCase().endsWith(ext)));
     const pptFiles = paginatedFiles.filter(file => pptExtensions.some(ext => file.toLowerCase().endsWith(ext)));
     const lnkFiles = paginatedFiles.filter(file => lnkExtensions.some(ext => file.toLowerCase().endsWith(ext)));
-    const otherFiles = paginatedFiles.filter(file => !imageExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !videoExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !docExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !sheetExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !pptExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !lnkExtensions.some(ext => file.toLowerCase().endsWith(ext)));
+    const archiveFiles = paginatedFiles.filter(file => archiveExtensions.some(ext => file.toLowerCase().endsWith(ext))); // 新增压缩包文件过滤
+    const audioFiles = paginatedFiles.filter(file => audioExtensions.some(ext => file.toLowerCase().endsWith(ext))); // 新增音频文件过滤
+    const otherFiles = paginatedFiles.filter(file => !imageExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !videoExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !docExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !sheetExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !pptExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !lnkExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !archiveExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !audioExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !file.toLowerCase().endsWith('.ini')); // 修改其他文件过滤逻辑
 
     // 文档画廊
     let docGallery = '';
@@ -734,6 +670,7 @@ function displayFilesWithPagination(files) {
         `;
     }
 
+    // 视频画廊
     let videoGallery = '';
     if (videoFiles.length > 0) {
         videoGallery = `
@@ -762,6 +699,7 @@ function displayFilesWithPagination(files) {
         `;
     }
 
+    // 图片画廊
     let imageGallery = '';
     if (imageFiles.length > 0) {
         imageGallery = `
@@ -781,6 +719,7 @@ function displayFilesWithPagination(files) {
         `;
     }
 
+    // 快捷方式画廊
     let lnkGallery = '';
     if (lnkFiles.length > 0) {
         lnkGallery = `
@@ -800,6 +739,48 @@ function displayFilesWithPagination(files) {
         `;
     }
 
+    // 压缩包画廊
+    let archiveGallery = '';
+    if (archiveFiles.length > 0) {
+        archiveGallery = `
+            <div style="display: flex; flex-wrap: wrap; row-gap: 40px; column-gap: 10px; margin-top: 20px;">
+                ${archiveFiles.map(file => {
+                    const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
+                    const fileURL = URL.createObjectURL(fileObj);
+                    return `
+                        <div style="position: relative; margin-bottom: 30px; width: calc(16.66% - 10px); text-align: center;">
+                            <img src="img/archive-icon.svg" style="width: 80%; height: auto; border-radius: 5px; display: block; margin: 0 auto;">
+                            <a href="${fileURL}" download="${fileObj.name}" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px; text-decoration: none; width: 100%;">${fileObj.name}</a>
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+        `;
+    }
+
+    // 音频文件画廊
+    let audioGallery = '';
+    if (audioFiles.length > 0) {
+        audioGallery = `
+            <div style="display: flex; flex-wrap: wrap; row-gap: 40px; column-gap: 10px; margin-top: 20px;">
+                ${audioFiles.map(file => {
+                    const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
+                    const fileURL = URL.createObjectURL(fileObj);
+                    return `
+                        <div style="position: relative; margin-bottom: 30px; width: calc(16.66% - 10px); text-align: center;">
+                            <audio controls style="width: 100%; margin-top: 5px;">
+                                <source src="${fileURL}" type="audio/${fileObj.name.split('.').pop().toLowerCase()}">
+                                您的浏览器不支持音频元素。
+                            </audio>
+                            <a href="${fileURL}" download="${fileObj.name}" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px; text-decoration: none; width: 100%;">${fileObj.name}</a>
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+        `;
+    }
+
+    // 其他文件画廊
     let otherFilesList = '';
     if (otherFiles.length > 0) {
         otherFilesList = `
@@ -810,7 +791,7 @@ function displayFilesWithPagination(files) {
     }
 
     const searchResults = document.getElementById('localFileSearchResults');
-    searchResults.innerHTML = docGallery + sheetGallery + pptGallery + videoGallery + imageGallery + lnkGallery + otherFilesList;
+    searchResults.innerHTML = docGallery + sheetGallery + pptGallery + videoGallery + imageGallery + lnkGallery + archiveGallery + audioGallery + otherFilesList; // 添加audioGallery
 
     if (imageFiles.length > 0) {
         const gallery = document.querySelector('.images');
@@ -823,6 +804,7 @@ function displayFilesWithPagination(files) {
     displayPaginationControls(totalPages, files.length);
 }
 
+// 分页控制
 function displayPaginationControls(totalPages, totalItems) {
     const paginationControls = document.getElementById('paginationControls');
     if (currentPage > totalPages) {
@@ -843,26 +825,28 @@ function displayPaginationControls(totalPages, totalItems) {
     paginationControls.innerHTML = paginationHTML;
 }
 
+// 跳转页面
 function goToPage(page) {
     const totalPages = Math.ceil(selectedFiles.length / itemsPerPage);
     if (page < 1 || page > totalPages) return;
     currentPage = page;
-    if (currentSearchType === 'local') {
-        performLocalFileSearch();
-    } else if (currentSearchType === 'video') {
-        performVideoSearch();
-    } else if (currentSearchType === 'image') {
-        performImageSearch();
-    } else if (currentSearchType === 'doc') {
-        performDocSearch();
-    } else if (currentSearchType === 'sheet') {
-        performSheetSearch();
-    } else if (currentSearchType === 'ppt') {
-        performPptSearch();
-    } else if (currentSearchType === 'lnk') {
-        performLnkSearch();
-    } else if (currentSearchType === 'other') {
-        performOtherFileSearch();
+    const searchFunctions = {
+        local: performLocalFileSearch,
+        video: performVideoSearch,
+        image: performImageSearch,
+        doc: performDocSearch,
+        sheet: performSheetSearch,
+        ppt: performPptSearch,
+        lnk: performLnkSearch,
+        archive: performArchiveSearch,
+        audio: performAudioSearch,
+        other: performOtherFileSearch,
+    };
+    const searchFunction = searchFunctions[currentSearchType];
+    if (searchFunction) {
+        searchFunction();
+    } else {
+        console.error('Unknown search type:', currentSearchType);
     }
 }
 
@@ -872,28 +856,26 @@ function jumpToPage() {
     goToPage(page);
 }
 
+// 设定每页记录数
 function setItemsPerPage() {
     const itemsPerPageInput = document.getElementById('itemsPerPageInput');
     itemsPerPage = parseInt(itemsPerPageInput.value);
     currentPage = 1;
-    if (currentSearchType === 'local') {
-        performLocalFileSearch();
-    } else if (currentSearchType === 'video') {
-        performVideoSearch();
-    } else if (currentSearchType === 'image') {
-        performImageSearch();
-    } else if (currentSearchType === 'doc') {
-        performDocSearch();
-    } else if (currentSearchType === 'sheet') {
-        performSheetSearch();
-    } else if (currentSearchType === 'ppt') {
-        performPptSearch();
-    } else if (currentSearchType === 'lnk') {
-        performLnkSearch();
-    } else if (currentSearchType === 'other') {
-        performOtherFileSearch();
-    }
+    const searchFunctions = {
+        local: performLocalFileSearch,
+        video: performVideoSearch,
+        image: performImageSearch,
+        doc: performDocSearch,
+        sheet: performSheetSearch,
+        ppt: performPptSearch,
+        lnk: performLnkSearch,
+        archive: performArchiveSearch,
+        audio: performAudioSearch,
+        other: performOtherFileSearch,
+    };
+    searchFunctions[currentSearchType]?.();
 }
+
 
 function performVideoSearch() {
     currentSearchType = 'video'; // 设置当前搜索类型
@@ -911,10 +893,11 @@ function performVideoSearch() {
     }
 }
 
+
 function performImageSearch() {
     currentSearchType = 'image'; // 设置当前搜索类型
     const searchResults = document.getElementById('localFileSearchResults');
-    const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'tiff', 'ico'];
+    const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'tiff'];
 
     const matchedFiles = selectedFiles
         .map(file => file.webkitRelativePath)
@@ -927,6 +910,7 @@ function performImageSearch() {
     }
 }
 
+// 文档画廊
 function performDocSearch() {
     currentSearchType = 'doc'; // 设置当前搜索类型
     const searchResults = document.getElementById('localFileSearchResults');
@@ -943,6 +927,7 @@ function performDocSearch() {
     }
 }
 
+// 表格画廊
 function performSheetSearch() {
     currentSearchType = 'sheet'; // 设置当前搜索类型
     const searchResults = document.getElementById('localFileSearchResults');
@@ -959,6 +944,7 @@ function performSheetSearch() {
     }
 }
 
+// 演示文稿画廊
 function performPptSearch() {
     currentSearchType = 'ppt'; // 设置当前搜索类型
     const searchResults = document.getElementById('localFileSearchResults');
@@ -975,6 +961,7 @@ function performPptSearch() {
     }
 }
 
+// 快捷方式画廊
 function performLnkSearch() {
     currentSearchType = 'lnk'; // 设置当前搜索类型
     const searchResults = document.getElementById('localFileSearchResults');
@@ -991,19 +978,69 @@ function performLnkSearch() {
     }
 }
 
+// 压缩文件画廊
+function performArchiveSearch() {
+    currentSearchType = 'archive'; // 设置当前搜索类型
+    const searchResults = document.getElementById('localFileSearchResults');
+    const archiveExtensions = ['zip', 'rar', '7z', 'tar', 'gz', 'bz2', 'xz'];
+
+    const matchedFiles = selectedFiles
+        .map(file => file.webkitRelativePath)
+        .filter(fileName => archiveExtensions.some(ext => fileName.toLowerCase().endsWith(ext)));
+
+    if (matchedFiles.length > 0) {
+        displayFilesWithPagination(matchedFiles);
+    } else {
+        searchResults.innerHTML = '<p>未找到匹配的压缩文件</p>';
+    }
+}
+
+// 音频文件画廊
+function performAudioSearch() {
+    currentSearchType = 'audio'; // 设置当前搜索类型
+    const searchResults = document.getElementById('localFileSearchResults');
+    const audioExtensions = ['mp3', 'wav', 'ogg', 'flac', 'aac'];
+
+    const matchedFiles = selectedFiles
+        .map(file => file.webkitRelativePath)
+        .filter(fileName => audioExtensions.some(ext => fileName.toLowerCase().endsWith(ext)));
+
+    if (matchedFiles.length > 0) {
+        const audioGallery = matchedFiles.map(file => {
+            const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
+            const fileURL = URL.createObjectURL(fileObj);
+            return `
+                <div style="position: relative; margin-bottom: 20px; width: calc(33.33% - 20px);">
+                    <audio controls style="width: 100%; margin-top: 5px;">
+                        <source src="${fileURL}" type="audio/${fileObj.name.split('.').pop().toLowerCase()}">
+                        您的浏览器不支持音频元素。
+                    </audio>
+                    <a href="${fileURL}" download="${fileObj.name}" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 8px 0; text-align: center; text-decoration: none; font-weight: normal; border-radius: 4px; margin-top: 5px;">${fileObj.name}</a>
+                </div>
+            `;
+        }).join('');
+        searchResults.innerHTML = `<div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px;">${audioGallery}</div>`;
+    } else {
+        searchResults.innerHTML = '<p style="text-align: center; color: #999;">未找到匹配的音频文件</p>';
+    }
+}
+
+// 其他文件画廊
 function performOtherFileSearch() {
     currentSearchType = 'other'; // 设置当前搜索类型
     const searchResults = document.getElementById('localFileSearchResults');
-    const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'tiff', 'ico'];
+    const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'tiff'];
     const videoExtensions = ['mp4', 'webm', 'ogg'];
     const docExtensions = ['docx', 'doc', 'pdf', 'dotx', 'txt', 'wps'];
     const sheetExtensions = ['xlsx', 'xls'];
     const pptExtensions = ['ppt', 'pptx'];
     const lnkExtensions = ['lnk'];
+    const archiveExtensions = ['zip', 'rar', '7z', 'tar', 'gz', 'bz2', 'xz']; 
+    const audioExtensions = ['mp3', 'wav', 'ogg', 'flac', 'aac']; // 新增音频文件扩展名
 
     const matchedFiles = selectedFiles
         .map(file => file.webkitRelativePath)
-        .filter(fileName => !imageExtensions.some(ext => fileName.toLowerCase().endsWith(ext)) && !videoExtensions.some(ext => fileName.toLowerCase().endsWith(ext)) && !docExtensions.some(ext => fileName.toLowerCase().endsWith(ext)) && !sheetExtensions.some(ext => fileName.toLowerCase().endsWith(ext)) && !pptExtensions.some(ext => fileName.toLowerCase().endsWith(ext)) && !lnkExtensions.some(ext => fileName.toLowerCase().endsWith(ext)));
+        .filter(fileName => !imageExtensions.some(ext => fileName.toLowerCase().endsWith(ext)) && !videoExtensions.some(ext => fileName.toLowerCase().endsWith(ext)) && !docExtensions.some(ext => fileName.toLowerCase().endsWith(ext)) && !sheetExtensions.some(ext => fileName.toLowerCase().endsWith(ext)) && !pptExtensions.some(ext => fileName.toLowerCase().endsWith(ext)) && !lnkExtensions.some(ext => fileName.toLowerCase().endsWith(ext)) && !archiveExtensions.some(ext => fileName.toLowerCase().endsWith(ext)) && !audioExtensions.some(ext => fileName.toLowerCase().endsWith(ext)) && !fileName.toLowerCase().endsWith('.ini')); // 修改其他文件过滤逻辑
 
     if (matchedFiles.length > 0) {
         displayFilesWithPagination(matchedFiles);
