@@ -650,9 +650,9 @@ function displayFilesWithPagination(files) {
     const totalPages = Math.ceil(files.length / itemsPerPage);
     const paginatedFiles = files.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
-    const imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+    const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'tiff', 'ico'];
     const videoExtensions = ['mp4', 'webm', 'ogg'];
-    const docExtensions = ['docx', 'doc', 'pdf','dotx','txt'];
+    const docExtensions = ['docx', 'doc', 'pdf','dotx','txt','wps'];
     const sheetExtensions = ['xlsx', 'xls'];
     const pptExtensions = ['ppt', 'pptx'];
     const lnkExtensions = ['lnk'];
@@ -914,7 +914,7 @@ function performVideoSearch() {
 function performImageSearch() {
     currentSearchType = 'image'; // 设置当前搜索类型
     const searchResults = document.getElementById('localFileSearchResults');
-    const imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+    const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'tiff', 'ico'];
 
     const matchedFiles = selectedFiles
         .map(file => file.webkitRelativePath)
@@ -930,7 +930,7 @@ function performImageSearch() {
 function performDocSearch() {
     currentSearchType = 'doc'; // 设置当前搜索类型
     const searchResults = document.getElementById('localFileSearchResults');
-    const docExtensions = ['docx', 'doc', 'pdf', 'dotx', 'txt'];
+    const docExtensions = ['docx', 'doc', 'pdf', 'dotx', 'txt', 'wps'];
 
     const matchedFiles = selectedFiles
         .map(file => file.webkitRelativePath)
@@ -994,9 +994,9 @@ function performLnkSearch() {
 function performOtherFileSearch() {
     currentSearchType = 'other'; // 设置当前搜索类型
     const searchResults = document.getElementById('localFileSearchResults');
-    const imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+    const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'tiff', 'ico'];
     const videoExtensions = ['mp4', 'webm', 'ogg'];
-    const docExtensions = ['docx', 'doc', 'pdf', 'dotx', 'txt'];
+    const docExtensions = ['docx', 'doc', 'pdf', 'dotx', 'txt', 'wps'];
     const sheetExtensions = ['xlsx', 'xls'];
     const pptExtensions = ['ppt', 'pptx'];
     const lnkExtensions = ['lnk'];
