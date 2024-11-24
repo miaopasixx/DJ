@@ -348,9 +348,9 @@ document.addEventListener('DOMContentLoaded', () => {
 }
 
     // 生成结果HTML
-function generateResultsHtml(results, type, keyword) {
-    if (results.length > 0) {
-        const rows = results.map(async (result) => {
+    function generateResultsHtml(results, type, keyword) {
+        if (results.length > 0) {
+            const rows = results.map(async (result) => {
             const adjustedPath = await adjustPath(result.path);
             return `
                 <tr style="border-bottom: 1px solid #e0e0e0; transition: background-color 0.3s ease;">
@@ -462,7 +462,6 @@ function generateResultsHtml(results, type, keyword) {
         const buttonStyle = `
             padding: 10px 20px;
             border: none;
-            border-radius: 25px;
             color: white;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -471,28 +470,39 @@ function generateResultsHtml(results, type, keyword) {
         const searchButtons = [
             { text: '本地搜索', action: 'showLocalSearchPopup', color: '#2d5f8b', gradient: '#3774aa' },
             { text: '重置文件夹', action: 'resetFolderSelection', color: '#d9534f', gradient: '#c9302c' },
-            { text: '搜索视频', action: 'performVideoSearch', color: '#5bc0de', gradient: '#31b0d5' },
-            { text: '搜索图片', action: 'performImageSearch', color: '#5cb85c', gradient: '#4cae4c' },
-            { text: '搜索文档', action: 'performDocSearch', color: '#f0ad4e', gradient: '#ec971f' },
-            { text: '搜索表格', action: 'performSheetSearch', color: '#d9534f', gradient: '#c9302c' },
-            { text: '搜索演示文稿', action: 'performPptSearch', color: '#5bc0de', gradient: '#31b0d5' },
-            { text: '搜索压缩文件', action: 'performArchiveSearch', color: '#6f42c1', gradient: '#563d7c' },
-            { text: '搜索快捷方式', action: 'performLnkSearch', color: '#5cb85c', gradient: '#4cae4c' },
-            { text: '搜索音频文件', action: 'performAudioSearch', color: '#5bc0de', gradient: '#31b0d5' },
-            { text: '搜索其他类型文件', action: 'performOtherFileSearch', color: '#f0ad4e', gradient: '#ec971f' }
+            { text: '视频', action: 'performVideoSearch', color: '#5bc0de', gradient: '#31b0d5' },
+            { text: '图片', action: 'performImageSearch', color: '#5cb85c', gradient: '#4cae4c' },
+            { text: '文档', action: 'performDocSearch', color: '#f0ad4e', gradient: '#ec971f' },
+            { text: '表格', action: 'performSheetSearch', color: '#d9534f', gradient: '#c9302c' },
+            { text: '演示文稿', action: 'performPptSearch', color: '#5bc0de', gradient: '#31b0d5' },
+            { text: '压缩文件', action: 'performArchiveSearch', color: '#6f42c1', gradient: '#563d7c' },
+            { text: '快捷方式', action: 'performLnkSearch', color: '#5cb85c', gradient: '#4cae4c' },
+            { text: '音频', action: 'performAudioSearch', color: '#5bc0de', gradient: '#31b0d5' },
+            { text: '其他', action: 'performOtherFileSearch', color: '#f0ad4e', gradient: '#ec971f' }
         ];
 
         contentDiv.innerHTML = `
-            <div style="padding: 20px;">
+            <div style="padding: 20px; position: relative;">
                 <h2>本地文件查询</h2>
-                <div style="margin: 20px 0; display: flex; align-items: center; flex-wrap: wrap;">
-                    <div style="display: flex; flex-wrap: wrap; justify-content: center;">
-                        ${searchButtons.map(button => `
-                            <button onclick="${button.action}()" style="${buttonStyle} background: linear-gradient(145deg, ${button.color}, ${button.gradient});">${button.text}</button>
+                <div style="display: flex; flex-direction: column; align-items: flex-end; position: absolute; top: 40px; right: -150px;">
+                    <div style="display: flex; flex-wrap: wrap; justify-content: flex-start;">
+                        ${searchButtons.slice(0, 3).map(button => `
+                            <button onclick="${button.action}()" style="${buttonStyle} width: 120px; background: linear-gradient(145deg, ${button.color}, ${button.gradient}); ">${button.text}</button>
+                        `).join('')}
+                        ${searchButtons.slice(5, 6).map(button => `
+                            <button onclick="${button.action}()" style="${buttonStyle} width: 120px; background: linear-gradient(145deg, ${button.color}, ${button.gradient}); ">${button.text}</button>
+                        `).join('')}
+                        ${searchButtons.slice(3, 5).map(button => `
+                            <button onclick="${button.action}()" style="${buttonStyle} width: 120px; background: linear-gradient(145deg, ${button.color}, ${button.gradient}); ">${button.text}</button>
+                        `).join('')}
+                    </div>
+                    <div style="display: flex; flex-wrap: wrap; justify-content: flex-start;">
+                        ${searchButtons.slice(6).map(button => `
+                            <button onclick="${button.action}()" style="${buttonStyle} width: 120px; background: linear-gradient(145deg, ${button.color}, ${button.gradient}); ">${button.text}</button>
                         `).join('')}
                     </div>
                 </div>
-                <div id="localFileSearchResults"></div>
+                <div id="localFileSearchResults" style="margin-top: 100px; padding-top: 40px;"></div>
                 <div id="paginationControls" style="margin-top: 20px; text-align: center;"></div>
             </div>
         `;
@@ -710,13 +720,13 @@ function generateResultsHtml(results, type, keyword) {
     let docGallery = '';
     if (docFiles.length > 0) {
         docGallery = `
-            <div style="display: flex; flex-wrap: wrap; column-gap: 10px; margin-top: 20px;">
+            <div style="display: flex; flex-wrap: wrap; column-gap: 10px; margin-top: 20px; width: 110%;">
                 ${docFiles.map(file => {
                     const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
                     const fileURL = URL.createObjectURL(fileObj);
                     return `
                         <div style="position: relative; margin-bottom: 30px; width: calc(16.66% - 10px);">
-                            <iframe src="${fileURL}" style="width: 100%; height: 350px; border: none; margin-top: 5px;"></iframe>
+                            <iframe src="${fileURL}" style="width: 100%; height: 300px; border: none; margin-top: 5px;"></iframe>
                             <a href="${fileURL}" onclick="enlargePreview('${fileURL}'); return false;" download="${fileObj.name}" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px; text-decoration: none; width: 100%;">${fileObj.name}</a>
                         </div>
                     `;
@@ -729,7 +739,7 @@ function generateResultsHtml(results, type, keyword) {
     let sheetGallery = '';
     if (sheetFiles.length > 0) {
         sheetGallery = `
-            <div style="display: flex; flex-wrap: wrap; row-gap: 40px; column-gap: 10px; margin-top: 20px;">
+            <div style="display: flex; flex-wrap: wrap; column-gap: 10px; margin-top: 20px; width: 110%; ">
                 ${sheetFiles.map(file => {
                     const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
                     const fileURL = URL.createObjectURL(fileObj);
@@ -759,7 +769,7 @@ function generateResultsHtml(results, type, keyword) {
     let pptGallery = '';
     if (pptFiles.length > 0) {
         pptGallery = `
-            <div style="display: flex; flex-wrap: wrap; column-gap: 10px; margin-top: 20px;">
+            <div style="display: flex; flex-wrap: wrap; column-gap: 10px; margin-top: 20px; width: 110%;">
                 ${pptFiles.map(file => {
                     const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
                     const fileURL = URL.createObjectURL(fileObj);
@@ -778,7 +788,7 @@ function generateResultsHtml(results, type, keyword) {
     let videoGallery = '';
     if (videoFiles.length > 0) {
         videoGallery = `
-            <div style="display: flex; flex-wrap: wrap; row-gap: 40px;column-gap: 10px; margin-top: 20px;">
+            <div style="display: flex; flex-wrap: wrap; column-gap: 10px; margin-top: 20px; width: 110%;">
                 ${videoFiles.map(file => {
                     const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
                     const fileURL = URL.createObjectURL(fileObj);
@@ -807,7 +817,7 @@ function generateResultsHtml(results, type, keyword) {
     let imageGallery = '';
     if (imageFiles.length > 0) {
         imageGallery = `
-            <div class="images" style="column-count: 6; column-gap: 10px; margin-top: 20px;">
+            <div class="images" style="column-count: 7; column-gap: 10px; margin-top: 20px; width: 110%;">
                 ${imageFiles.map(file => {
                     const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
                     const fileURL = URL.createObjectURL(fileObj);
@@ -827,7 +837,7 @@ function generateResultsHtml(results, type, keyword) {
     let lnkGallery = '';
     if (lnkFiles.length > 0) {
         lnkGallery = `
-            <div style="display: flex; flex-wrap: wrap; row-gap: 40px; column-gap: 10px; margin-top: 20px;">
+            <div style="display: flex; flex-wrap: wrap; column-gap: 10px; margin-top: 20px; width: 110%;">
                 ${lnkFiles.map(file => {
                     const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
                     const filePath = fileObj.webkitRelativePath;
@@ -847,7 +857,7 @@ function generateResultsHtml(results, type, keyword) {
     let archiveGallery = '';
     if (archiveFiles.length > 0) {
         archiveGallery = `
-            <div style="display: flex; flex-wrap: wrap; row-gap: 40px; column-gap: 10px; margin-top: 20px;">
+            <div style="display: flex; flex-wrap: wrap; column-gap: 10px; margin-top: 20px; width: 110%;">
                 ${archiveFiles.map(file => {
                     const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
                     const fileURL = URL.createObjectURL(fileObj);
@@ -866,17 +876,17 @@ function generateResultsHtml(results, type, keyword) {
     let audioGallery = '';
     if (audioFiles.length > 0) {
         audioGallery = `
-            <div style="display: flex; flex-wrap: wrap; row-gap: 40px; column-gap: 10px; margin-top: 20px;">
+            <div style="display: flex; flex-wrap: wrap; column-gap: 10px; margin-top: 20px; width: 110%;">
                 ${audioFiles.map(file => {
                     const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
                     const fileURL = URL.createObjectURL(fileObj);
                     return `
-                        <div style="position: relative; margin-bottom: 30px; width: calc(16.66% - 10px); text-align: center;">
-                            <audio controls style="width: 100%; margin-top: 5px;">
+                        <div style="position: relative; margin-bottom: 30px; width: calc(25% - 10px); text-align: center; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2); border-radius: 15px; overflow: hidden; background-color: #f0f0f0; border: 2px solid #ccc;">
+                            <audio controls style="width: 95%; margin: 25px auto; border-radius: 8px; box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);">
                                 <source src="${fileURL}" type="audio/${fileObj.name.split('.').pop().toLowerCase()}">
                                 您的浏览器不支持音频元素。
                             </audio>
-                            <a href="${fileURL}" download="${fileObj.name}" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px; text-decoration: none; width: 100%;">${fileObj.name}</a>
+                            <a href="${fileURL}" download="${fileObj.name}" style="display: block; color: #444; background: #dcdcdc; padding: 15px; border-radius: 0 0 15px 15px; text-align: center; margin-top: 10px; text-decoration: none; font-weight: bold; box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.15); font-family: 'Arial', sans-serif;">${fileObj.name}</a>
                         </div>
                     `;
                 }).join('')}
@@ -888,7 +898,7 @@ function generateResultsHtml(results, type, keyword) {
     let otherFilesList = '';
     if (otherFiles.length > 0) {
         otherFilesList = `
-            <div style="display: flex; flex-wrap: wrap; row-gap: 40px; column-gap: 10px; margin-top: 20px;">
+            <div style="display: flex; flex-wrap: wrap; column-gap: 10px; margin-top: 20px; width: 110%;">
                 ${otherFiles.map(file => {
                     const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
                     const fileURL = URL.createObjectURL(fileObj);
