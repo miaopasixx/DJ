@@ -502,7 +502,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         `).join('')}
                     </div>
                 </div>
-                <div id="localFileSearchResults" style="margin-top: 100px; padding-top: 40px;"></div>
+                <div id="localFileSearchResults" style="margin-top: 100px; padding-top: 10px;"></div>
                 <div id="paginationControls" style="margin-top: 20px; text-align: center;"></div>
             </div>
         `;
@@ -802,10 +802,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     const posterURL = firstImageFile ? URL.createObjectURL(firstImageFile) : '';
 
                     return `
-                        <div style="position: relative; margin-bottom: 30px; width: calc(16.66% - 10px);">
-                            <video src="${fileURL}" poster="${posterURL}" preload="none" style="width: 100%; height: auto; border-radius: 5px; cursor: pointer;" controls></video>
-                            <a href="${fileURL}" download="${fileObj.name}" style="position: absolute; top: 5px; right: 5px; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px;">下载</a>
-                            <h4 style="position: absolute; bottom: -70px; left: 0px; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-decoration: none;">${fileObj.name}</h4>
+                        <div style="position: relative; margin-bottom: 30px; width: calc(16.66% - 10px); display: flex; flex-direction: column; align-items: stretch;">
+                            <div style="position: relative; width: 100%;">
+                                <video src="${fileURL}" poster="${posterURL}" preload="none" style="width: 100%; height: auto; border-radius: 5px; cursor: pointer;" controls></video>
+                                <a href="${fileURL}" download="${fileObj.name}" style="position: absolute; top: 5px; right: 5px; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px;">下载</a>
+                            </div>
+                            <h4 style="color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px; width: 100%;">${fileObj.name}</h4>
                         </div>
                     `;
                 }).join('')}
@@ -939,7 +941,7 @@ document.addEventListener('DOMContentLoaded', () => {
             currentPage = totalPages;
         }
         let paginationHTML = `
-            <div style="margin: 50px;">
+            <div style="padding-top: 20px;">
                 【共${totalItems}条记录 当前第${currentPage}/${totalPages}页 每页${itemsPerPage}条】
                 【<a href="javascript:void(0);" style="cursor: ${totalPages === 1 ? 'default' : 'pointer'}; margin: 0 5px; ${currentPage === 1 ? 'color: gray; text-decoration: none;' : 'text-decoration: none;'}" ${currentPage === 1 ? 'onclick="return false;"' : 'onclick="goToPage(1)"'}>首页</a> | 
                 <a href="javascript:void(0);" onclick="goToPage(${currentPage - 1})" style="cursor: pointer; margin: 0 5px; ${currentPage === 1 || totalPages === 1 ? 'color: gray; text-decoration: none;' : 'text-decoration: none;'}" ${currentPage === 1 || totalPages === 1 ? 'onclick="return false;"' : ''}>上一页</a> | 
