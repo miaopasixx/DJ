@@ -476,42 +476,55 @@ function displayLocalFileSearch() {
         color: white;
         cursor: pointer;
         transition: all 0.3s ease;
-        margin: 5px;
+        margin-left: 10px;
     `;
-    const searchButtons = [
-        { text: '本地搜索', action: 'showLocalSearchPopup', color: '#2d5f8b', gradient: '#3774aa' },
-        { text: '重置文件夹', action: 'resetFolderSelection', color: '#d9534f', gradient: '#c9302c' },
-        { text: '搜索视频', action: 'performVideoSearch', color: '#5bc0de', gradient: '#31b0d5' },
-        { text: '搜索图片', action: 'performImageSearch', color: '#5cb85c', gradient: '#4cae4c' },
-        { text: '搜索文档', action: 'performDocSearch', color: '#f0ad4e', gradient: '#ec971f' },
-        { text: '搜索表格', action: 'performSheetSearch', color: '#d9534f', gradient: '#c9302c' },
-        { text: '搜索演示文稿', action: 'performPptSearch', color: '#5bc0de', gradient: '#31b0d5' },
-        { text: '搜索压缩文件', action: 'performArchiveSearch', color: '#6f42c1', gradient: '#563d7c' },
-        { text: '搜索快捷方式', action: 'performLnkSearch', color: '#5cb85c', gradient: '#4cae4c' },
-        { text: '搜索音频文件', action: 'performAudioSearch', color: '#5bc0de', gradient: '#31b0d5' },
-        { text: '搜索其他类型文件', action: 'performOtherFileSearch', color: '#f0ad4e', gradient: '#ec971f' }
-    ];
+const searchButtons = [
+    { text: '本地搜索', action: 'performLocalFileSearch', color: '#2d5f8b', gradient: '#3774aa' },
+    { text: '重置文件夹', action: 'resetFolderSelection', color: '#d9534f', gradient: '#c9302c' },
+    { text: '搜索视频', action: 'performVideoSearch', color: '#5bc0de', gradient: '#31b0d5' },
+    { text: '搜索图片', action: 'performImageSearch', color: '#5cb85c', gradient: '#4cae4c' },
+    { text: '搜索文档', action: 'performDocSearch', color: '#f0ad4e', gradient: '#ec971f' },
+    { text: '搜索表格', action: 'performSheetSearch', color: '#d9534f', gradient: '#c9302c' },
+    { text: '搜索演示文稿', action: 'performPptSearch', color: '#5bc0de', gradient: '#31b0d5' },
+    { text: '搜索压缩文件', action: 'performArchiveSearch', color: '#6f42c1', gradient: '#563d7c' },
+    { text: '搜索快捷方式', action: 'performLnkSearch', color: '#5cb85c', gradient: '#4cae4c' },
+    { text: '搜索音频文件', action: 'performAudioSearch', color: '#5bc0de', gradient: '#31b0d5' }, 
+    { text: '搜索其他类型文件', action: 'performOtherFileSearch', color: '#f0ad4e', gradient: '#ec971f' }
+];
 
-    contentDiv.innerHTML = `
-        <div style="padding: 20px;">
-            <h2>本地文件查询</h2>
-            <div style="margin: 20px 0; display: flex; align-items: center; flex-wrap: wrap;">
-                <div style="display: flex; flex-wrap: wrap; justify-content: center;">
-                    ${searchButtons.map(button => `
-                        <button onclick="${button.action}()" style="${buttonStyle} background: linear-gradient(145deg, ${button.color}, ${button.gradient});">${button.text}</button>
-                    `).join('')}
-                </div>
-            </div>
-            <div id="localFileSearchResults"></div>
-            <div id="paginationControls" style="margin-top: 20px; text-align: center;"></div>
+contentDiv.innerHTML = `
+    <div style="padding: 20px;">
+        <h2>本地文件查询</h2>
+        <div style="margin: 20px 0; display: flex; align-items: center;">
+            <input type="text" id="localFileSearchInput" placeholder="请输入检索条件" style="
+                padding: 10px 15px;
+                width: 300px;
+                border: 2px solid #2d5f8b;
+                border-radius: 25px;
+                font-size: 14px;
+                transition: all 0.3s ease;
+                outline: none;
+            ">
+            ${searchButtons.map(button => `
+                <button onclick="${button.action}()" style="${buttonStyle} background: linear-gradient(145deg, ${button.color}, ${button.gradient});">${button.text}</button>
+            `).join('')}
         </div>
-    `;
+        <div id="localFileSearchResults"></div>
+        <div id="paginationControls" style="margin-top: 20px; text-align: center;"></div>
+    </div>
+`;
+
+    const localFileSearchInput = document.getElementById('localFileSearchInput');
+    localFileSearchInput.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+            performLocalFileSearch();
+        }
+    });
 
     if (selectedFiles.length === 0) {
         selectFolder();
     }
 }
-
 
 function selectFolder() {
     const folderInput = document.createElement('input');
