@@ -695,8 +695,7 @@ function displayFilesWithPagination(files) {
                     return `
                         <div style="position: relative; margin-bottom: 30px; width: calc(16.66% - 10px);">
                             <iframe src="${fileURL}" style="width: 100%; height: 350px; border: none; margin-top: 5px;"></iframe>
-                            <button onclick="enlargePreview('${fileURL}')" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px; text-decoration: none; width: 100%;">放大预览</button>
-                            <a href="${fileURL}" download="${fileObj.name}" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px; text-decoration: none; width: 100%;">${fileObj.name}</a>
+                            <a href="${fileURL}" onclick="enlargePreview('${fileURL}'); return false;" download="${fileObj.name}" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px; text-decoration: none; width: 100%;">${fileObj.name}</a>
                         </div>
                     `;
                 }).join('')}
@@ -745,8 +744,7 @@ function displayFilesWithPagination(files) {
                     return `
                         <div style="position: relative; margin-bottom: 30px; width: calc(16.66% - 10px);">
                             <iframe src="${fileURL}" style="width: 100%; height: 297px; border: none; margin-top: 5px;"></iframe>
-                            <button onclick="enlargePreview('${fileURL}')" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px; text-decoration: none; width: 100%;">放大预览</button>
-                            <a href="${fileURL}" download="${fileObj.name}" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px; text-decoration: none; width: 100%;">${fileObj.name}</a>
+                            <a href="${fileURL}" onclick="enlargePreview('${fileURL}'); return false;" download="${fileObj.name}" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px; text-decoration: none; width: 100%;">${fileObj.name}</a>
                         </div>
                     `;
                 }).join('')}
