@@ -1,17 +1,15 @@
+// 主函数
 document.addEventListener('DOMContentLoaded', () => {
-    // DOM元素
     const categoryList = document.getElementById('category-list');
     const contentDiv = document.getElementById('content');
     const nav = document.querySelector('nav');
 
-    // 初始化所有事件监听器
     initEventListeners();
 
-    // 从localStorage获取搜索历史
     let searchHistory = JSON.parse(localStorage.getItem('searchHistory') || '[]');
 
+    // 初始化事件监听器
     function initEventListeners() {
-        // 分类列表点击事件
         if (categoryList) {
             categoryList.addEventListener('click', (event) => {
                 const target = event.target.closest('li');
@@ -24,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // 处理分类项点击事件
     function handleItemClick(target) {
         document.querySelectorAll('#category-list li').forEach(item => item.classList.remove('active'));
         target.classList.add('active');
@@ -41,6 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
     }
 
+    // 显示内容
     function displayContent(data) {
         contentDiv.innerHTML = `<h2>${data.category}</h2>`;
         data.subcategories.forEach(subcategory => {
@@ -54,91 +54,90 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// 切换侧边栏显示和隐藏
-function toggleSidebar() {
-    const sidebar = document.querySelector('nav');
-    if (sidebar) {
-        sidebar.classList.toggle('expanded');
-    } else {
-        console.error('Sidebar element not found');
-    }
+    // 切换侧边栏显示和隐藏
+    function toggleSidebar() {
+        const sidebar = document.querySelector('nav');
+        if (sidebar) {
+            sidebar.classList.toggle('expanded');
+        } else {
+            console.error('Sidebar element not found');
+        }
 }
 
-function closeTab() {
-    // 强制关闭当前标签页
-    window.location.href = 'about:blank';
-    window.close();
-    // 如果上述方法无效,尝试其他方式关闭
-    window.open('', '_self').close();
-    window.open('', '_parent').close();
-    window.open('', '_top').close();
+    // 关闭当前标签页
+    function closeTab() {
+        window.location.href = 'about:blank';
+        window.close();
+        window.open('', '_self').close();
+        window.open('', '_parent').close();
+        window.open('', '_top').close();
 }
 
-// 归档查询
-function displaySearchFeature() {
-    const contentDiv = document.getElementById('content');
-    const searchHistory = JSON.parse(localStorage.getItem('searchHistory') || '[]');
-    
-    const historyHtml = searchHistory.length ? `
-        <div id="searchHistoryContainer" class="search-history" style="
-            margin-top: 20px;
-            padding: 15px;
-            background: linear-gradient(145deg, #f8f9fa, #ffffff);
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        ">
-            <h3 style="
-                color: #2d5f8b;
-                margin-bottom: 15px;
-                font-size: 16px;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
+    // 归档查询
+    function displaySearchFeature() {
+        const contentDiv = document.getElementById('content');
+        const searchHistory = JSON.parse(localStorage.getItem('searchHistory') || '[]');
+        
+        const historyHtml = searchHistory.length ? `
+            <div id="searchHistoryContainer" class="search-history" style="
+                margin-top: 20px;
+                padding: 15px;
+                background: linear-gradient(145deg, #f8f9fa, #ffffff);
+                border-radius: 10px;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             ">
-                <span>搜索历史</span>
-                <button onclick="clearSearchHistory()" style="
-                    background: none;
-                    border: none;
-                    color: #999;
-                    cursor: pointer;
-                    font-size: 14px;
-                    padding: 5px 10px;
-                    border-radius: 5px;
-                    transition: all 0.3s ease;
-                ">清空历史</button>
-            </h3>
-            <div style="
-                display: flex;
-                flex-wrap: wrap;         
-            ">
-                ${searchHistory.map((term, index) => `
-                    <div style="
-                        position: relative;
-                        display: inline-flex;
-                        align-items: center;
-                        background: linear-gradient(145deg, #e6f0f9, #ffffff);
-                        padding: 6px 12px;
-                        border-radius: 20px;
-                        font-size: 14px;
-                        color: #2d5f8b;
+                <h3 style="
+                    color: #2d5f8b;
+                    margin-bottom: 15px;
+                    font-size: 16px;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                ">
+                    <span>搜索历史</span>
+                    <button onclick="clearSearchHistory()" style="
+                        background: none;
+                        border: none;
+                        color: #999;
                         cursor: pointer;
+                        font-size: 14px;
+                        padding: 5px 10px;
+                        border-radius: 5px;
                         transition: all 0.3s ease;
-                        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-                    ">
-                        <span onclick="useHistoryTerm('${term}')">${term}</span>
-                        <span onclick="removeHistoryTerm(${index})" style="
-                            margin-left: 8px;
-                            color: #999;
-                            font-size: 12px;
-                            padding: 2px 6px;
-                            border-radius: 50%;
+                    ">清空历史</button>
+                </h3>
+                <div style="
+                    display: flex;
+                    flex-wrap: wrap;         
+                ">
+                    ${searchHistory.map((term, index) => `
+                        <div style="
+                            position: relative;
+                            display: inline-flex;
+                            align-items: center;
+                            background: linear-gradient(145deg, #e6f0f9, #ffffff);
+                            padding: 6px 12px;
+                            border-radius: 20px;
+                            font-size: 14px;
+                            color: #2d5f8b;
+                            cursor: pointer;
                             transition: all 0.3s ease;
-                        ">×</span>
-                    </div>
-                `).join('')}
+                            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+                        ">
+                            <span onclick="useHistoryTerm('${term}')">${term}</span>
+                            <span onclick="removeHistoryTerm(${index})" style="
+                                margin-left: 8px;
+                                color: #999;
+                                font-size: 12px;
+                                padding: 2px 6px;
+                                border-radius: 50%;
+                                transition: all 0.3s ease;
+                            ">×</span>
+                        </div>
+                    `).join('')}
+                </div>
             </div>
-        </div>
-    ` : '';
+        ` : '';
 
     contentDiv.innerHTML = `
         <div style="padding: 20px;">
@@ -183,27 +182,31 @@ function displaySearchFeature() {
     });
 }
 
-function useHistoryTerm(term) {
-    const searchInput = document.getElementById('searchInput');
-    searchInput.value = term;
-    performSearch();
+    // 使用历史记录
+    function useHistoryTerm(term) {
+        const searchInput = document.getElementById('searchInput');
+        searchInput.value = term;
+        performSearch();
 }
 
-function removeHistoryTerm(index) {
+    // 删除历史记录
+    function removeHistoryTerm(index) {
     let searchHistory = JSON.parse(localStorage.getItem('searchHistory') || '[]');
     searchHistory.splice(index, 1);
     localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
-    displaySearchFeature(); // 刷新显示
+    displaySearchFeature();
 }
 
-function clearSearchHistory() {
-    localStorage.removeItem('searchHistory');
-    displaySearchFeature(); // 刷新显示
+    // 清空历史记录
+    function clearSearchHistory() {
+        localStorage.removeItem('searchHistory');
+    displaySearchFeature();
 }
 
-function resetSidebar() {
-    const sidebar = document.querySelector('nav');
-    if (sidebar) {
+    // 重置侧边栏
+    function resetSidebar() {
+        const sidebar = document.querySelector('nav');
+        if (sidebar) {
         sidebar.classList.remove('expanded');
         document.querySelectorAll('nav li').forEach(item => item.classList.remove('active'));
     } else {
@@ -211,11 +214,12 @@ function resetSidebar() {
     }
 }
 
-function performSearch() {
-    const searchInput = document.getElementById('searchInput');
-    const searchResults = document.getElementById('searchResults');
-    const searchHistoryContainer = document.getElementById('searchHistoryContainer');
-    const keyword = searchInput.value.trim().toLowerCase();
+    // 执行搜索
+    function performSearch() {
+        const searchInput = document.getElementById('searchInput');
+        const searchResults = document.getElementById('searchResults');
+        const searchHistoryContainer = document.getElementById('searchHistoryContainer');
+        const keyword = searchInput.value.trim().toLowerCase();
 
     if (!keyword) {
         searchResults.innerHTML = '<p>请输入搜索关键词</p>';
@@ -231,22 +235,18 @@ function performSearch() {
     let searchHistory = JSON.parse(localStorage.getItem('searchHistory') || '[]');
     if (!searchHistory.includes(keyword)) {
         searchHistory.unshift(keyword);
-        if (searchHistory.length > 10) { // 限制历史记录数量
+        if (searchHistory.length > 10) {
             searchHistory.pop();
         }
         localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
     }
 
-    const promises = [];
-    for (let i = 1; i <= 9; i++) {
-        const fileName = `data/category${i}.json`;
-        promises.push(fetch(fileName).then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
+    const promises = Array.from({ length: 9 }, (_, i) => 
+        fetch(`data/category${i + 1}.json`).then(response => {
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             return response.json();
-        }));
-    }
+        })
+    );
 
     Promise.all(promises)
         .then(dataArray => {
@@ -309,9 +309,7 @@ function performSearch() {
                 ">${titleResultsHtml}${itemResultsHtml}</div>
             `;
 
-            // 添加按钮悬停效果
-            const buttons = document.querySelectorAll('.tab-button');
-            buttons.forEach(button => {
+            document.querySelectorAll('.tab-button').forEach(button => {
                 button.addEventListener('mouseover', () => {
                     button.style.transform = 'translateY(-2px)';
                     button.style.boxShadow = '0 4px 8px rgba(0,0,0,0.3)';
@@ -328,8 +326,9 @@ function performSearch() {
         });
 }
 
-function searchObject(obj, basePath, titleResults, itemResults, keyword) {
-    for (let key in obj) {
+    // 搜索对象
+    function searchObject(obj, basePath, titleResults, itemResults, keyword) {
+        for (let key in obj) {
         const value = obj[key];
         const currentPath = basePath ? `${basePath}.${key}` : key;
 
@@ -339,21 +338,16 @@ function searchObject(obj, basePath, titleResults, itemResults, keyword) {
             const stringValue = String(value).toLowerCase();
             if (stringValue.includes(keyword)) {
                 if (currentPath.includes('name')) {
-                    titleResults.push({
-                        path: currentPath,
-                        value: value
-                    });
+                    titleResults.push({ path: currentPath, value });
                 } else if (currentPath.includes('items')) {
-                    itemResults.push({
-                        path: currentPath,
-                        value: value
-                    });
+                    itemResults.push({ path: currentPath, value });
                 }
             }
         }
     }
 }
 
+    // 生成结果HTML
 function generateResultsHtml(results, type, keyword) {
     if (results.length > 0) {
         const rows = results.map(async (result) => {
@@ -390,16 +384,14 @@ function generateResultsHtml(results, type, keyword) {
     }
 }
 
-function showTab(tabId) {
-    const tabs = document.querySelectorAll('.tab-content');
-    const buttons = document.querySelectorAll('.tab-button');
-    
-    tabs.forEach(tab => {
+    // 显示标签页
+    function showTab(tabId) {
+        document.querySelectorAll('.tab-content').forEach(tab => {
         tab.style.display = 'none';
         tab.style.opacity = '0';
     });
     
-    buttons.forEach(button => {
+    document.querySelectorAll('.tab-button').forEach(button => {
         button.style.opacity = '0.7';
         button.style.transform = 'translateY(0)';
     });
@@ -416,13 +408,15 @@ function showTab(tabId) {
     activeButton.style.transform = 'translateY(-2px)';
 }
 
-function highlightKeyword(value, keyword) {
-    const regex = new RegExp(`(${keyword})`, 'gi');
+    // 高亮关键词
+    function highlightKeyword(value, keyword) {
+        const regex = new RegExp(`(${keyword})`, 'gi');
     return String(value).replace(regex, '<span style="background-color: #fff3cd; padding: 2px 4px; border-radius: 3px; color: #856404;">$1</span>');
 }
 
-function adjustPath(path) {
-    // 获取当前选中的分类数据
+    // 调整路径
+    function adjustPath(path) {
+        // 获取当前选中的分类数据
     const segments = path.split('.');
     const categoryIndex = parseInt(segments[0].replace('category', ''));
     const subcategoryIndex = parseInt(segments[2]);
@@ -434,12 +428,7 @@ function adjustPath(path) {
         .then(data => {
             const categoryName = data.category;
             const subcategoryName = data.subcategories[subcategoryIndex].name;
-            let prefix = '';
-            
-            // 添加数字前缀
-            if (categoryIndex >= 1 && categoryIndex <= 9) {
-                prefix = `${categoryIndex}. `;
-            }
+            let prefix = categoryIndex >= 1 && categoryIndex <= 9 ? `${categoryIndex}. ` : '';
 
             if (segments[3] === 'items') {
                 const chineseNumbers = ['一', '二', '三', '四', '五', '六', '七', '八', '九', '十'];
@@ -460,229 +449,236 @@ function adjustPath(path) {
             return path;
         });
 }
+    // 本地文件查询
+    let selectedFiles = [];
+    let currentPage = 1;
+    let itemsPerPage = 12; // 默认展示12个
+    let currentSearchType = 'local'; // 新增变量来记录当前的搜索类型
+    let currentKeyword = ''; // 新增变量来记录当前的搜索关键词
 
-// 本地文件查询
-let selectedFiles = [];
-let currentPage = 1;
-let itemsPerPage = 12; // 默认展示12个
-let currentSearchType = 'local'; // 新增变量来记录当前的搜索类型
-let currentKeyword = ''; // 新增变量来记录当前的搜索关键词
-
-function displayLocalFileSearch() {
-    const contentDiv = document.getElementById('content');
-    const buttonStyle = `
-        padding: 10px 20px;
-        border: none;
-        border-radius: 25px;
-        color: white;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        margin: 5px;
-    `;
-    const searchButtons = [
-        { text: '本地搜索', action: 'showLocalSearchPopup', color: '#2d5f8b', gradient: '#3774aa' },
-        { text: '重置文件夹', action: 'resetFolderSelection', color: '#d9534f', gradient: '#c9302c' },
-        { text: '搜索视频', action: 'performVideoSearch', color: '#5bc0de', gradient: '#31b0d5' },
-        { text: '搜索图片', action: 'performImageSearch', color: '#5cb85c', gradient: '#4cae4c' },
-        { text: '搜索文档', action: 'performDocSearch', color: '#f0ad4e', gradient: '#ec971f' },
-        { text: '搜索表格', action: 'performSheetSearch', color: '#d9534f', gradient: '#c9302c' },
-        { text: '搜索演示文稿', action: 'performPptSearch', color: '#5bc0de', gradient: '#31b0d5' },
-        { text: '搜索压缩文件', action: 'performArchiveSearch', color: '#6f42c1', gradient: '#563d7c' },
-        { text: '搜索快捷方式', action: 'performLnkSearch', color: '#5cb85c', gradient: '#4cae4c' },
-        { text: '搜索音频文件', action: 'performAudioSearch', color: '#5bc0de', gradient: '#31b0d5' },
-        { text: '搜索其他类型文件', action: 'performOtherFileSearch', color: '#f0ad4e', gradient: '#ec971f' }
-    ];
-
-    contentDiv.innerHTML = `
-        <div style="padding: 20px;">
-            <h2>本地文件查询</h2>
-            <div style="margin: 20px 0; display: flex; align-items: center; flex-wrap: wrap;">
-                <div style="display: flex; flex-wrap: wrap; justify-content: center;">
-                    ${searchButtons.map(button => `
-                        <button onclick="${button.action}()" style="${buttonStyle} background: linear-gradient(145deg, ${button.color}, ${button.gradient});">${button.text}</button>
-                    `).join('')}
-                </div>
-            </div>
-            <div id="localFileSearchResults"></div>
-            <div id="paginationControls" style="margin-top: 20px; text-align: center;"></div>
-        </div>
-    `;
-
-    if (selectedFiles.length === 0) {
-        selectFolder();
-    }
-}
-
-function showLocalSearchPopup() {
-    const popup = document.createElement('div');
-    popup.style.position = 'fixed';
-    popup.style.top = '50%';
-    popup.style.left = '50%';
-    popup.style.transform = 'translate(-50%, -50%)';
-    popup.style.backgroundColor = 'white';
-    popup.style.padding = '20px';
-    popup.style.borderRadius = '10px';
-    popup.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.1)';
-    popup.style.zIndex = '1001';
-
-    popup.innerHTML = `
-        <h3>本地搜索</h3>
-        <textarea id="localFileSearchInputPopup" placeholder="请输入检索条件" style="
-            padding: 10px;
-            width: 570px;
-            height: 100px;
-            border: 2px solid #2d5f8b;
-            border-radius: 10px;
-            font-size: 16px;
+    // 显示本地文件搜索
+    function displayLocalFileSearch() {
+        const contentDiv = document.getElementById('content');
+        const buttonStyle = `
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            color: white;
+            cursor: pointer;
             transition: all 0.3s ease;
-            outline: none;
-            margin-bottom: 15px;
-            resize: both; /* 支持右下角拖拽放大缩小 */
-            overflow: auto;
-            white-space: pre-wrap; /* 允许文本换行 */
-        "></textarea>
-        <div style="text-align: right;">
-            <button onclick="performLocalFileSearchFromPopup()" style="padding: 12px 20px; border: none; border-radius: 25px; background-color: #2d5f8b; color: white; cursor: pointer; transition: all 0.3s ease;">确认</button>
-            <button onclick="closeLocalSearchPopup()" style="padding: 12px 20px; border: none; border-radius: 25px; background-color: #d9534f; color: white; cursor: pointer; transition: all 0.3s ease;">取消</button>
-        </div>
-    `;
+            margin: 5px;
+        `;
+        const searchButtons = [
+            { text: '本地搜索', action: 'showLocalSearchPopup', color: '#2d5f8b', gradient: '#3774aa' },
+            { text: '重置文件夹', action: 'resetFolderSelection', color: '#d9534f', gradient: '#c9302c' },
+            { text: '搜索视频', action: 'performVideoSearch', color: '#5bc0de', gradient: '#31b0d5' },
+            { text: '搜索图片', action: 'performImageSearch', color: '#5cb85c', gradient: '#4cae4c' },
+            { text: '搜索文档', action: 'performDocSearch', color: '#f0ad4e', gradient: '#ec971f' },
+            { text: '搜索表格', action: 'performSheetSearch', color: '#d9534f', gradient: '#c9302c' },
+            { text: '搜索演示文稿', action: 'performPptSearch', color: '#5bc0de', gradient: '#31b0d5' },
+            { text: '搜索压缩文件', action: 'performArchiveSearch', color: '#6f42c1', gradient: '#563d7c' },
+            { text: '搜索快捷方式', action: 'performLnkSearch', color: '#5cb85c', gradient: '#4cae4c' },
+            { text: '搜索音频文件', action: 'performAudioSearch', color: '#5bc0de', gradient: '#31b0d5' },
+            { text: '搜索其他类型文件', action: 'performOtherFileSearch', color: '#f0ad4e', gradient: '#ec971f' }
+        ];
 
-    document.body.appendChild(popup);
+        contentDiv.innerHTML = `
+            <div style="padding: 20px;">
+                <h2>本地文件查询</h2>
+                <div style="margin: 20px 0; display: flex; align-items: center; flex-wrap: wrap;">
+                    <div style="display: flex; flex-wrap: wrap; justify-content: center;">
+                        ${searchButtons.map(button => `
+                            <button onclick="${button.action}()" style="${buttonStyle} background: linear-gradient(145deg, ${button.color}, ${button.gradient});">${button.text}</button>
+                        `).join('')}
+                    </div>
+                </div>
+                <div id="localFileSearchResults"></div>
+                <div id="paginationControls" style="margin-top: 20px; text-align: center;"></div>
+            </div>
+        `;
 
-    // 聚焦到文本区域
-    const searchInput = document.getElementById('localFileSearchInputPopup');
-    if (searchInput) {
-        searchInput.focus();
-        searchInput.addEventListener('keydown', function(event) {
-            if (event.key === 'Enter' && !event.ctrlKey) {
-                event.preventDefault();
-                performLocalFileSearchFromPopup();
-            } else if (event.key === 'Enter' && event.ctrlKey) {
-                event.preventDefault();
-                const start = this.selectionStart;
-                const end = this.selectionEnd;
-                this.value = this.value.substring(0, start) + '\n' + this.value.substring(end);
-                this.selectionStart = this.selectionEnd = start + 1;
-            }
+        if (selectedFiles.length === 0) {
+            selectFolder();
+        }
+    }
+
+    // 显示本地搜索弹窗
+    function showLocalSearchPopup() {
+        const popup = document.createElement('div');
+        popup.style.position = 'fixed';
+        popup.style.top = '50%';
+        popup.style.left = '50%';
+        popup.style.transform = 'translate(-50%, -50%)';
+        popup.style.backgroundColor = 'white';
+        popup.style.padding = '20px';
+        popup.style.borderRadius = '10px';
+        popup.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.1)';
+        popup.style.zIndex = '1001';
+
+        popup.innerHTML = `
+            <h3>本地搜索</h3>
+            <textarea id="localFileSearchInputPopup" placeholder="请输入检索条件" style="
+                padding: 10px;
+                width: 570px;
+                height: 100px;
+                border: 2px solid #2d5f8b;
+                border-radius: 10px;
+                font-size: 16px;
+                transition: all 0.3s ease;
+                outline: none;
+                margin-bottom: 15px;
+                resize: both; /* 支持右下角拖拽放大缩小 */
+                overflow: auto;
+                white-space: pre-wrap; /* 允许文本换行 */
+            "></textarea>
+            <div style="text-align: right;">
+                <button onclick="performLocalFileSearchFromPopup()" style="padding: 12px 20px; border: none; border-radius: 25px; background-color: #2d5f8b; color: white; cursor: pointer; transition: all 0.3s ease;">确认</button>
+                <button onclick="closeLocalSearchPopup()" style="padding: 12px 20px; border: none; border-radius: 25px; background-color: #d9534f; color: white; cursor: pointer; transition: all 0.3s ease;">取消</button>
+            </div>
+        `;
+
+        document.body.appendChild(popup);
+
+        // 聚焦到文本区域
+        const searchInput = document.getElementById('localFileSearchInputPopup');
+        if (searchInput) {
+            searchInput.focus();
+            searchInput.addEventListener('keydown', function(event) {
+                if (event.key === 'Enter' && !event.ctrlKey) {
+                    event.preventDefault();
+                    performLocalFileSearchFromPopup();
+                } else if (event.key === 'Enter' && event.ctrlKey) {
+                    event.preventDefault();
+                    const start = this.selectionStart;
+                    const end = this.selectionEnd;
+                    this.value = this.value.substring(0, start) + '\n' + this.value.substring(end);
+                    this.selectionStart = this.selectionEnd = start + 1;
+                }
+            });
+        }
+    }
+
+    // 关闭本地搜索弹窗
+    function closeLocalSearchPopup() {
+        const popup = document.querySelector('div[style*="z-index: 1001"]');
+        if (popup) {
+            document.body.removeChild(popup);
+        }
+    }
+
+    // 从本地搜索弹窗执行搜索
+    function performLocalFileSearchFromPopup() {
+        currentSearchType = 'local'; // 设置当前搜索类型
+        const searchInput = document.getElementById('localFileSearchInputPopup');
+        const searchResults = document.getElementById('localFileSearchResults');
+        const keyword = searchInput.value.trim().toLowerCase();
+        currentKeyword = keyword; // 记录当前的搜索关键词
+
+        closeLocalSearchPopup();
+
+        if (!keyword) {
+            searchResults.innerHTML = '<p>请输入文件名</p>';
+            return;
+        }
+
+        // 修改匹配逻辑：使用正则表达式来匹配文件名
+        const matchedFiles = selectedFiles
+            .map(file => file.webkitRelativePath)
+            .filter(fileName => {
+                // 如果关键词是文件扩展名（如pdf、jpg等），则精确匹配扩展名
+                if (keyword.startsWith('.') || /^[a-z0-9]+$/.test(keyword)) {
+                    const extension = fileName.split('.').pop().toLowerCase();
+                    return extension === keyword.replace('.', '');
+                }
+                // 否则在文件名中搜索关键词（不包括扩展名）
+                const nameWithoutExtension = fileName.split('/').pop().split('.')[0].toLowerCase();
+                return nameWithoutExtension.includes(keyword);
+            });
+
+        if (matchedFiles.length > 0) {
+            displayFilesWithPagination(matchedFiles);
+        } else {
+            searchResults.innerHTML = '<p>未找到匹配的文件</p>';
+        }
+    }
+
+    // 选择文件夹
+    function selectFolder() {
+        const folderInput = document.createElement('input');
+        folderInput.type = 'file';
+        folderInput.webkitdirectory = true; // 允许选择文件夹
+        folderInput.style.display = 'none';
+        document.body.appendChild(folderInput);
+
+        folderInput.addEventListener('change', (event) => {
+            selectedFiles = Array.from(event.target.files).filter(file => !file.name.startsWith('~$') && !file.name.toLowerCase().endsWith('.ini'));
         });
-    }
-}
 
-function closeLocalSearchPopup() {
-    const popup = document.querySelector('div[style*="z-index: 1001"]');
-    if (popup) {
-        document.body.removeChild(popup);
-    }
-}
-
-function performLocalFileSearchFromPopup() {
-    currentSearchType = 'local'; // 设置当前搜索类型
-    const searchInput = document.getElementById('localFileSearchInputPopup');
-    const searchResults = document.getElementById('localFileSearchResults');
-    const keyword = searchInput.value.trim().toLowerCase();
-    currentKeyword = keyword; // 记录当前的搜索关键词
-
-    closeLocalSearchPopup();
-
-    if (!keyword) {
-        searchResults.innerHTML = '<p>请输入文件名</p>';
-        return;
+        // 触发文件夹选择
+        folderInput.click();
     }
 
-    // 修改匹配逻辑：使用正则表达式来匹配文件名
-    const matchedFiles = selectedFiles
-        .map(file => file.webkitRelativePath)
-        .filter(fileName => {
-            // 如果关键词是文件扩展名（如pdf、jpg等），则精确匹配扩展名
-            if (keyword.startsWith('.') || /^[a-z0-9]+$/.test(keyword)) {
-                const extension = fileName.split('.').pop().toLowerCase();
-                return extension === keyword.replace('.', '');
-            }
-            // 否则在文件名中搜索关键词（不包括扩展名）
-            const nameWithoutExtension = fileName.split('/').pop().split('.')[0].toLowerCase();
-            return nameWithoutExtension.includes(keyword);
-        });
-
-    if (matchedFiles.length > 0) {
-        displayFilesWithPagination(matchedFiles);
-    } else {
-        searchResults.innerHTML = '<p>未找到匹配的文件</p>';
-    }
-}
-
-function selectFolder() {
-    const folderInput = document.createElement('input');
-    folderInput.type = 'file';
-    folderInput.webkitdirectory = true; // 允许选择文件夹
-    folderInput.style.display = 'none';
-    document.body.appendChild(folderInput);
-
-    folderInput.addEventListener('change', (event) => {
-        selectedFiles = Array.from(event.target.files).filter(file => !file.name.startsWith('~$') && !file.name.toLowerCase().endsWith('.ini'));
-    });
-
-    // 触发文件夹选择
-    folderInput.click();
-}
-
-function resetFolderSelection() {
-    selectedFiles = [];
-    displayLocalFileSearch();
-}
-
-function performLocalFileSearch() {
-    currentSearchType = 'local'; // 设置当前搜索类型
-    const searchInput = document.getElementById('localFileSearchInput');
-    const searchResults = document.getElementById('localFileSearchResults');
-    const keyword = currentKeyword || (searchInput ? searchInput.value.trim().toLowerCase() : ''); // 使用记录的关键词
-
-    if (!keyword) {
-        searchResults.innerHTML = '<p>请输入文件名</p>';
-        return;
+    // 重置文件夹选择
+    function resetFolderSelection() {
+        selectedFiles = [];
+        displayLocalFileSearch();
     }
 
-    // 修改匹配逻辑：使用正则表达式来匹配文件名
-    const matchedFiles = selectedFiles
-        .map(file => file.webkitRelativePath)
-        .filter(fileName => {
-            // 如果关键词是文件扩展名（如pdf、jpg等），则精确匹配扩展名
-            if (keyword.startsWith('.') || /^[a-z0-9]+$/.test(keyword)) {
-                const extension = fileName.split('.').pop().toLowerCase();
-                return extension === keyword.replace('.', '');
-            }
-            // 否则在文件名中搜索关键词（不包括扩展名）
-            const nameWithoutExtension = fileName.split('/').pop().split('.')[0].toLowerCase();
-            return nameWithoutExtension.includes(keyword);
-        });
+    // 执行本地文件搜索
+    function performLocalFileSearch() {
+        currentSearchType = 'local'; // 设置当前搜索类型
+        const searchInput = document.getElementById('localFileSearchInput');
+        const searchResults = document.getElementById('localFileSearchResults');
+        const keyword = currentKeyword || (searchInput ? searchInput.value.trim().toLowerCase() : ''); // 使用记录的关键词
 
-    if (matchedFiles.length > 0) {
-        displayFilesWithPagination(matchedFiles);
-    } else {
-        searchResults.innerHTML = '<p>未找到匹配的文件</p>';
+        if (!keyword) {
+            searchResults.innerHTML = '<p>请输入文件名</p>';
+            return;
+        }
+
+        // 修改匹配逻辑：使用正则表达式来匹配文件名
+        const matchedFiles = selectedFiles
+            .map(file => file.webkitRelativePath)
+            .filter(fileName => {
+                // 如果关键词是文件扩展名（如pdf、jpg等），则精确匹配扩展名
+                if (keyword.startsWith('.') || /^[a-z0-9]+$/.test(keyword)) {
+                    const extension = fileName.split('.').pop().toLowerCase();
+                    return extension === keyword.replace('.', '');
+                }
+                // 否则在文件名中搜索关键词（不包括扩展名）
+                const nameWithoutExtension = fileName.split('/').pop().split('.')[0].toLowerCase();
+                return nameWithoutExtension.includes(keyword);
+            });
+
+        if (matchedFiles.length > 0) {
+            displayFilesWithPagination(matchedFiles);
+        } else {
+            searchResults.innerHTML = '<p>未找到匹配的文件</p>';
+        }
     }
-}
 
-function displayFilesWithPagination(files) {
-    const totalPages = Math.ceil(files.length / itemsPerPage);
-    const paginatedFiles = files.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+    // 显示文件分页
+    function displayFilesWithPagination(files) {
+        const totalPages = Math.ceil(files.length / itemsPerPage);
+        const paginatedFiles = files.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
-    const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'tiff'];
-    const videoExtensions = ['mp4', 'webm', 'ogg'];
-    const docExtensions = ['docx', 'doc', 'pdf','dotx','txt','wps'];
-    const sheetExtensions = ['xlsx', 'xls'];
-    const pptExtensions = ['ppt', 'pptx'];
-    const lnkExtensions = ['lnk'];
-    const archiveExtensions = ['zip', 'rar', '7z', 'tar', 'gz', 'bz2', 'xz']; 
-    const audioExtensions = ['mp3', 'wav', 'ogg', 'flac', 'aac']; // 新增音频文件扩展名
-    const imageFiles = paginatedFiles.filter(file => imageExtensions.some(ext => file.toLowerCase().endsWith(ext)));
-    const videoFiles = paginatedFiles.filter(file => videoExtensions.some(ext => file.toLowerCase().endsWith(ext)));
-    const docFiles = paginatedFiles.filter(file => docExtensions.some(ext => file.toLowerCase().endsWith(ext)));
-    const sheetFiles = paginatedFiles.filter(file => sheetExtensions.some(ext => file.toLowerCase().endsWith(ext)));
-    const pptFiles = paginatedFiles.filter(file => pptExtensions.some(ext => file.toLowerCase().endsWith(ext)));
-    const lnkFiles = paginatedFiles.filter(file => lnkExtensions.some(ext => file.toLowerCase().endsWith(ext)));
-    const archiveFiles = paginatedFiles.filter(file => archiveExtensions.some(ext => file.toLowerCase().endsWith(ext))); // 新增压缩包文件过滤
-    const audioFiles = paginatedFiles.filter(file => audioExtensions.some(ext => file.toLowerCase().endsWith(ext))); // 新增音频文件过滤
-    const otherFiles = paginatedFiles.filter(file => !imageExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !videoExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !docExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !sheetExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !pptExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !lnkExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !archiveExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !audioExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !file.toLowerCase().endsWith('.ini')); // 修改其他文件过滤逻辑
+        const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'tiff'];
+        const videoExtensions = ['mp4', 'webm', 'ogg'];
+        const docExtensions = ['docx', 'doc', 'pdf','dotx','txt','wps'];
+        const sheetExtensions = ['xlsx', 'xls'];
+        const pptExtensions = ['ppt', 'pptx'];
+        const lnkExtensions = ['lnk'];
+        const archiveExtensions = ['zip', 'rar', '7z', 'tar', 'gz', 'bz2', 'xz']; 
+        const audioExtensions = ['mp3', 'wav', 'ogg', 'flac', 'aac']; // 新增音频文件扩展名
+        const imageFiles = paginatedFiles.filter(file => imageExtensions.some(ext => file.toLowerCase().endsWith(ext)));
+        const videoFiles = paginatedFiles.filter(file => videoExtensions.some(ext => file.toLowerCase().endsWith(ext)));
+        const docFiles = paginatedFiles.filter(file => docExtensions.some(ext => file.toLowerCase().endsWith(ext)));
+        const sheetFiles = paginatedFiles.filter(file => sheetExtensions.some(ext => file.toLowerCase().endsWith(ext)));
+        const pptFiles = paginatedFiles.filter(file => pptExtensions.some(ext => file.toLowerCase().endsWith(ext)));
+        const lnkFiles = paginatedFiles.filter(file => lnkExtensions.some(ext => file.toLowerCase().endsWith(ext)));
+        const archiveFiles = paginatedFiles.filter(file => archiveExtensions.some(ext => file.toLowerCase().endsWith(ext))); // 新增压缩包文件过滤
+        const audioFiles = paginatedFiles.filter(file => audioExtensions.some(ext => file.toLowerCase().endsWith(ext))); // 新增音频文件过滤
+        const otherFiles = paginatedFiles.filter(file => !imageExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !videoExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !docExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !sheetExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !pptExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !lnkExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !archiveExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !audioExtensions.some(ext => file.toLowerCase().endsWith(ext)) && !file.toLowerCase().endsWith('.ini')); // 修改其他文件过滤逻辑
 
     // 文档画廊
     let docGallery = '';
@@ -885,6 +881,7 @@ function displayFilesWithPagination(files) {
         `;
     }
 
+    // 显示搜索结果
     const searchResults = document.getElementById('localFileSearchResults');
     searchResults.innerHTML = docGallery + sheetGallery + pptGallery + videoGallery + imageGallery + lnkGallery + archiveGallery + audioGallery + otherFilesList; // 添加audioGallery
 
@@ -899,340 +896,342 @@ function displayFilesWithPagination(files) {
     displayPaginationControls(totalPages, files.length);
 }
 
-// 分页控制
-function displayPaginationControls(totalPages, totalItems) {
-    const paginationControls = document.getElementById('paginationControls');
-    if (currentPage > totalPages) {
-        currentPage = totalPages;
-    }
-    let paginationHTML = `
-        <div style="margin: 50px;">
-            【共${totalItems}条记录 当前第${currentPage}/${totalPages}页 每页${itemsPerPage}条】
-            【<a href="javascript:void(0);" style="cursor: ${totalPages === 1 ? 'default' : 'pointer'}; margin: 0 5px; ${currentPage === 1 ? 'color: gray; text-decoration: none;' : 'text-decoration: none;'}" ${currentPage === 1 ? 'onclick="return false;"' : 'onclick="goToPage(1)"'}>首页</a> | 
-            <a href="javascript:void(0);" onclick="goToPage(${currentPage - 1})" style="cursor: pointer; margin: 0 5px; ${currentPage === 1 || totalPages === 1 ? 'color: gray; text-decoration: none;' : 'text-decoration: none;'}" ${currentPage === 1 || totalPages === 1 ? 'onclick="return false;"' : ''}>上一页</a> | 
-            <a href="javascript:void(0);" style="cursor: pointer; margin: 0 5px; ${currentPage === totalPages ? 'color: gray; text-decoration: none;' : 'text-decoration: none;'}" ${currentPage === totalPages ? 'onclick="return false;"' : 'onclick="goToPage(' + (currentPage + 1) + ')"'}>下一页</a> | 
-            <a href="javascript:void(0);" style="cursor: pointer; margin: 0 5px; ${currentPage === totalPages ? 'color: gray; text-decoration: none;' : 'text-decoration: none;'}" ${currentPage === totalPages ? 'onclick="return false;"' : 'onclick="goToPage(' + totalPages + ')"'}>尾页</a> | 
-            <a href="javascript:void(0);" onclick="jumpToPage()" style="cursor: pointer; margin: 0 5px; text-decoration: none;">跳转到指定页</a> <input type="number" id="jumpToPageInput" min="1" max="${totalPages}" value="${currentPage}" style="width: 50px; text-align: center; margin: 0 5px; display: inline-block;" oninput="if(this.value > ${totalPages}) this.value = ${totalPages};"> | 
-            <a href="javascript:void(0);" onclick="setItemsPerPage()" style="cursor: pointer; margin: 0 5px; text-decoration: none;">设定每页记录数</a> <input type="number" id="itemsPerPageInput" min="1" value="${itemsPerPage}" style="width: 50px; text-align: center; margin: 0 5px; display: inline-block;">】 
-        </div>
-    `;
-
-    paginationControls.innerHTML = paginationHTML;
-}
-
-// 跳转页面
-function goToPage(page) {
-    const totalPages = Math.ceil(selectedFiles.length / itemsPerPage);
-    if (page < 1 || page > totalPages) return;
-    currentPage = page;
-    const searchFunctions = {
-        local: performLocalFileSearch,
-        video: performVideoSearch,
-        image: performImageSearch,
-        doc: performDocSearch,
-        sheet: performSheetSearch,
-        ppt: performPptSearch,
-        lnk: performLnkSearch,
-        archive: performArchiveSearch,
-        audio: performAudioSearch,
-        other: performOtherFileSearch,
-    };
-    const searchFunction = searchFunctions[currentSearchType];
-    if (searchFunction) {
-        searchFunction();
-    } else {
-        console.error('Unknown search type:', currentSearchType);
-    }
-}
-
-function jumpToPage() {
-    const pageInput = document.getElementById('jumpToPageInput');
-    const page = parseInt(pageInput.value);
-    goToPage(page);
-}
-
-// 设定每页记录数
-function setItemsPerPage() {
-    const itemsPerPageInput = document.getElementById('itemsPerPageInput');
-    itemsPerPage = parseInt(itemsPerPageInput.value);
-    currentPage = 1;
-    const searchFunctions = {
-        local: performLocalFileSearch,
-        video: performVideoSearch,
-        image: performImageSearch,
-        doc: performDocSearch,
-        sheet: performSheetSearch,
-        ppt: performPptSearch,
-        lnk: performLnkSearch,
-        archive: performArchiveSearch,
-        audio: performAudioSearch,
-        other: performOtherFileSearch,
-    };
-    searchFunctions[currentSearchType]?.();
-}
-
-
-function performVideoSearch() {
-    currentSearchType = 'video'; // 设置当前搜索类型
-    const searchResults = document.getElementById('localFileSearchResults');
-    const videoExtensions = ['mp4', 'webm', 'ogg'];
-
-    const matchedFiles = selectedFiles
-        .map(file => file.webkitRelativePath)
-        .filter(fileName => videoExtensions.some(ext => fileName.toLowerCase().endsWith(ext)));
-
-    if (matchedFiles.length > 0) {
-        displayFilesWithPagination(matchedFiles);
-    } else {
-        searchResults.innerHTML = '<p>未找到匹配的视频文件</p>';
-    }
-}
-
-
-function performImageSearch() {
-    currentSearchType = 'image'; // 设置当前搜索类型
-    const searchResults = document.getElementById('localFileSearchResults');
-    const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'tiff'];
-
-    const matchedFiles = selectedFiles
-        .map(file => file.webkitRelativePath)
-        .filter(fileName => imageExtensions.some(ext => fileName.toLowerCase().endsWith(ext)));
-
-    if (matchedFiles.length > 0) {
-        displayFilesWithPagination(matchedFiles);
-    } else {
-        searchResults.innerHTML = '<p>未找到匹配的图片文件</p>';
-    }
-}
-
-// 文档画廊
-function performDocSearch() {
-    currentSearchType = 'doc'; // 设置当前搜索类型
-    const searchResults = document.getElementById('localFileSearchResults');
-    const docExtensions = ['docx', 'doc', 'pdf', 'dotx', 'txt', 'wps'];
-
-    const matchedFiles = selectedFiles
-        .map(file => file.webkitRelativePath)
-        .filter(fileName => docExtensions.some(ext => fileName.toLowerCase().endsWith(ext)));
-
-    if (matchedFiles.length > 0) {
-        displayFilesWithPagination(matchedFiles);
-    } else {
-        searchResults.innerHTML = '<p>未找到匹配的文档文件</p>';
-    }
-}
-
-// 表格画廊
-function performSheetSearch() {
-    currentSearchType = 'sheet'; // 设置当前搜索类型
-    const searchResults = document.getElementById('localFileSearchResults');
-    const sheetExtensions = ['xlsx', 'xls'];
-
-    const matchedFiles = selectedFiles
-        .map(file => file.webkitRelativePath)
-        .filter(fileName => sheetExtensions.some(ext => fileName.toLowerCase().endsWith(ext)));
-
-    if (matchedFiles.length > 0) {
-        displayFilesWithPagination(matchedFiles);
-    } else {
-        searchResults.innerHTML = '<p>未找到匹配的表格文件</p>';
-    }
-}
-
-// 演示文稿画廊
-function performPptSearch() {
-    currentSearchType = 'ppt'; // 设置当前搜索类型
-    const searchResults = document.getElementById('localFileSearchResults');
-    const pptExtensions = ['ppt', 'pptx'];
-
-    const matchedFiles = selectedFiles
-        .map(file => file.webkitRelativePath)
-        .filter(fileName => pptExtensions.some(ext => fileName.toLowerCase().endsWith(ext)));
-
-    if (matchedFiles.length > 0) {
-        displayFilesWithPagination(matchedFiles);
-    } else {
-        searchResults.innerHTML = '<p>未找到匹配的演示文稿文件</p>';
-    }
-}
-
-// 快捷方式画廊
-function performLnkSearch() {
-    currentSearchType = 'lnk'; // 设置当前搜索类型
-    const searchResults = document.getElementById('localFileSearchResults');
-    const lnkExtensions = ['lnk'];
-
-    const matchedFiles = selectedFiles
-        .map(file => file.webkitRelativePath)
-        .filter(fileName => lnkExtensions.some(ext => fileName.toLowerCase().endsWith(ext)));
-
-    if (matchedFiles.length > 0) {
-        displayFilesWithPagination(matchedFiles);
-    } else {
-        searchResults.innerHTML = '<p>未找到匹配的快捷方式文件</p>';
-    }
-}
-
-// 压缩文件画廊
-function performArchiveSearch() {
-    currentSearchType = 'archive'; // 设置当前搜索类型
-    const searchResults = document.getElementById('localFileSearchResults');
-    const archiveExtensions = ['zip', 'rar', '7z', 'tar', 'gz', 'bz2', 'xz'];
-
-    const matchedFiles = selectedFiles
-        .map(file => file.webkitRelativePath)
-        .filter(fileName => archiveExtensions.some(ext => fileName.toLowerCase().endsWith(ext)));
-
-    if (matchedFiles.length > 0) {
-        displayFilesWithPagination(matchedFiles);
-    } else {
-        searchResults.innerHTML = '<p>未找到匹配的压缩文件</p>';
-    }
-}
-
-// 音频文件画廊
-function performAudioSearch() {
-    currentSearchType = 'audio'; // 设置当前搜索类型
-    const searchResults = document.getElementById('localFileSearchResults');
-    const audioExtensions = ['mp3', 'wav', 'ogg', 'flac', 'aac'];
-
-    const matchedFiles = selectedFiles
-        .map(file => file.webkitRelativePath)
-        .filter(fileName => audioExtensions.some(ext => fileName.toLowerCase().endsWith(ext)));
-
-    if (matchedFiles.length > 0) {
-        const audioGallery = matchedFiles.map(file => {
-            const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
-            const fileURL = URL.createObjectURL(fileObj);
-            return `
-                <div style="position: relative; margin-bottom: 20px; width: calc(33.33% - 20px);">
-                    <audio controls style="width: 100%; margin-top: 5px;">
-                        <source src="${fileURL}" type="audio/${fileObj.name.split('.').pop().toLowerCase()}">
-                        您的浏览器不支持音频元素。
-                    </audio>
-                    <a href="${fileURL}" download="${fileObj.name}" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 8px 0; text-align: center; text-decoration: none; font-weight: normal; border-radius: 4px; margin-top: 5px;">${fileObj.name}</a>
-                </div>
-            `;
-        }).join('');
-        searchResults.innerHTML = `<div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px;">${audioGallery}</div>`;
-    } else {
-        searchResults.innerHTML = '<p style="text-align: center; color: #999;">未找到匹配的音频文件</p>';
-    }
-}
-
-// 其他文件画廊
-function performOtherFileSearch() {
-    currentSearchType = 'other'; // 设置当前搜索类型
-    const searchResults = document.getElementById('localFileSearchResults');
-    const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'tiff'];
-    const videoExtensions = ['mp4', 'webm', 'ogg'];
-    const docExtensions = ['docx', 'doc', 'pdf', 'dotx', 'txt', 'wps'];
-    const sheetExtensions = ['xlsx', 'xls'];
-    const pptExtensions = ['ppt', 'pptx'];
-    const lnkExtensions = ['lnk'];
-    const archiveExtensions = ['zip', 'rar', '7z', 'tar', 'gz', 'bz2', 'xz']; 
-    const audioExtensions = ['mp3', 'wav', 'ogg', 'flac', 'aac']; // 新增音频文件扩展名
-
-    const matchedFiles = selectedFiles
-        .map(file => file.webkitRelativePath)
-        .filter(fileName => !imageExtensions.some(ext => fileName.toLowerCase().endsWith(ext)) && !videoExtensions.some(ext => fileName.toLowerCase().endsWith(ext)) && !docExtensions.some(ext => fileName.toLowerCase().endsWith(ext)) && !sheetExtensions.some(ext => fileName.toLowerCase().endsWith(ext)) && !pptExtensions.some(ext => fileName.toLowerCase().endsWith(ext)) && !lnkExtensions.some(ext => fileName.toLowerCase().endsWith(ext)) && !archiveExtensions.some(ext => fileName.toLowerCase().endsWith(ext)) && !audioExtensions.some(ext => fileName.toLowerCase().endsWith(ext)) && !fileName.toLowerCase().endsWith('.ini')); // 修改其他文件过滤逻辑
-
-    if (matchedFiles.length > 0) {
-        displayFilesWithPagination(matchedFiles);
-    } else {
-        searchResults.innerHTML = '<p>未找到匹配的其他文件</p>';
-    }
-}
-
-// 下载文件的函数
-function downloadFile(url, name) {
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = name;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-}
-
-// 放大预览文件的函数
-function enlargePreview(fileURL) {
-    const previewWindow = window.open(fileURL, '_blank');
-    previewWindow.focus();
-}
-
-// 复制文本到剪贴板的函数
-let notificationCount = 0; // 计数器初始化
-
-function copyToClipboard(text) {
-    const textarea = document.createElement('textarea');
-    textarea.value = text;
-    document.body.appendChild(textarea);
-    textarea.select();
-    document.execCommand('copy');
-    document.body.removeChild(textarea);
-
-    let notification = document.querySelector(`.notification[data-text="${text}"]`);
-    if (notification) {
-        const countBadge = notification.querySelector('.count-badge');
-        let count = parseInt(countBadge.innerText) + 1;
-        countBadge.innerText = count;
-        return;
-    }
-
-    notificationCount++;
-
-    notification = document.createElement('div');
-    notification.className = 'notification';
-    notification.setAttribute('data-text', text);
-    notification.innerText = `复制路径成功`;
-    notification.style.position = 'fixed';
-    notification.style.top = `${60 + (notificationCount - 1) * 60}px`;
-    notification.style.right = '20px';
-    notification.style.backgroundColor = getElegantColor();
-    notification.style.color = 'white';
-    notification.style.padding = '15px 20px';
-    notification.style.borderRadius = '8px';
-    notification.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.1)';
-    notification.style.zIndex = '1000';
-    notification.style.cursor = 'pointer';
-    notification.style.fontSize = '14px';
-    notification.style.fontWeight = 'bold';
-
-    const countBadge = document.createElement('span');
-    countBadge.className = 'count-badge';
-    countBadge.innerText = `1`;
-    countBadge.style.backgroundColor = 'red';
-    countBadge.style.color = 'white';
-    countBadge.style.borderRadius = '50%';
-    countBadge.style.width = '20px';
-    countBadge.style.height = '20px';
-    countBadge.style.marginLeft = '10px';
-    countBadge.style.fontSize = '12px';
-    countBadge.style.fontWeight = 'bold';
-    countBadge.style.display = 'inline-block';
-    countBadge.style.textAlign = 'center';
-    countBadge.style.lineHeight = '20px';
-
-    notification.appendChild(countBadge);
-
-    document.body.appendChild(notification);
-
-    setTimeout(() => {
-        if (notification.parentNode) {
-            notification.parentNode.removeChild(notification);
-            notificationCount--;
+    // 分页控制
+    function displayPaginationControls(totalPages, totalItems) {
+        const paginationControls = document.getElementById('paginationControls');
+        if (currentPage > totalPages) {
+            currentPage = totalPages;
         }
-    }, 5000);
+        let paginationHTML = `
+            <div style="margin: 50px;">
+                【共${totalItems}条记录 当前第${currentPage}/${totalPages}页 每页${itemsPerPage}条】
+                【<a href="javascript:void(0);" style="cursor: ${totalPages === 1 ? 'default' : 'pointer'}; margin: 0 5px; ${currentPage === 1 ? 'color: gray; text-decoration: none;' : 'text-decoration: none;'}" ${currentPage === 1 ? 'onclick="return false;"' : 'onclick="goToPage(1)"'}>首页</a> | 
+                <a href="javascript:void(0);" onclick="goToPage(${currentPage - 1})" style="cursor: pointer; margin: 0 5px; ${currentPage === 1 || totalPages === 1 ? 'color: gray; text-decoration: none;' : 'text-decoration: none;'}" ${currentPage === 1 || totalPages === 1 ? 'onclick="return false;"' : ''}>上一页</a> | 
+                <a href="javascript:void(0);" style="cursor: pointer; margin: 0 5px; ${currentPage === totalPages ? 'color: gray; text-decoration: none;' : 'text-decoration: none;'}" ${currentPage === totalPages ? 'onclick="return false;"' : 'onclick="goToPage(' + (currentPage + 1) + ')"'}>下一页</a> | 
+                <a href="javascript:void(0);" style="cursor: pointer; margin: 0 5px; ${currentPage === totalPages ? 'color: gray; text-decoration: none;' : 'text-decoration: none;'}" ${currentPage === totalPages ? 'onclick="return false;"' : 'onclick="goToPage(' + totalPages + ')"'}>尾页</a> | 
+                <a href="javascript:void(0);" onclick="jumpToPage()" style="cursor: pointer; margin: 0 5px; text-decoration: none;">跳转到指定页</a> <input type="number" id="jumpToPageInput" min="1" max="${totalPages}" value="${currentPage}" style="width: 50px; text-align: center; margin: 0 5px; display: inline-block;" oninput="if(this.value > ${totalPages}) this.value = ${totalPages};"> | 
+                <a href="javascript:void(0);" onclick="setItemsPerPage()" style="cursor: pointer; margin: 0 5px; text-decoration: none;">设定每页记录数</a> <input type="number" id="itemsPerPageInput" min="1" value="${itemsPerPage}" style="width: 50px; text-align: center; margin: 0 5px; display: inline-block;">】 
+            </div>
+        `;
 
-    notification.addEventListener('click', () => {
-        if (notification.parentNode) {
-            notification.parentNode.removeChild(notification);
-            notificationCount--;
+        paginationControls.innerHTML = paginationHTML;
+    }
+
+    // 跳转页面
+    function goToPage(page) {
+        const totalPages = Math.ceil(selectedFiles.length / itemsPerPage);
+        if (page < 1 || page > totalPages) return;
+        currentPage = page;
+        const searchFunctions = {
+            local: performLocalFileSearch,
+            video: performVideoSearch,
+            image: performImageSearch,
+            doc: performDocSearch,
+            sheet: performSheetSearch,
+            ppt: performPptSearch,
+            lnk: performLnkSearch,
+            archive: performArchiveSearch,
+            audio: performAudioSearch,
+            other: performOtherFileSearch,
+        };
+        const searchFunction = searchFunctions[currentSearchType];
+        if (searchFunction) {
+            searchFunction();
+        } else {
+            console.error('Unknown search type:', currentSearchType);
         }
-    });
-}
+    }
+    // 跳转页面
+    function jumpToPage() {
+        const pageInput = document.getElementById('jumpToPageInput');
+        const page = parseInt(pageInput.value);
+        goToPage(page);
+    }
 
-function getElegantColor() {
-    const colors = ['#A9CCE3', '#AED6F1', '#D6EAF8', '#EBF5FB', '#F4F6F7', '#D5DBDB'];
-    return colors[Math.floor(Math.random() * colors.length)];
-}
+    // 设定每页记录数
+    function setItemsPerPage() {
+        const itemsPerPageInput = document.getElementById('itemsPerPageInput');
+        itemsPerPage = parseInt(itemsPerPageInput.value);
+        currentPage = 1;
+        const searchFunctions = {
+            local: performLocalFileSearch,
+            video: performVideoSearch,
+            image: performImageSearch,
+            doc: performDocSearch,
+            sheet: performSheetSearch,
+            ppt: performPptSearch,
+            lnk: performLnkSearch,
+            archive: performArchiveSearch,
+            audio: performAudioSearch,
+            other: performOtherFileSearch,
+        };
+        searchFunctions[currentSearchType]?.();
+    }
+
+    // 视频画廊
+    function performVideoSearch() {
+        currentSearchType = 'video'; // 设置当前搜索类型
+        const searchResults = document.getElementById('localFileSearchResults');
+        const videoExtensions = ['mp4', 'webm', 'ogg'];
+
+        const matchedFiles = selectedFiles
+            .map(file => file.webkitRelativePath)
+            .filter(fileName => videoExtensions.some(ext => fileName.toLowerCase().endsWith(ext)));
+
+        if (matchedFiles.length > 0) {
+            displayFilesWithPagination(matchedFiles);
+        } else {
+            searchResults.innerHTML = '<p>未找到匹配的视频文件</p>';
+        }
+    }
+
+    // 图片画廊
+    function performImageSearch() {
+        currentSearchType = 'image'; // 设置当前搜索类型
+        const searchResults = document.getElementById('localFileSearchResults');
+        const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'tiff'];
+
+        const matchedFiles = selectedFiles
+            .map(file => file.webkitRelativePath)
+            .filter(fileName => imageExtensions.some(ext => fileName.toLowerCase().endsWith(ext)));
+
+        if (matchedFiles.length > 0) {
+            displayFilesWithPagination(matchedFiles);
+        } else {
+            searchResults.innerHTML = '<p>未找到匹配的图片文件</p>';
+        }
+    }
+
+    // 文档画廊
+    function performDocSearch() {
+        currentSearchType = 'doc'; // 设置当前搜索类型
+        const searchResults = document.getElementById('localFileSearchResults');
+        const docExtensions = ['docx', 'doc', 'pdf', 'dotx', 'txt', 'wps'];
+
+        const matchedFiles = selectedFiles
+            .map(file => file.webkitRelativePath)
+            .filter(fileName => docExtensions.some(ext => fileName.toLowerCase().endsWith(ext)));
+
+        if (matchedFiles.length > 0) {
+            displayFilesWithPagination(matchedFiles);
+        } else {
+            searchResults.innerHTML = '<p>未找到匹配的文档文件</p>';
+        }
+    }
+
+    // 表格画廊
+    function performSheetSearch() {
+        currentSearchType = 'sheet'; // 设置当前搜索类型
+        const searchResults = document.getElementById('localFileSearchResults');
+        const sheetExtensions = ['xlsx', 'xls'];
+
+        const matchedFiles = selectedFiles
+            .map(file => file.webkitRelativePath)
+            .filter(fileName => sheetExtensions.some(ext => fileName.toLowerCase().endsWith(ext)));
+
+        if (matchedFiles.length > 0) {
+            displayFilesWithPagination(matchedFiles);
+        } else {
+            searchResults.innerHTML = '<p>未找到匹配的表格文件</p>';
+        }
+    }
+
+    // 演示文稿画廊
+    function performPptSearch() {
+        currentSearchType = 'ppt'; // 设置当前搜索类型
+        const searchResults = document.getElementById('localFileSearchResults');
+        const pptExtensions = ['ppt', 'pptx'];
+
+        const matchedFiles = selectedFiles
+            .map(file => file.webkitRelativePath)
+            .filter(fileName => pptExtensions.some(ext => fileName.toLowerCase().endsWith(ext)));
+
+        if (matchedFiles.length > 0) {
+            displayFilesWithPagination(matchedFiles);
+        } else {
+            searchResults.innerHTML = '<p>未找到匹配的演示文稿文件</p>';
+        }
+    }
+
+    // 快捷方式画廊
+    function performLnkSearch() {
+        currentSearchType = 'lnk'; // 设置当前搜索类型
+        const searchResults = document.getElementById('localFileSearchResults');
+        const lnkExtensions = ['lnk'];
+
+        const matchedFiles = selectedFiles
+            .map(file => file.webkitRelativePath)
+            .filter(fileName => lnkExtensions.some(ext => fileName.toLowerCase().endsWith(ext)));
+
+        if (matchedFiles.length > 0) {
+            displayFilesWithPagination(matchedFiles);
+        } else {
+            searchResults.innerHTML = '<p>未找到匹配的快捷方式文件</p>';
+        }
+    }
+
+    // 压缩文件画廊
+    function performArchiveSearch() {
+        currentSearchType = 'archive'; // 设置当前搜索类型
+        const searchResults = document.getElementById('localFileSearchResults');
+        const archiveExtensions = ['zip', 'rar', '7z', 'tar', 'gz', 'bz2', 'xz'];
+
+        const matchedFiles = selectedFiles
+            .map(file => file.webkitRelativePath)
+            .filter(fileName => archiveExtensions.some(ext => fileName.toLowerCase().endsWith(ext)));
+
+        if (matchedFiles.length > 0) {
+            displayFilesWithPagination(matchedFiles);
+        } else {
+            searchResults.innerHTML = '<p>未找到匹配的压缩文件</p>';
+        }
+    }
+
+    // 音频文件画廊
+    function performAudioSearch() {
+        currentSearchType = 'audio'; // 设置当前搜索类型
+        const searchResults = document.getElementById('localFileSearchResults');
+        const audioExtensions = ['mp3', 'wav', 'ogg', 'flac', 'aac'];
+
+        const matchedFiles = selectedFiles
+            .map(file => file.webkitRelativePath)
+            .filter(fileName => audioExtensions.some(ext => fileName.toLowerCase().endsWith(ext)));
+
+        if (matchedFiles.length > 0) {
+            const audioGallery = matchedFiles.map(file => {
+                const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
+                const fileURL = URL.createObjectURL(fileObj);
+                return `
+                    <div style="position: relative; margin-bottom: 20px; width: calc(33.33% - 20px);">
+                        <audio controls style="width: 100%; margin-top: 5px;">
+                            <source src="${fileURL}" type="audio/${fileObj.name.split('.').pop().toLowerCase()}">
+                            您的浏览器不支持音频元素。
+                        </audio>
+                        <a href="${fileURL}" download="${fileObj.name}" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 8px 0; text-align: center; text-decoration: none; font-weight: normal; border-radius: 4px; margin-top: 5px;">${fileObj.name}</a>
+                    </div>
+                `;
+            }).join('');
+            searchResults.innerHTML = `<div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px;">${audioGallery}</div>`;
+        } else {
+            searchResults.innerHTML = '<p style="text-align: center; color: #999;">未找到匹配的音频文件</p>';
+        }
+    }
+
+    // 其他文件画廊
+    function performOtherFileSearch() {
+        currentSearchType = 'other'; // 设置当前搜索类型
+        const searchResults = document.getElementById('localFileSearchResults');
+        const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'tiff'];
+        const videoExtensions = ['mp4', 'webm', 'ogg'];
+        const docExtensions = ['docx', 'doc', 'pdf', 'dotx', 'txt', 'wps'];
+        const sheetExtensions = ['xlsx', 'xls'];
+        const pptExtensions = ['ppt', 'pptx'];
+        const lnkExtensions = ['lnk'];
+        const archiveExtensions = ['zip', 'rar', '7z', 'tar', 'gz', 'bz2', 'xz']; 
+        const audioExtensions = ['mp3', 'wav', 'ogg', 'flac', 'aac']; // 新增音频文件扩展名
+
+        const matchedFiles = selectedFiles
+            .map(file => file.webkitRelativePath)
+            .filter(fileName => !imageExtensions.some(ext => fileName.toLowerCase().endsWith(ext)) && !videoExtensions.some(ext => fileName.toLowerCase().endsWith(ext)) && !docExtensions.some(ext => fileName.toLowerCase().endsWith(ext)) && !sheetExtensions.some(ext => fileName.toLowerCase().endsWith(ext)) && !pptExtensions.some(ext => fileName.toLowerCase().endsWith(ext)) && !lnkExtensions.some(ext => fileName.toLowerCase().endsWith(ext)) && !archiveExtensions.some(ext => fileName.toLowerCase().endsWith(ext)) && !audioExtensions.some(ext => fileName.toLowerCase().endsWith(ext)) && !fileName.toLowerCase().endsWith('.ini')); // 修改其他文件过滤逻辑
+
+        if (matchedFiles.length > 0) {
+            displayFilesWithPagination(matchedFiles);
+        } else {
+            searchResults.innerHTML = '<p>未找到匹配的其他文件</p>';
+        }
+    }
+
+    // 下载文件的函数
+    function downloadFile(url, name) {
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = name;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    }
+
+    // 放大预览文件的函数
+    function enlargePreview(fileURL) {
+        const previewWindow = window.open(fileURL, '_blank');
+        previewWindow.focus();
+    }
+
+    // 复制文本到剪贴板的函数
+    let notificationCount = 0; // 计数器初始化
+
+    // 复制文本到剪贴板
+    function copyToClipboard(text) {
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+
+        let notification = document.querySelector(`.notification[data-text="${text}"]`);
+        if (notification) {
+            const countBadge = notification.querySelector('.count-badge');
+            let count = parseInt(countBadge.innerText) + 1;
+            countBadge.innerText = count;
+            return;
+        }
+
+        notificationCount++;
+
+        notification = document.createElement('div');
+        notification.className = 'notification';
+        notification.setAttribute('data-text', text);
+        notification.innerText = `复制路径成功`;
+        notification.style.position = 'fixed';
+        notification.style.top = `${60 + (notificationCount - 1) * 60}px`;
+        notification.style.right = '20px';
+        notification.style.backgroundColor = getElegantColor();
+        notification.style.color = 'white';
+        notification.style.padding = '15px 20px';
+        notification.style.borderRadius = '8px';
+        notification.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.1)';
+        notification.style.zIndex = '1000';
+        notification.style.cursor = 'pointer';
+        notification.style.fontSize = '14px';
+        notification.style.fontWeight = 'bold';
+
+        const countBadge = document.createElement('span');
+        countBadge.className = 'count-badge';
+        countBadge.innerText = `1`;
+        countBadge.style.backgroundColor = 'red';
+        countBadge.style.color = 'white';
+        countBadge.style.borderRadius = '50%';
+        countBadge.style.width = '20px';
+        countBadge.style.height = '20px';
+        countBadge.style.marginLeft = '10px';
+        countBadge.style.fontSize = '12px';
+        countBadge.style.fontWeight = 'bold';
+        countBadge.style.display = 'inline-block';
+        countBadge.style.textAlign = 'center';
+        countBadge.style.lineHeight = '20px';
+
+        notification.appendChild(countBadge);
+
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+                notificationCount--;
+            }
+        }, 5000);
+
+        notification.addEventListener('click', () => {
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+                notificationCount--;
+            }
+        });
+    }
+
+    // 获取优雅的颜色
+    function getElegantColor() {
+        const colors = ['#A9CCE3', '#AED6F1', '#D6EAF8', '#EBF5FB', '#F4F6F7', '#D5DBDB'];
+        return colors[Math.floor(Math.random() * colors.length)];
+    }
