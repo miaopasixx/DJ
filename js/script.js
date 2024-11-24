@@ -466,6 +466,7 @@ let selectedFiles = [];
 let currentPage = 1;
 let itemsPerPage = 12; // 默认展示12个
 let currentSearchType = 'local'; // 新增变量来记录当前的搜索类型
+let currentKeyword = ''; // 新增变量来记录当前的搜索关键词
 
 function displayLocalFileSearch() {
     const contentDiv = document.getElementById('content');
@@ -579,6 +580,7 @@ function performLocalFileSearchFromPopup() {
     const searchInput = document.getElementById('localFileSearchInputPopup');
     const searchResults = document.getElementById('localFileSearchResults');
     const keyword = searchInput.value.trim().toLowerCase();
+    currentKeyword = keyword; // 记录当前的搜索关键词
 
     closeLocalSearchPopup();
 
@@ -632,7 +634,7 @@ function performLocalFileSearch() {
     currentSearchType = 'local'; // 设置当前搜索类型
     const searchInput = document.getElementById('localFileSearchInput');
     const searchResults = document.getElementById('localFileSearchResults');
-    const keyword = searchInput.value.trim().toLowerCase();
+    const keyword = currentKeyword || (searchInput ? searchInput.value.trim().toLowerCase() : ''); // 使用记录的关键词
 
     if (!keyword) {
         searchResults.innerHTML = '<p>请输入文件名</p>';
