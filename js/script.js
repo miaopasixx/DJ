@@ -881,14 +881,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
                     const fileURL = URL.createObjectURL(fileObj);
                     return `
-                        <div style="position: relative; margin-bottom: 30px; width: calc(25% - 10px); text-align: center; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2); border-radius: 15px; overflow: hidden; background-color: #f0f0f0; border: 2px solid #ccc;">
-                            <audio controls style="width: 95%; margin: 25px auto; border-radius: 8px; box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);">
-                                <source src="${fileURL}" type="audio/${fileObj.name.split('.').pop().toLowerCase()}">
-                                您的浏览器不支持音频元素。
-                            </audio>
-                            <a href="${fileURL}" download="${fileObj.name}" style="display: block; color: #444; background: #dcdcdc; padding: 15px; border-radius: 0 0 15px 15px; text-align: center; margin-top: 10px; text-decoration: none; font-weight: bold; box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.15); font-family: 'Arial', sans-serif;">${fileObj.name}</a>
-                        </div>
-                    `;
+                    <div style="position: relative; margin-bottom: 20px; width: calc(25% - 10px);">
+                        <audio controls style="width: 100%; margin-top: 5px;">
+                            <source src="${fileURL}" type="audio/${fileObj.name.split('.').pop().toLowerCase()}">
+                            您的浏览器不支持音频元素。
+                        </audio>
+                        <a href="${fileURL}" download="${fileObj.name}" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 8px 0; text-align: center; text-decoration: none; font-weight: normal; border-radius: 4px; margin-top: 5px;">${fileObj.name}</a>
+                    </div>
+                `;
                 }).join('')}
             </div>
         `;
@@ -1134,20 +1134,7 @@ document.addEventListener('DOMContentLoaded', () => {
             .filter(fileName => audioExtensions.some(ext => fileName.toLowerCase().endsWith(ext)));
 
         if (matchedFiles.length > 0) {
-            const audioGallery = matchedFiles.map(file => {
-                const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
-                const fileURL = URL.createObjectURL(fileObj);
-                return `
-                    <div style="position: relative; margin-bottom: 20px; width: calc(33.33% - 20px);">
-                        <audio controls style="width: 100%; margin-top: 5px;">
-                            <source src="${fileURL}" type="audio/${fileObj.name.split('.').pop().toLowerCase()}">
-                            您的浏览器不支持音频元素。
-                        </audio>
-                        <a href="${fileURL}" download="${fileObj.name}" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 8px 0; text-align: center; text-decoration: none; font-weight: normal; border-radius: 4px; margin-top: 5px;">${fileObj.name}</a>
-                    </div>
-                `;
-            }).join('');
-            searchResults.innerHTML = `<div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px;">${audioGallery}</div>`;
+            displayFilesWithPagination(matchedFiles);
         } else {
             searchResults.innerHTML = '<p style="text-align: center; color: #999;">未找到匹配的音频文件</p>';
         }
