@@ -604,13 +604,13 @@ function displayFilesWithPagination(files) {
     let docGallery = '';
     if (docFiles.length > 0) {
         docGallery = `
-            <div style="display: flex; flex-wrap: wrap; row-gap: 40px; column-gap: 10px; margin-top: 20px;">
+            <div style="display: flex; flex-wrap: wrap; column-gap: 10px; margin-top: 20px;">
                 ${docFiles.map(file => {
                     const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
                     const fileURL = URL.createObjectURL(fileObj);
                     return `
                         <div style="position: relative; margin-bottom: 30px; width: calc(16.66% - 10px);">
-                            <iframe src="${fileURL}" style="width: 100%; height: 297px; border: none; margin-top: 5px;"></iframe>
+                            <iframe src="${fileURL}" style="width: 100%; height: 350px; border: none; margin-top: 5px;"></iframe>
                             <button onclick="enlargePreview('${fileURL}')" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px; text-decoration: none; width: 100%;">放大预览</button>
                             <a href="${fileURL}" download="${fileObj.name}" style="display: block; color: white; background: rgba(0, 0, 0, 0.5); padding: 2px 5px; border-radius: 3px; text-align: center; margin-top: 5px; text-decoration: none; width: 100%;">${fileObj.name}</a>
                         </div>
@@ -654,7 +654,7 @@ function displayFilesWithPagination(files) {
     let pptGallery = '';
     if (pptFiles.length > 0) {
         pptGallery = `
-            <div style="display: flex; flex-wrap: wrap; row-gap: 40px; column-gap: 10px; margin-top: 20px;">
+            <div style="display: flex; flex-wrap: wrap; column-gap: 10px; margin-top: 20px;">
                 ${pptFiles.map(file => {
                     const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
                     const fileURL = URL.createObjectURL(fileObj);
@@ -784,9 +784,22 @@ function displayFilesWithPagination(files) {
     let otherFilesList = '';
     if (otherFiles.length > 0) {
         otherFilesList = `
-            <ul style="margin-top: 20px;">
-                ${otherFiles.map(file => `<li>${file}</li>`).join('')}
-            </ul>
+            <div style="display: flex; flex-wrap: wrap; row-gap: 40px; column-gap: 10px; margin-top: 20px;">
+                ${otherFiles.map(file => {
+                    const fileObj = selectedFiles.find(f => f.webkitRelativePath === file);
+                    const fileURL = URL.createObjectURL(fileObj);
+                    if (fileObj.name.split('.').pop().toLowerCase() === 'ico') {
+                        return `
+                            <div style="position: relative; margin-bottom: 30px; width: calc(16.66% - 10px); text-align: center; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); border-radius: 8px; overflow: hidden;">
+                                <img src="img/icon.svg" style="width: 80%; height: auto; display: block; margin: 0 auto; border-bottom: 1px solid #ddd; border-radius: 5px;">
+                                <a href="${fileURL}" download="${fileObj.name}" style="display: block; color: white; background: rgba(0, 0, 0, 0.7); padding: 10px; text-align: center; text-decoration: none; width: 100%; font-size: 14px; font-weight: bold;">${fileObj.name}</a>
+                            </div>
+                        `;
+                    } else {
+                        return `<li>${file}</li>`;
+                    }
+                }).join('')}
+            </div>
         `;
     }
 
