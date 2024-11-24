@@ -531,6 +531,23 @@ function generateResultsHtml(results, type, keyword) {
                 overflow: auto;
                 white-space: pre-wrap; /* 允许文本换行 */
             "></textarea>
+            <div style="margin-bottom: 15px;">
+                <select id="monthSelect" style="padding: 10px; border: 2px solid #2d5f8b; border-radius: 10px; margin-right: 10px;">
+                    <option value="">选择月份</option>
+                    ${Array.from({ length: 12 }, (_, i) => `<option value="${i + 1}">${i + 1}月</option>`).join('')}
+                </select>
+                <select id="quarterSelect" style="padding: 10px; border: 2px solid #2d5f8b; border-radius: 10px; margin-right: 10px;">
+                    <option value="">选择季度</option>
+                    <option value="1">第一季度</option>
+                    <option value="2">第二季度</option>
+                    <option value="3">第三季度</option>
+                    <option value="4">第四季度</option>
+                </select>
+                <select id="yearSelect" style="padding: 10px; border: 2px solid #2d5f8b; border-radius: 10px;">
+                    <option value="">选择年份</option>
+                    ${Array.from({ length: new Date().getFullYear() - 2021 + 1 }, (_, i) => `<option value="${2021 + i}">${2021 + i}年</option>`).join('')}
+                </select>
+            </div>
             <div style="text-align: right;">
                 <button onclick="performLocalFileSearchFromPopup()" style="padding: 12px 20px; border: none; border-radius: 25px; background-color: #2d5f8b; color: white; cursor: pointer; transition: all 0.3s ease;">确认</button>
                 <button onclick="closeLocalSearchPopup()" style="padding: 12px 20px; border: none; border-radius: 25px; background-color: #d9534f; color: white; cursor: pointer; transition: all 0.3s ease;">取消</button>
@@ -572,27 +589,36 @@ function generateResultsHtml(results, type, keyword) {
         const searchInput = document.getElementById('localFileSearchInputPopup');
         const searchResults = document.getElementById('localFileSearchResults');
         const keyword = searchInput.value.trim().toLowerCase();
+        const month = document.getElementById('monthSelect').value;
+        const quarter = document.getElementById('quarterSelect').value;
+        const year = document.getElementById('yearSelect').value;
         currentKeyword = keyword; // 记录当前的搜索关键词
 
         closeLocalSearchPopup();
 
-        if (!keyword) {
-            searchResults.innerHTML = '<p>请输入文件名</p>';
+        if (!keyword && !month && !quarter && !year) {
+            searchResults.innerHTML = '<p>请输入搜索条件</p>';
             return;
         }
 
-        // 修改匹配逻辑：使用正则表达式来匹配文件名
+        // 修改匹配逻辑：使用正则表达式来匹配文件名和日期
         const matchedFiles = selectedFiles
             .map(file => file.webkitRelativePath)
             .filter(fileName => {
-                // 如果关键词是文件扩展名（如pdf、jpg等），则精确匹配扩展名
-                if (keyword.startsWith('.') || /^[a-z0-9]+$/.test(keyword)) {
-                    const extension = fileName.split('.').pop().toLowerCase();
-                    return extension === keyword.replace('.', '');
-                }
-                // 否则在文件名中搜索关键词（不包括扩展名）
                 const nameWithoutExtension = fileName.split('/').pop().split('.')[0].toLowerCase();
-                return nameWithoutExtension.includes(keyword);
+
+                // 使用正则表达式匹配文件名中的日期信息
+                const fileYear = nameWithoutExtension.match(/(\d{4})年/) ? nameWithoutExtension.match(/(\d{4})年/)[1] : '';
+                const fileMonth = nameWithoutExtension.match(/(\d{1,2})月份/) ? nameWithoutExtension.match(/(\d{1,2})月份/)[1] : '';
+                const fileQuarter = nameWithoutExtension.match(/(一|二|三|四)季度/) ? 
+                    { '一': 1, '二': 2, '三': 3, '四': 4 }[nameWithoutExtension.match(/(一|二|三|四)季度/)[1]] : '';
+
+                const keywordMatch = keyword ? nameWithoutExtension.includes(keyword) : true;
+                const monthMatch = month ? fileMonth === month : true;
+                const quarterMatch = quarter ? fileQuarter == quarter : true;
+                const yearMatch = year ? (fileYear === year && parseInt(fileYear) >= 2021) : true;
+
+                return keywordMatch && monthMatch && quarterMatch && yearMatch;
             });
 
         if (matchedFiles.length > 0) {
